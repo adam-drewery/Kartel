@@ -1,0 +1,49 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  solution: 'Kartel.Api/Kartel.Api.csproj'
+  buildPlatform: 'Any CPU'
+
+stages:
+  - stage: Build
+    jobs:
+    - job: Build
+      steps:
+
+      - task: DotNetCoreCLI@2
+        name: 'restore'
+        inputs:
+          command: 'restore'
+          projects: '$(solution)'
+          feedsToUse: 'select'
+
+      - task: DotNetCoreCLI@2
+        name: 'build'
+        inputs:
+          command: 'build'
+          projects: 'Kartel.Api/Kartel.Api.csproj'
+          
+      - task: DotNetCoreCLI@2
+        name: 'test'
+        inputs:
+          command: 'test'
+          projects: '$(solution)'
+      
+      - task: DotNetCoreCLI@2
+        name: 'publish'
+        inputs:
+          command: 'publish'
+          publishWebProjects: true
+          arguments: '-o $(Build.ArtifactStagingDirectory)'
+          zipAfterPublish: false
+
+      - task: PublishBuildArtifacts@1
+        name: 'upload'
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'drop'
+          publishLocation: 'Container'
