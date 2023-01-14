@@ -12,12 +12,7 @@ public static class Endpoint
 
 	public static async Task RunAsync(params IEndpoint[] endpoints)
 	{
-		var last = endpoints.Last();
-
-		foreach (var service in endpoints.Except(new[] { last }))
-			Task.Run(() => service.RunAsync());
-
-		await last.RunAsync();
+		await Task.WhenAll(endpoints.Select(e => e.RunAsync()));
 	}
 }
 
