@@ -1,0 +1,73 @@
+@page "/"
+@using Kartel.Json
+@using Kartel.Web.HubClients
+@using Newtonsoft.Json
+@layout _EmptyLayout
+@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject PlayerClient PlayerClient
+@inject ClientSession Session
+
+<section class="content">
+    <div class="container-center animated slideInDown">
+        <div class="view-header">
+            <div class="header-icon">
+                <i class="pe page-header-icon pe-7s-unlock"></i>
+            </div>
+            <div class="header-title">
+                <h3>Login</h3>
+                <small>
+                    Please enter your credentials to login.
+                </small>
+            </div>
+        </div>
+        <div class="panel panel-filled">
+            <div class="panel-body">
+                <div id="loginForm">
+                    <div class="form-group">
+                        <label class="control-label" for="username">Username</label>
+                        <input type="text" placeholder="example@gmail.com" title="Please enter you username" required="" @bind="@_userName" name="username" id="username" class="form-control" />
+                        <span class="help-block small">Your unique username to app</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="password">Password</label>
+                        <input type="password" title="Please enter your password" placeholder="******" required="" value="" name="password" id="password" class="form-control">
+                        <span class="help-block small">Your strong password</span>
+                    </div>
+                    <div>
+                        <button class="btn btn-accent" @onclick="@LoginUser">Login</button>
+                        @* <a class="btn btn-default" @onclick="@LoginUser">Register</a> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+
+    string _userName;
+
+    async Task LoginUser()
+    {
+        await PlayerClient.Connect();
+        Session.Player = await PlayerClient.New();
+
+        Console.WriteLine(JsonConvert.SerializeObject(Session.Player, new JsonSerializerSettings{ ContractResolver = new PrivatePropertyContractResolver()}));
+
+        PlayerClient.PropertyChanged += (_, args) =>
+        {
+            var property = Session.Player.GetType().GetProperty(args.PropertyName);
+            if(property == null) throw new MissingMemberException();
+            property.SetValue(Session.Player, args.NewValue);
+        };
+
+        await LocalStorage.SetItemAsync("PlayerId", Session.Player.Id);
+        NavigationManager.NavigateTo("/logs");
+    }
+
+    async Task Logout()
+    {
+        await LocalStorage.RemoveItemAsync("PlayerId");
+    }
+}

@@ -1,0 +1,10 @@
+group Server
+    FSharp.Core
+    Giraffe
+    Microsoft.AspNetCore
+    Microsoft.AspNetCore.StaticFiles
+    Microsoft.ApplicationInsights.AspNetCore
+    WindowsAzure.Storage
+    Thoth.Json.Giraffe
+    Microsoft.AspNetCore.SignalR
+    Taskbuilder.fs

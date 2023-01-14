@@ -1,0 +1,16 @@
+group Client
+FSharp.Core
+Fable.Core
+Fable.Elmish.Debugger
+Fable.Elmish.React
+Fable.Elmish.HMR
+Thoth.Fetch
+Thoth.Json
+Fable.Fetch
+Fable.Promise
+Fable.FontAwesome.Free
+Feliz
+Fable.Leaflet
+Fable.Elmish
+Fable.Node
+Fable.ReactLeaflet

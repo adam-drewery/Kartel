@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Kartel</RootNamespace>
+    <LangVersion>10</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="DataSets\cities.uk" />
+    <None Remove="DataSets\dist.all.last" />
+    <None Remove="DataSets\dist.female.first" />
+    <None Remove="DataSets\dist.male.first" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DataSets\cities.uk" />
+    <EmbeddedResource Include="DataSets\dist.all.last" />
+    <EmbeddedResource Include="DataSets\dist.female.first" />
+    <EmbeddedResource Include="DataSets\dist.male.first" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
+</Project>

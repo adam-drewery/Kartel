@@ -1,0 +1,53 @@
+﻿@inject NavigationManager Navigation
+
+@code {
+
+    class Section : Dictionary<string, string>
+    {
+        public Section(string name) => Name = name;
+        
+        public string Name { get; set; }
+    }
+    
+    Section[] _sections = 
+    {
+        new("Main")
+        {
+            { "Profile", "/profile" },
+            { "Contacts", "/contacts" },
+            { "Address Book", "/address-book" },
+            { "Map", "/map" }
+        },
+        new("Admin")
+        {
+            { "Logs", "/logs" },
+        }
+    };
+}
+
+<aside class="navigation">
+    <nav>
+        <ul class="nav luna-nav">
+            @foreach (var part in _sections)
+            {
+                <li class="nav-category">@part.Name</li>
+                @foreach (var item in part)
+                {
+                    string @liClass = Navigation.Uri.EndsWith(item.Value) ? "active" : string.Empty;
+                    <li class="@liClass">
+                        <a style="cursor: pointer" href="@item.Value">@item.Key</a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+</aside>
+
+@code 
+{
+    protected override void OnInitialized()
+    {
+        Navigation.LocationChanged += (_, _) => StateHasChanged();
+        base.OnInitialized();
+    }
+}

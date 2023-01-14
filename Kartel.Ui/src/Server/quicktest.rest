@@ -1,0 +1,25 @@
+###
+POST http://localhost:6840/chathub/negotiate
+
+###
+POST http://localhost:8085/chathub/negotiate
+
+###
+GET http://localhost:6840/chathub?id=vNiEgQBWVk6uvkgnXZYR-Q
+
+###
+POST http://localhost:6840/gamehub/negotiate
+
+###
+POST http://localhost:8085/api/sendGameMessage
+
+{
+    "userInput": "cd yeh",
+    "messageInput": "moreStuff"
+}
+
+###
+GET http://localhost:8085/api/init
+
+###
+GET http://localhost:8085/api/game

@@ -1,0 +1,55 @@
+services:
+
+  geocoding:
+    build:
+      context: .
+      dockerfile: Kartel.Geocoding.Bing/Dockerfile
+    ports:
+      - 5557:5557
+      - 5558:5558
+  
+  logistics:
+    build:
+      context: .
+      dockerfile: Kartel.Logistics.Bing/Dockerfile
+    ports:
+      - 5556:5556
+
+  property_market:
+    build:
+      context: .
+      dockerfile: Kartel.PropertyMarket.ZooplaWeb/Dockerfile
+    ports:
+      - 5555:5555
+
+  api:
+    build:
+      context: .
+      dockerfile: Kartel.Api/Dockerfile
+    ports:
+      - 6840:6840
+      - 6841:6841
+
+  web:
+    build:
+      context: .
+      dockerfile: Kartel.Web/Dockerfile
+    ports:
+      - 8080:80
+
+#  db:
+#    environment:
+#      ACCEPT_EULA: "Y"
+#      SA_PASSWORD: example_123
+#    # mssql server image isn't available for arm64 architecture, so we use azure-sql instead
+#    #image: mcr.microsoft.com/azure-sql-edge:1.0.4
+#    # If you really want to use MS SQL Server, uncomment the following line
+#    image: mcr.microsoft.com/mssql/server
+#    restart: always
+#    healthcheck:
+#        test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P example_123 -Q 'SELECT 1' || exit 1"]
+#        interval: 10s
+#        retries: 10
+#        start_period: 10s
+#        timeout: 3s
+#

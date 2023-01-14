@@ -1,0 +1,56 @@
+$animation-timing-short: 0.3s;
+$animation-timing-medium: 0.6s;
+$animation-timing-medium-longer: 2s;
+
+.left-nav-container {
+    width: 250px;
+    box-shadow: 4px 0px 8px rgba(0,0,0,0.5);
+    z-index: 999;
+    opacity: 1.0;
+    transition: all 0.3s;
+}
+.left-nav-container-hidden {
+    width: 0px;
+    box-shadow: 4px 0px 8px rgba(0,0,0,0.5);
+    opacity: 0.0;
+    transition: all 0.3s;
+}
+
+.left-navigation-panel {
+    background: $color-dark-custom-4;
+    background: linear-gradient(-5deg, lighten($color-dark-custom-2,3%) 0%, lighten($color-dark-custom-2,5%) 90%);
+}
+
+.left-navigation-header {
+    background-color: darken($custom-color-6, 15%);
+}
+
+.left-navigation-button {
+    // opacity: 0.8;
+    border-top: 1px solid rgba(100,100,100,0.1);
+    border-left: 1px solid rgba(100,100,100,0.1);
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    border-right: 1px solid rgba(0,0,0,0.2);
+    background-color: $color-dark-custom-6;
+    transition: all $animation-timing-medium;
+}
+
+.left-navigation-button:hover {
+    // opacity: 1.0;
+    border-top: 1px solid rgba(100,100,100,0.3);
+    border-left: 1px solid rgba(100,100,100,0.3);
+    border-bottom: 1px solid rgba(0,0,0,0.4);
+    border-right: 1px solid rgba(0,0,0,0.4);
+    background-color: lighten($color-dark-custom-6,5%);
+    transition: all $animation-timing-medium;
+}
+
+.subtle-fade {
+    opacity: 0.5;
+    transition: all $animation-timing-medium-longer;
+}
+
+.subtle-fade:hover {
+    opacity: 1.0;
+    transition: all $animation-timing-medium-longer;
+}

@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="index.html" />
+    <None Include="paket.references" />
+    <None Include="style.scss" />
+    <Compile Include="FableImport/Fable.Browser.SVG.fs" />
+    <Compile Include="FableImport/Fable.Import.D3.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/Error.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/ILogger.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/ITransport.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/IHubProtocol.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/IConnection.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/AbortController.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/Errors.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/Stream.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/TextMessageFormat.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/HandshakeProtocol.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/HttpClient.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/IHttpConnectionOptions.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/HttpConnection.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/HubConnection.fs" />
+    <Compile Include="FableImport/Fable.Import.SignalRCore/HubConnectionBuilder.fs" />
+    <Compile Include="../Shared/Shared.fs" />
+    <Compile Include="Theme/Font.fs" />
+    <Compile Include="Theme/Color.fs" />
+    <Compile Include="Elements/CollapseButton.fs" />
+    <Compile Include="Elements/LeftNavigation.fs" />
+    <Compile Include="Elements/BottomNavigation.fs" />
+    <Compile Include="Elements/Contacts.fs" />
+    <Compile Include="Layout/Types.fs" />
+    <Compile Include="Layout/State.fs" />
+    <Compile Include="Layout/LeftNavigation.fs" />
+    <Compile Include="Layout/BottomNavigation.fs" />
+    <Compile Include="Components/MainMap.fs" />
+    <Compile Include="Components/GameHub.fs" />
+    <Compile Include="Components/Contacts/View.fs" />
+    <Compile Include="Components/Globe.fs" />
+    <Compile Include="Pages/Contacts/PlayerAttributes.fs" />
+    <Compile Include="Pages/Contacts/View.fs" />
+    <Compile Include="Pages/LoginRegister/Types.fs" />
+    <Compile Include="Pages/LoginRegister/State.fs" />
+    <Compile Include="Pages/LoginRegister/View.fs" />
+    <Compile Include="Pages/GameStart/Types.fs" />
+    <Compile Include="Pages/GameStart/State.fs" />
+    <Compile Include="Pages/GameStart/View.fs" />
+    <Compile Include="Pages/Jobs/View.fs" />
+    <Compile Include="Pages/Globe/View.fs" />
+    <Compile Include="Pages/Main/Types.fs" />
+    <Compile Include="Pages/Main/State.fs" />
+    <Compile Include="Pages/Main/View.fs" />
+    <Compile Include="Version.fs" />
+    <Compile Include="Client.fs" />
+  </ItemGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
+</Project>

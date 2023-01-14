@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <LangVersion>10</LangVersion>
+    <RazorLangVersion>3.0</RazorLangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
+    <PackageReference Include="BlazorLeaflet" Version="0.4.0-alpha" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.2" />
+    <PackageReference Include="System.Net.Http.Json" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\scripts\luna.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\scripts\signalr.min.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\scripts\signalr.min.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\vendor\animate.css\animate.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\vendor\bootstrap\js\bootstrap.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\vendor\bootstrap\js\bootstrap.min.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\vendor\bootstrap\js\npm.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kartel.Api.Interfaces\Kartel.Api.Interfaces.csproj" />
+    <ProjectReference Include="..\Kartel.Configuration\Kartel.Configuration.csproj" />
+    <ProjectReference Include="..\Kartel.Core\Kartel.Core.csproj" />
+    <ProjectReference Include="..\Kartel.Json\Kartel.Json.csproj" />
+  </ItemGroup>
+
+</Project>

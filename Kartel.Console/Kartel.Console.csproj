@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kartel.Core\Kartel.Core.csproj">
+      <Project>{B298CDD9-861A-4FF4-B6A3-23F16C819C80}</Project>
+      <Name>Kartel.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kartel.Service.Client\Kartel.Service.Client.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+	  <PackageReference Include="NetMQ" Version="4.0.1.10" />
+	  <PackageReference Include="Serilog" Version="2.12.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Kartel.Core\Kartel.Core.csproj" />
+	  <ProjectReference Include="..\Kartel.Sockets\Kartel.Sockets.csproj" />
+	</ItemGroup>
+
+</Project>
