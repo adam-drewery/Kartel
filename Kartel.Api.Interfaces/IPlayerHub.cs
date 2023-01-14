@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Kartel.Entities;
 
-namespace Kartel.Api.Interfaces.Interfaces;
+namespace Kartel.Api.Interfaces;
 
 public interface IPlayerHub
 {

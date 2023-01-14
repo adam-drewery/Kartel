@@ -1,5 +1,5 @@
 using Kartel.Api.Hubs.Base;
-using Kartel.Api.Interfaces.Interfaces;
+using Kartel.Api.Interfaces;
 using Kartel.Entities;
 
 namespace Kartel.Api.Hubs;

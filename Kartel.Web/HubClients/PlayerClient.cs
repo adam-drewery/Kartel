@@ -1,4 +1,4 @@
-using Kartel.Api.Interfaces.Interfaces;
+using Kartel.Api.Interfaces;
 using Kartel.Entities;
 using Kartel.Web.HubClients.Base;
 using Microsoft.AspNetCore.SignalR.Client;
