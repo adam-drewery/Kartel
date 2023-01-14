@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Kartel.Sockets;
+using Kartel.Serialization;
 using NetMQ;
 using NetMQ.Sockets;
 using Serilog;

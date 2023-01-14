@@ -25,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartel.Logistics.Osm", "Kar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartel.Logistics.Bing", "Kartel.Logistics.Bing\Kartel.Logistics.Bing.csproj", "{FC1CB754-EE1B-4215-ABFB-C97329A79BC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartel.Sockets", "Kartel.Sockets\Kartel.Sockets.csproj", "{DC842964-1185-41ED-81B0-776BEEF6B122}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartel.Serialization", "Kartel.Serialization\Kartel.Serialization.csproj", "{DC842964-1185-41ED-81B0-776BEEF6B122}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartel.ServiceBase.Client", "Kartel.ServiceBase.Client\Kartel.ServiceBase.Client.csproj", "{0FB61EF0-99A1-47A2-A18E-81563614511E}"
 EndProject

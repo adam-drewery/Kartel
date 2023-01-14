@@ -1,4 +1,4 @@
-using Kartel.Sockets;
+using Kartel.Serialization;
 using NetMQ;
 
 namespace Kartel.ServiceBase.Client;

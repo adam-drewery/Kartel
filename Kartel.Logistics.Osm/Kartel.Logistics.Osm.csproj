@@ -18,7 +18,7 @@
 	  <ProjectReference Include="..\Kartel.Configuration\Kartel.Configuration.csproj" />
 	  <ProjectReference Include="..\Kartel.Core\Kartel.Core.csproj" />
 	  <ProjectReference Include="..\Kartel.Logging\Kartel.Logging.csproj" />
-	  <ProjectReference Include="..\Kartel.Sockets\Kartel.Sockets.csproj" />
+	  <ProjectReference Include="..\Kartel.Serialization\Kartel.Serialization.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
