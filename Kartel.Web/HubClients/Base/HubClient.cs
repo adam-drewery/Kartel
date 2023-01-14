@@ -23,8 +23,7 @@ public abstract class HubClient
 	protected HubClient(HubConnectionBuilder builder, IConfiguration configuration)
 	{
 		var url = $"{configuration["SignalrHub"]}/{GetType().Name.Replace("Client", "Hub").ToLowerInvariant()}";
-		Console.WriteLine("ULR IS; " + url);
-
+		
 		Connection = builder.WithUrl(url, opt =>
 			{
 				opt.Transports = HttpTransportType.WebSockets;

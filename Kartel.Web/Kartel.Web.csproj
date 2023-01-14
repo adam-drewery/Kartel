@@ -34,4 +34,9 @@
     <ProjectReference Include="..\Kartel.Json\Kartel.Json.csproj" />
   </ItemGroup>
 
+  <ItemGroup><Compile Remove="Template\**" /></ItemGroup>
+  <ItemGroup><EmbeddedResource Remove="Template\**" /></ItemGroup>
+  <ItemGroup><None Remove="Template\**" /></ItemGroup>
+  <ItemGroup><Content Remove="Template\**" /></ItemGroup>
+
 </Project>

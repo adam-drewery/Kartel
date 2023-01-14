@@ -10,7 +10,6 @@ public class PrivatePropertyContractResolver : DefaultContractResolver
 		MemberInfo member,
 		MemberSerialization memberSerialization)
 	{
-		//TODO: Maybe cache
 		var prop = base.CreateProperty(member, memberSerialization);
 
 		if (prop.Writable) return prop;

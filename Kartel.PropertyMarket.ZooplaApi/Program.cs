@@ -8,13 +8,15 @@ namespace Kartel.PropertyMarket;
 
 internal static class Program
 {
-	private static readonly ListingCollector ListingCollector = new();
+	private static ListingCollector _listingCollector;
 
 	private static async Task Main(string[] args)
 	{
 		var networkSettings = Settings.FromArgs<NetworkSettings>(args);
+		var zooplaSettings = Settings.FromArgs<ZooplaSettings>(args);
 		
 		Log.Logger = new KartelLogConfiguration().CreateLogger();
+		_listingCollector = new ListingCollector(zooplaSettings.ApiKey);
 
 		await using var client = new ZooplaDbContext();
 
@@ -24,10 +26,10 @@ internal static class Program
 		Log.Debug("Applying pending migrations");
 		await client.Database.MigrateAsync();
 
-		Log.Information("Starting timer with a {Interval}ms interval", ListingCollector.Interval);
-		ListingCollector.Collect();
+		Log.Information("Starting timer with a {Interval}ms interval", _listingCollector.Interval);
+		_listingCollector.Collect();
 
-		ListingCollector.Start();
+		_listingCollector.Start();
 		await Endpoint.RunAsync(new NewHouseFinder(networkSettings.PropertyMarket.Server));
 	}
 }

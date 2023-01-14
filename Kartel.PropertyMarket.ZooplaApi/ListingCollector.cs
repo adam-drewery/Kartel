@@ -16,11 +16,12 @@ public class ListingCollector : Timer
 
 	private int _cityIndex = Random.Next(0, Data.Cities.Length - 1);
 
-	private readonly ZooplaClient _zoopla = new(/*todo*/"");
+	private readonly ZooplaClient _zoopla;
 
-	public ListingCollector()
+	public ListingCollector(string apiKey)
 	{
 		Elapsed += (_, _) => Collect();
+		_zoopla = new ZooplaClient(apiKey);
 
 		// each key is limited to 100 calls per hour
 		// That's 1 call per 36 seconds.

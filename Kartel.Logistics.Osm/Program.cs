@@ -14,6 +14,10 @@ using Timer = System.Timers.Timer;
 
 namespace Kartel.Logistics.Osm;
 
+/*
+ * This service isn't finished yet, it doesn't work at all but even if it did, nodes don't have location names yet.
+ */
+
 class Program
 {
 	public static string OsmDataPath = @"../../../great-britain-latest.osm.pbf";
@@ -85,7 +89,6 @@ class Program
 
 			foreach (var node in shape)
 			{
-				// TODO: This service isn't finished yet, it doesn't work at all but even if it did, nodes don't have location names yet.
 				// foreach (var attribute in node.Meta.Attributes) 
 				// 	Log.Warning(attribute.Key + ":" + attribute.Value);
 
