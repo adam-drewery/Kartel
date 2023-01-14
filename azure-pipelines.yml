@@ -7,31 +7,36 @@ pool:
 variables:
   solution: 'Kartel.Api/Kartel.Api.csproj'
   buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
 
 stages:
   - stage: Build
     jobs:
     - job: Build
       steps:
-      - task: NuGetToolInstaller@1
 
-      - task: NuGetCommand@2
+      - task: DotNetCoreCLI@2
         inputs:
-          restoreSolution: '$(solution)'
+          command: 'restore'
+          projects: '$(solution)'
+          feedsToUse: 'select'
 
-      - task: VSBuild@1
+      - task: DotNetCoreCLI@2
         inputs:
-          solution: '$(solution)'
-          msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-          platform: '$(buildPlatform)'
-          configuration: 'Release'
-
-      - task: VSTest@2
+          command: 'build'
+          projects: 'Kartel.Api/Kartel.Api.csproj'
+          
+      - task: DotNetCoreCLI@2
         inputs:
-          platform: '$(buildPlatform)'
-          configuration: 'Release'
+          command: 'test'
+          projects: '$(solution)'
       
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'publish'
+          publishWebProjects: true
+          arguments: '-o $(Build.ArtifactStagingDirectory)'
+          zipAfterPublish: false
+
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
