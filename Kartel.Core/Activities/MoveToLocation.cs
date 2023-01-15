@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Kartel.Commands;
 using Kartel.Entities;
 using Kartel.Environment.Topography;
 
@@ -8,35 +7,62 @@ namespace Kartel.Activities;
 
 public class MoveToLocation : Activity
 {
-	public Location Destination { get; }
+	private readonly Person _actor;
+	private Task<Route> _directionsTask;
+
+	public Func<Location> Destination { get; }
 
 	public Route Route { get; private set; }
 
-	public Task<Route> DirectionsTask { get; }
-
-	public MoveToLocation(Person actor, Location destination) : base(actor)
+	public MoveToLocation(Person actor, Func<Location> destination) : base(actor)
 	{
+		_actor = actor;
 		Destination = destination;
-		var route = new[] {actor.Location, destination};
-
-		DirectionsTask = Services.Directions.WalkingAsync(route);
 	}
 
 	protected override void Update(TimeSpan sinceLastUpdate)
 	{
+		if (_directionsTask == null)
+		{
+			var routeDistance = Actor.Location.DistanceTo(Destination());
+			var duration = TimeSpan.FromSeconds(routeDistance * 1.5); // about 3 m/s
+
+			if (routeDistance < 100)
+			{
+				Route = new Route
+				{
+					Parts =
+					{
+
+						new RoutePart(TimeSpan.Zero, _actor.Location),
+						new RoutePart(duration, Destination())
+					}
+				};
+			}
+			else
+			{
+				var route = new[] { Actor.Location, Destination() };
+				_directionsTask = Services.Directions.WalkingAsync(route);
+			}
+		}
+		
 		if (Route == null)
 		{
-			if (DirectionsTask.IsCompleted)
-				Route = DirectionsTask.Result;
-			else if (DirectionsTask.IsFaulted)
+			if (_directionsTask.IsCompleted)
+				Route = _directionsTask.Result;
+			else if (_directionsTask.IsFaulted)
 			{
-				Game.OnError("Failed to get directions", DirectionsTask.Exception);
+				Game.OnError("Failed to get directions", _directionsTask.Exception);
 				Complete();
 			}
 		}
 		else
 		{
-			Actor.Location = Route.LocationAfter(Game.Clock.Time - StartTime);
+			var newLocation = Route.LocationAfter(Game.Clock.Time - StartTime);
+			
+			if (!newLocation.Equals(Actor.Location))
+				Actor.Location = newLocation;
+			
 			if (Actor.Location.Equals(Destination)) Complete();
 		}
 	}

@@ -2,7 +2,7 @@ using System;
 using Kartel.Entities;
 using Kartel.Services;
 
-namespace Kartel.Commands;
+namespace Kartel.Activities;
 
 public abstract class Activity
 {

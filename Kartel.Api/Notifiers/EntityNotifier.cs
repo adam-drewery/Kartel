@@ -2,6 +2,7 @@ using Kartel.Api.Hubs.Base;
 using Kartel.Api.Hubs.Base.Interfaces;
 using Kartel.EventArgs;
 using Microsoft.AspNetCore.SignalR;
+using Serilog;
 
 namespace Kartel.Api.Notifiers;
 
@@ -14,7 +15,10 @@ public abstract class EntityNotifier<THub> : Notifier<THub>, IEntityNotifier whe
 
 	public void OnPropertyChanged(PropertyChangedArgs e)
 	{
+		if (e.SourceId == default) Log.Information("Notifying property {Property} changed for entity of type {EntityType}", e.PropertyName, e.Source.GetType());
+		else Log.Information("Notifying property {Property} changed for entity of type {EntityType} with ID {ID}", e.PropertyName, e.Source.GetType(), e.SourceId);
+		
 		Clients.Group(e.SourceId.ToString())
-			.SendAsync(nameof(OnPropertyChanged), e.SourceId, e.PropertyName, e.NewValue);
+			.SendAsync("PropertyChanged", e);
 	}
 }

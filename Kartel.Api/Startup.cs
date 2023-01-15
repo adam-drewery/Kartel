@@ -30,15 +30,12 @@ public class Startup
             new GeocodingClient(networkSettings)
         };
 
-        services.AddLogging(loggingBuilder =>
-            loggingBuilder.AddSerilog(dispose: true));
-
         var game = new Game(gameServices)
         {
             Clock =
             {
                 Interval = 100,
-                SpeedFactor = 10
+                SpeedFactor = 100
             }
         };
         game.Clock.Start();
@@ -62,7 +59,7 @@ public class Startup
                     .WithOrigins(_allowedOrigins)
                     .AllowAnyHeader()
                     .AllowAnyMethod()
-                    //.AllowCredentials()
+                    .AllowCredentials()
                 );
         });
     }

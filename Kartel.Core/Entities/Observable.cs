@@ -14,6 +14,10 @@ public class Observable
     
     public void Write<T>(T value, [CallerMemberName] string caller = "")
     {
+        if (Properties.TryGetValue(caller, out var current))
+            if (current.Equals(value))
+                return;
+        
         Properties[caller] = value;
         PropertyChanged?.Invoke(this, new PropertyChangedArgs(this, caller, value));
     }
@@ -24,6 +28,11 @@ public class Observable
             return (T)result;
 
         return default;
+    }
+
+    protected void OnPropertyChanged(string caller, object value)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedArgs(this, caller, value));
     }
     
     public readonly IDictionary<string, object> Properties = new ConcurrentDictionary<string, object>();

@@ -33,7 +33,8 @@ public class Geocoder : Endpoint<Location, Location>
 		var bingLocation = (response.ResourceSets.FirstOrDefault()
 				?.Resources
 				?.OfType<BingMapsRESTToolkit.Location>()
-				.Where(l => l.ConfidenceLevelType != 0))
+				.Where(l => l.ConfidenceLevelType != 0) ?? 
+					Array.Empty<BingMapsRESTToolkit.Location>())
 			.MinBy(l => l.ConfidenceLevelType);
 
 		if (bingLocation == null)

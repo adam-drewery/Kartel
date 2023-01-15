@@ -20,7 +20,7 @@ public class City : Location
     {
         foreach (var city in DataSet.Cities)
         {
-            Debug.WriteLine("seed: " + city.Name);
+            Debug.WriteLine($"seed: {city.Name}");
         }
     }
 }

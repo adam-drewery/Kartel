@@ -8,11 +8,9 @@ namespace Kartel.Api.Notifiers;
 /// <summary>Notifies a client when a collection it is subscribed to changes, or one of the entities in the collection.</summary>
 public abstract class CollectionNotifier<THub> : EntityNotifier<THub>, ICollectionNotifier where THub : BaseHub
 {
+	protected CollectionNotifier(IHubContext<THub> hubContext) : base(hubContext) { }
 
-	public CollectionNotifier(IHubContext<THub> hubContext) : base(hubContext) { }
-
-		
-	public void Watch<TElement>(GameCollection<TElement> collection)
+	protected void Watch<TElement>(GameCollection<TElement> collection)
 		where TElement : GameObject
 	{
 		collection.CollectionChanged += OnCollectionChanged;

@@ -17,7 +17,7 @@
             return;
         }
 
-        _relationships = await Relationships.Subscribe(Session.Player.Id);
+        _relationships = await Relationships.Subscribe(Session.PlayerId);
         StateHasChanged();
         await base.OnAfterRenderAsync(true);
     }

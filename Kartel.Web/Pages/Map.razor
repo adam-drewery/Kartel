@@ -19,7 +19,7 @@
             Attribution = "Tiles &copy; Esri",
         });
 
-        var relationships = await Relationships.Subscribe(Session.Player.Id);
+        var relationships = await Relationships.Subscribe(Session.PlayerId);
         foreach (var contact in relationships.Select(r => r.Person))
         {
             var location = contact.Location;

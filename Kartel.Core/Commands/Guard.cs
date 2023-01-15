@@ -9,6 +9,6 @@ public class Guard : Command
 {
     public Guard(Person actor, Location location) : base(actor)
     {
-        Tasks.Enqueue(new Activities.MoveToLocation(actor, location));
+        Activities.Enqueue(new Activities.MoveToLocation(actor, () => location));
     }
 }

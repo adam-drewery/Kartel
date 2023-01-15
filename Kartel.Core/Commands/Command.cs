@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kartel.Activities;
 using Kartel.Entities;
 
 namespace Kartel.Commands;
@@ -17,9 +18,9 @@ public abstract class Command
         
     //public virtual DateTime EndTime { get; set; } = DateTime.MaxValue;
 
-    public Activity CurrentTask => Tasks.Peek();
+    public Activity CurrentTask => Activities.Any() ? Activities.Peek() : default;
         
-    public Queue<Activity> Tasks { get; } = new();
+    public Queue<Activity> Activities { get; } = new();
         
     public DateTime UpdatedTime { get; private set; }
         
@@ -27,16 +28,16 @@ public abstract class Command
             
     protected Command(Person actor)
     {
-        Name = new ActivityName(this);
+        Name = new CommandName(this);
         Game = actor.Game;
         Actor = actor;
     }
         
-    public ActivityName Name { get; }
+    public CommandName Name { get; }
         
     protected DateTime Now => Game.Clock.Time;
         
-    public bool Complete => Tasks.Count == 0;
+    public bool Complete => Activities.Count == 0;
 
     public void Start(DateTime startTime)
     {
@@ -48,9 +49,9 @@ public abstract class Command
 
     public void Cancel()
     {
-        while (Tasks.Any())
+        while (Activities.Any())
         {
-            var task = Tasks.Dequeue();
+            var task = Activities.Dequeue();
             task.Complete();
         }
 
@@ -62,15 +63,15 @@ public abstract class Command
     public void Update()
     {
         if (StartTime == default) Start(Now);
-        else if (!Tasks.Any()) return;
+        else if (!Activities.Any()) return;
         else
         {
             CurrentTask.Update();
                 
             while(CurrentTask.IsComplete)
             {
-                Tasks.Dequeue();
-                if (!Tasks.Any())
+                Activities.Dequeue();
+                if (!Activities.Any())
                 {
                     EndTime = Now;
                     break;

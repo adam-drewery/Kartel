@@ -32,7 +32,7 @@ public class Game
     public void OnHeartbeat()
     {
         foreach (var character in Characters) 
-            character.OnHeartbeat();
+            character.OnTick();
     }
 
     internal virtual void OnError(string message, Exception e)

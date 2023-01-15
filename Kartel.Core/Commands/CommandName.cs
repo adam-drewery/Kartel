@@ -3,9 +3,9 @@ using Kartel.Attributes;
 
 namespace Kartel.Commands;
 
-public class ActivityName
+public class CommandName
 {
-    public ActivityName(Command command)
+    public CommandName(Command command)
     {
         var attribute = command.GetType()
             .GetCustomAttribute<VerbAttribute>();

@@ -4,7 +4,7 @@ using Serilog;
 
 namespace Kartel.Api.Notifiers;
 
-public class GameNotifier : CollectionNotifier<GameHub>
+public class GameNotifier : EntityNotifier<GameHub>
 {
 	public GameNotifier(IHubContext<GameHub> hubContext) : base(hubContext) { }
 

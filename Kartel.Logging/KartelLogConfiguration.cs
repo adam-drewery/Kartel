@@ -6,6 +6,6 @@ public class KartelLogConfiguration : LoggerConfiguration
 {
     public KartelLogConfiguration()
     {
-        WriteTo.Console();
+        MinimumLevel.Verbose().WriteTo.Console();
     }
 }

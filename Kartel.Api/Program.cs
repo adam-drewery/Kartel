@@ -14,8 +14,15 @@ public class Program
         Log.Logger = new KartelLogConfiguration()
             .CreateLogger();
         
+        Log.Information("Logging initialized");
+        
         Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
+            .ConfigureLogging(builder =>
+            {
+                builder.ClearProviders();
+                builder.AddSerilog(dispose: true);
+            })
             .Build()
             .Run();
     }

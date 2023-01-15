@@ -74,7 +74,7 @@ public class ZooplaClient : IDisposable
         var content = await response.Content.ReadAsStringAsync();
             
         if (!response.IsSuccessStatusCode)
-            throw new HttpRequestException(response.ReasonPhrase + ": " + content);
+            throw new HttpRequestException($"{response.ReasonPhrase}: {content}");
 
         return JsonConvert.DeserializeObject<PropertyListingsSearchResult>(content);
     }

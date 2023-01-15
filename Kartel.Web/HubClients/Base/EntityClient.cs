@@ -1,6 +1,7 @@
 using Kartel.EventArgs;
 using Kartel.Extensions;
 using Microsoft.AspNetCore.SignalR.Client;
+using Serilog;
 
 namespace Kartel.Web.HubClients.Base;
 
@@ -10,6 +11,7 @@ public abstract class EntityClient<T> : HubClient
 	{
 		Connection.On<PropertyChangedArgs>(nameof(PropertyChanged), args =>
 		{
+			Log.Information("Property changed: {PropertyName}", args.PropertyName);
 			PropertyChanged?.Invoke(this, args);
 			return Task.CompletedTask;
 		});
@@ -21,9 +23,9 @@ public abstract class EntityClient<T> : HubClient
 	{
 		if (!IsStarted) await Connect();
 			
-		Console.WriteLine("Subscribing to {0} with ID {1}", typeof(T).PrettyName(), id);
+		Log.Information("Subscribing to {EntityName} with ID {ID}", typeof(T).PrettyName(), id);
 		var result = await Connection.InvokeAsync<T>(nameof(Subscribe), id);
-		Console.WriteLine("Subscription Successful: {0}", result);
+		Log.Information("Subscription Successful: {@Result}", result);
 		return result;
 	}
 }

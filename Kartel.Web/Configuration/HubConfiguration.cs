@@ -1,5 +1,6 @@
 using Kartel.Web.HubClients.Base;
 using Microsoft.AspNetCore.SignalR.Client;
+using Serilog;
 
 namespace Kartel.Web.Configuration;
 
@@ -25,12 +26,11 @@ internal static class HubConfiguration
 					if (hubClient == null) throw new InvalidOperationException("Couldn't resolve a HubClient type.");
 						
 					await hubClient.Connect();
-					Console.WriteLine("Hub client listening: {0}", hubClientType);
+					Log.Information("Hub client listening: {HubClient}", hubClientType);
 				}
 				catch (Exception e)
 				{
-					Console.WriteLine("Error encountered starting hub client with type {0}", hubClientType);
-					Console.WriteLine(e);
+					Log.Error(e, "Error encountered starting hub client with type {HubClient}", hubClientType);
 				}
 			}
 		});

@@ -1,5 +1,4 @@
 using System;
-using Kartel.Commands;
 using Kartel.Entities;
 
 namespace Kartel.Activities;

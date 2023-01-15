@@ -24,15 +24,9 @@ public class Person : GameObject
         return new Person(home, home);
     }
 
-    public Person()
-    {
-        Health = byte.MaxValue;
-        Relationships = new GameCollection<Relationship>(Game);
-    }
-        
     public Person(Building home) : this(home, home) { }
 
-    protected Person(Building home, Location location)
+    protected Person(Building home, Location location) : this()
     {
         Location = location;
         Money = Random.Next(10000, 20000).Gbp();
@@ -41,14 +35,27 @@ public class Person : GameObject
         Fists = new Fists();
         Gender = new Random().Enum<Gender>();
         Surname = DataSet.Surnames.Random();
+        
         FirstName = Gender == Gender.Male
             ? DataSet.MaleForenames.Random()
             : DataSet.FemaleForenames.Random();
+        
         Home = home;
-        Relationships = new GameCollection<Relationship>(Game);
         Home.Owner = this;
     }
 
+    public Person()
+    {
+        Health = byte.MaxValue;
+        Needs = new PersonalNeeds(this);
+        Relationships = new GameCollection<Relationship>(Game);
+
+        Needs.PropertyChanged += (_, args) =>
+        {
+            OnPropertyChanged($"{nameof(Needs)}." + args.PropertyName, args.NewValue);
+        };
+    }
+    
     public CurrencyQuantity Money
     {
         get => Read<CurrencyQuantity>();
@@ -88,7 +95,7 @@ public class Person : GameObject
     public Fists Fists { get; }
 
     public Inventory Inventory { get; }
-        
+    
     public Building Home
     {
         get => Read<Building>();
@@ -98,7 +105,8 @@ public class Person : GameObject
     [DataMember]
     public PersonalSkills Skills { get; } = new();
 
-    public PersonalNeeds Needs { get; } = new PersonalNeeds();
+    [DataMember]
+    public PersonalNeeds Needs { get; }
 
     public Command CurrentCommand => Commands.Any() ? Commands.Peek() : null;
 
@@ -128,18 +136,30 @@ public class Person : GameObject
             person.Relationships.Add(new Relationship { Person = this });
     }
 
-    public void OnHeartbeat()
+    public void OnTick()
     {
         Needs.Tick(Game.Clock.Time, Game.Clock.LastUpdate);
-        // Now process any commands/actions that are pending
-            
+
+        var mostCriticalNeed = Needs.Where(need => need.IsCritical)
+            .OrderBy(need => need.Value)
+            .LastOrDefault();
+
+        if (mostCriticalNeed != null && !mostCriticalNeed.IsBeingSatisfied(this))
+        {
+            CurrentCommand?.Cancel();
+            Commands.Clear();
+            Commands.Enqueue(mostCriticalNeed.Resolution());
+        }
+
         if (CurrentCommand == null) return;
-            
+        
         CurrentCommand.Update();
-            
+        
         while (CurrentCommand is { Complete: true })
         {
             var completedCommand = Commands.Dequeue();
+            
+            Console.WriteLine("{0} completing command {1}", this, completedCommand.GetType().Name);
             var previousEndTime = completedCommand.EndTime;
             if (Commands.Any()) break;
                 

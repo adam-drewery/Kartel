@@ -9,12 +9,12 @@ public class Train : Command
 {
     public Train(Person actor, Skill skill, Location location) : base(actor)
     {
-        Tasks.Enqueue(new Activities.MoveToLocation(actor, location));
-        Tasks.Enqueue(new Activities.Train(actor, skill));
+        Activities.Enqueue(new Activities.MoveToLocation(actor, () => location));
+        Activities.Enqueue(new Activities.Train(actor, skill));
     }
 
     public Train(Person actor, Skill skill) : base(actor)
     {
-        Tasks.Enqueue(new Activities.Train(actor, skill));
+        Activities.Enqueue(new Activities.Train(actor, skill));
     }
 }

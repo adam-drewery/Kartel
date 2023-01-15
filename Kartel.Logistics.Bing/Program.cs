@@ -11,11 +11,13 @@ internal static class Program
 	{
 		Log.Logger = new KartelLogConfiguration().CreateLogger();
 
-		var settings = Settings.FromArgs<NetworkSettings>(args);
+		var networkSettings = Settings.FromArgs<NetworkSettings>(args);
+		var bingSettings = Settings.FromArgs<BingSettings>(args);
 			
 		try
 		{
-			await Endpoint.RunAsync(new RoutePlanner(settings.Logistics.Server));
+			var routePlanner = new RoutePlanner(networkSettings.Logistics.Server, bingSettings.ApiKey);
+			await Endpoint.RunAsync(routePlanner);
 		}
 		catch (Exception e)
 		{

@@ -9,6 +9,6 @@ public class Resupply : Command
 {
     public Resupply(Person actor, Person supplier, Building stockpile) : base(actor)
     {
-        Tasks.Enqueue(new Activities.MoveToLocation(actor, stockpile));
+        Activities.Enqueue(new Activities.MoveToLocation(actor, () => stockpile));
     }
 }

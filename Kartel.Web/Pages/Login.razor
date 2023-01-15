@@ -2,6 +2,7 @@
 @using Kartel.Json
 @using Kartel.Web.HubClients
 @using Newtonsoft.Json
+@using Serilog
 @layout _EmptyLayout
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
@@ -51,18 +52,18 @@
     async Task LoginUser()
     {
         await PlayerClient.Connect();
-        Session.Player = await PlayerClient.New();
-
-        Console.WriteLine(JsonConvert.SerializeObject(Session.Player, new JsonSerializerSettings{ ContractResolver = new PrivatePropertyContractResolver()}));
+        var player = await PlayerClient.New();
+        Session.PlayerId = player.Id;
 
         PlayerClient.PropertyChanged += (_, args) =>
         {
-            var property = Session.Player.GetType().GetProperty(args.PropertyName);
+            Log.Information("Property updating: {PropertyName}:{Value}", args.PropertyName, args.NewValue);
+            var property = player.GetType().GetProperty(args.PropertyName);
             if(property == null) throw new MissingMemberException();
-            property.SetValue(Session.Player, args.NewValue);
+            property.SetValue(player, args.NewValue);
         };
 
-        await LocalStorage.SetItemAsync("PlayerId", Session.Player.Id);
+        await LocalStorage.SetItemAsync("PlayerId", Session.PlayerId);
         NavigationManager.NavigateTo("/logs");
     }
 

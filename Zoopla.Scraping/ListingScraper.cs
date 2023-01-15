@@ -99,7 +99,7 @@ public class ListingScraper : ZooplaScraper
         }
         
         Console.WriteLine($"Getting details page for listing {listing.Id}");
-        var detailsPage = await Http.GetStringAsync($"https://www.zoopla.co.uk/{listingType.Key}/details/" + listing.Id);
+        var detailsPage = await Http.GetStringAsync($"https://www.zoopla.co.uk/{listingType.Key}/details/{listing.Id}");
         const string regex = @"{""__typename"":""LocationCoordinates"",""latitude"":(.*),""longitude"":(.*),""isApproximate"":(.*)}";
         var match = Regex.Match(detailsPage, regex);
 

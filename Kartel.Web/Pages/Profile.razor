@@ -6,6 +6,7 @@
 @using Kartel.Extensions
 @using Kartel.Web.HubClients
 @inject ClientSession Session
+@inject PersonClient People
 @inject RelationshipClient Relationships
 @inject IJSRuntime JsRuntime;
 
@@ -21,7 +22,13 @@
     {
         if (Id == null)
         {
-            _person = Session.Player;
+            _person = await People.Subscribe(Session.PlayerId);
+            
+            People.PropertyChanged += (s, args) =>
+            {
+                args.ApplyTo(_person);
+                StateHasChanged();
+            };
         }
         else
         {
@@ -58,7 +65,7 @@
             <div class="panel panel-filled">
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="media">
                                 <i class="pe pe-7s-user c-accent fa-3x"></i>
                                 <h2 class="m-t-xs m-b-none">
@@ -75,16 +82,33 @@
                                 @foreach (var row in _person.Skills.GroupsOf(2))
                                 {
                                     <tr>
-                                    @foreach (var skill in row)
-                                    {
+                                        @foreach (var skill in row)
+                                        {
+                                            <td>
+                                                <div class="progress m-b-none full progress-small" style="width: 140px">
+                                                    <div style="width: @(skill.Value.Percent(1))%" class="progress-bar progress-bar-warning"></div>
+                                                </div>
+                                                <small>@skill.Name: @skill.Value.Percent(1)%</small>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <table class="table small m-t-sm">
+                                <tbody>
+                                @foreach (var need in _person.Needs)
+                                {
+                                    <tr>
                                         <td>
-                                            @* <strong class="c-white">@item.Value.Percent(1)</strong> @item.Name *@
                                             <div class="progress m-b-none full progress-small" style="width: 140px">
-                                                <div style="width: @((skill.Value.Percent(1) + 100) / 2)%" class="progress-bar progress-bar-warning"></div>
+                                                <div style="width: @(need.Value.Percent(1))%" class="progress-bar progress-bar-warning"></div>
                                             </div>
-                                            <small>@skill.Name: @skill.Value.Percent(1)%</small>
+                                            <small>@need.Name: @need.Value.Percent(1)%</small>
                                         </td>
-                                    }
                                     </tr>
                                 }
                                 </tbody>

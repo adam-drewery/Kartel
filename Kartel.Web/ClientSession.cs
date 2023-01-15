@@ -1,8 +1,7 @@
-using Kartel.Entities;
-
 namespace Kartel.Web;
 
 public class ClientSession
 {
-	public Player Player { get; set; }
+	public Guid PlayerId { get; set; }
+	//public Player Player { get; set; }
 }

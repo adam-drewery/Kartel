@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
+using Serilog;
 
 namespace Kartel.Web.HubClients.Base;
 
@@ -32,21 +33,19 @@ public abstract class HubClient
 
 		Connection.Reconnected += connectionId =>
 		{
-			Console.WriteLine("{0} connection reconnected with ID {1}", GetType(), connectionId);
+			Log.Information("{Type} connection reconnected with ID {ID}", GetType(), connectionId);
 			return Task.CompletedTask;
 		};
 			
 		Connection.Reconnecting += exception =>
 		{
-			Console.WriteLine("{0} connection reconnecting", GetType());
-			Console.WriteLine(exception);
+			Log.Information(exception, "{Type} connection reconnecting", GetType());
 			return Task.CompletedTask;
 		};
 		
 		Connection.Closed += exception =>
 		{
-			Console.WriteLine("{0} connection closed", GetType());
-			Console.WriteLine(exception);
+			Log.Information(exception, "{Type} connection closed", GetType());
 			return Task.CompletedTask;
 		};
 	}

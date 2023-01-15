@@ -10,9 +10,13 @@ namespace Kartel.Logistics.Bing;
 
 public class RoutePlanner : Endpoint<List<Location>, Route>
 {
+	private readonly string _apiKey;
+	
 	protected override Func<ResponseSocket> SocketFactory { get; }
-	public RoutePlanner(string address)
+	
+	public RoutePlanner(string address, string apiKey)
 	{
+		_apiKey = apiKey;
 		SocketFactory = () => new ResponseSocket(address);
 	}
 
@@ -28,7 +32,7 @@ public class RoutePlanner : Endpoint<List<Location>, Route>
 
 		var routeRequest = new RouteRequest
 		{
-			BingMapsKey = "Atrex5--k6ITAA-ydzImq1LpCOBoVvrkKYn3E4rONUrVj3trSzu7HalEqlcZjCiO",
+			BingMapsKey = _apiKey,
 			RouteOptions = new RouteOptions {TravelMode = TravelModeType.Driving},
 			Waypoints = requestRoute
 				.Select(r => new SimpleWaypoint(r.Latitude, r.Longitude))
@@ -75,6 +79,7 @@ public class RoutePlanner : Endpoint<List<Location>, Route>
 			route.Parts.Add(new RoutePart(item.TimeUtc - time, location));
 		}
 
+		Log.Information("Route plotted with {Parts} parts",  route.Parts.Count);
 		return route;
 	}
 }

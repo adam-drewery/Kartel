@@ -26,7 +26,7 @@ public static class DataSet
     {
         if (text.Length < 2) return text;
         if (text.StartsWith("Mc", StringComparison.OrdinalIgnoreCase))
-            return "Mc" + TitleCase(text.Substring(2));
+            return $"Mc{TitleCase(text.Substring(2))}";
 
         return text[0].ToString().ToUpperInvariant()
                + text.Substring(1).ToLowerInvariant();
@@ -40,7 +40,7 @@ public static class DataSet
 
         using (var stream = assembly.GetManifestResourceStream(resourceName))
         {
-            if (stream == null) throw new MissingManifestResourceException(resourceName + " not found.");
+            if (stream == null) throw new MissingManifestResourceException($"{resourceName} not found.");
 
             using (var reader = new StreamReader(stream))
             {

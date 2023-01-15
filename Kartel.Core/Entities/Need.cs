@@ -1,32 +1,54 @@
 using System;
 using System.Linq;
+using Kartel.Commands;
 
 namespace Kartel.Entities;
 
-public class Need
+public class Need : Observable
 {
-    private byte _value;
+    private readonly Type _resolutionCommandType;
     private static readonly Random Random = new();
-        
+
+    public static Need Create<TCommand>(string name, double increaseScale, Func<TCommand> resolution)
+        where TCommand : Command =>
+        new Need(name, increaseScale, resolution, typeof(TCommand));
+
+    public static Need Create<TCommand>(string name, Func<TCommand> resolution)
+        where TCommand : Command => 
+        Create(name, 1, resolution);
+
     public Need() { }
-            
-    public Need(string name)
+    
+    private Need(string name, double increaseScale, Func<Command> resolution, Type resolutionCommandType)
     {
         Name = name;
-        _value = (byte) Random.Next(byte.MinValue, byte.MaxValue);
+        IncreaseScale = increaseScale;
+        Resolution = resolution;
+        _resolutionCommandType = resolutionCommandType;
+        Value = (byte)Random.Next(byte.MinValue, byte.MaxValue);
     }
 
     public string Name { get; }
-    
-    public bool IncreaseScale { get; set; }
+
+    public double IncreaseScale { get; set; }
+
+    public Func<Command> Resolution { get; }
 
     public byte Value
     {
-        get => _value;
-        set => _value = value + _value >= byte.MaxValue
-            ? byte.MaxValue
-            : value;
+        get => Read<byte>();
+        set
+        {
+            var current = Read<byte>();
+            Write(value + current >= byte.MaxValue ? byte.MaxValue : value);
+        }
     }
+
+    public bool IsUnmet => Value < 128;
+
+    public bool IsCritical => Value < 64;
+
+    public bool IsBeingSatisfied(Person person) => person.CurrentCommand?.GetType() == _resolutionCommandType;
 
     public void Tick(DateTime gameTime, DateTime lastUpdate)
     {
@@ -36,7 +58,7 @@ public class Need
         var lastTick = lastUpdate;
         var currentTick = gameTime;
         int numberOfIntervalsPassed;
-            
+
         if (lastTick.Date == currentTick.Date)
         {
             // If the last update was on the same day as the current update;
@@ -62,11 +84,13 @@ public class Need
             }
         }
 
-        if (Value + numberOfIntervalsPassed < byte.MaxValue) 
-            Value += (byte) numberOfIntervalsPassed;
-        else 
+        var increaseAmount = numberOfIntervalsPassed * IncreaseScale;
+
+        if (increaseAmount < byte.MaxValue)
+            Value += (byte)increaseAmount;
+        else
             Value = byte.MaxValue;
     }
-    
+
     public override string ToString() => $"[{Name}] {Value}";
 }

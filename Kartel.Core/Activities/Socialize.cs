@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kartel.Attributes;
-using Kartel.Commands;
 using Kartel.Entities;
 
 namespace Kartel.Activities;
