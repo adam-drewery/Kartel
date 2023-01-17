@@ -11,13 +11,13 @@ public class PersonalNeeds : TypedList<Need>
 
     public PersonalNeeds(Person person)
     {
-        _person = person;
         Food = Need.Create("Food", () => new GetFood(person));
         Drink = Need.Create("Drink", 2, () => new GetDrink(person));
         Sleep = Need.Create("Sleep", () => new GoToBed(person));
         Drugs = Need.Create("Drugs", 0, () => new TakeDrugs(person));
         Social = Need.Create("Social", 0.2, () => new Socialize(person));
 
+        _person = person;
         ConfigureEvents();
     }
 

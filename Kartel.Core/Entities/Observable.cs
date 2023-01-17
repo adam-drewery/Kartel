@@ -11,8 +11,8 @@ namespace Kartel.Entities;
 public class Observable
 {
     [DataMember] public Guid Id { get; set; } = Guid.NewGuid();
-    
-    public void Write<T>(T value, [CallerMemberName] string caller = "")
+
+    protected void Write<T>(T value, [CallerMemberName] string caller = "")
     {
         if (Properties.TryGetValue(caller, out var current))
             if (current.Equals(value))
@@ -22,7 +22,7 @@ public class Observable
         PropertyChanged?.Invoke(this, new PropertyChangedArgs(this, caller, value));
     }
 
-    public T Read<T>([CallerMemberName] string caller = "")
+    protected T Read<T>([CallerMemberName] string caller = "")
     {
         if (Properties.TryGetValue(caller, out var result))
             return (T)result;

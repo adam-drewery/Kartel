@@ -140,9 +140,7 @@ public class Person : GameObject
     {
         Needs.Tick(Game.Clock.Time, Game.Clock.LastUpdate);
 
-        var mostCriticalNeed = Needs.Where(need => need.IsCritical)
-            .OrderBy(need => need.Value)
-            .LastOrDefault();
+        var mostCriticalNeed = Needs.Where(need => need.IsCritical).MaxBy(need => need.Value);
 
         if (mostCriticalNeed != null && !mostCriticalNeed.IsBeingSatisfied(this))
         {

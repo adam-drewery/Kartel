@@ -2,8 +2,12 @@
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
-		<LangVersion>10</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="MessagePack" Version="2.4.59" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Kartel.Core\Kartel.Core.csproj" />

@@ -1,6 +1,6 @@
 ﻿using Kartel.Api.Configuration;
 using Kartel.Configuration;
-using Kartel.Json;
+using Kartel.MessagePack;
 using Kartel.ServiceBase.Client;
 using Serilog;
 
@@ -47,9 +47,10 @@ public class Startup
         services.AddNotifiers();
 
         services.AddMvc();
-        services.AddSignalR().AddNewtonsoftJsonProtocol(options =>
+        services.AddSignalR()
+            .AddMessagePackProtocol(options =>
         {
-            options.PayloadSerializerSettings.ContractResolver = new PrivatePropertyContractResolver();
+            options.SerializerOptions = KartelMessagePackSerializerOptions.Standard;
         });
 
         services.AddCors(options =>

@@ -24,7 +24,7 @@
         {
             _person = await People.Subscribe(Session.PlayerId);
             
-            People.PropertyChanged += (s, args) =>
+            People.PropertyChanged += (_, args) =>
             {
                 args.ApplyTo(_person);
                 StateHasChanged();

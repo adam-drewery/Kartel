@@ -1,7 +1,5 @@
 @page "/"
-@using Kartel.Json
 @using Kartel.Web.HubClients
-@using Newtonsoft.Json
 @using Serilog
 @layout _EmptyLayout
 @inject NavigationManager NavigationManager
@@ -58,9 +56,7 @@
         PlayerClient.PropertyChanged += (_, args) =>
         {
             Log.Information("Property updating: {PropertyName}:{Value}", args.PropertyName, args.NewValue);
-            var property = player.GetType().GetProperty(args.PropertyName);
-            if(property == null) throw new MissingMemberException();
-            property.SetValue(player, args.NewValue);
+            args.ApplyTo(player);
         };
 
         await LocalStorage.SetItemAsync("PlayerId", Session.PlayerId);

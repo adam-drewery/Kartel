@@ -1,12 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>Kartel</RootNamespace>
     <LangVersion>10</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>
-    </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="DataSets\cities.uk" />
@@ -19,9 +15,5 @@
     <EmbeddedResource Include="DataSets\dist.all.last" />
     <EmbeddedResource Include="DataSets\dist.female.first" />
     <EmbeddedResource Include="DataSets\dist.male.first" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Serilog" Version="2.12.0" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 </Project>

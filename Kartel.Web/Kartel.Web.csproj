@@ -14,6 +14,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson" Version="7.0.2" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.BrowserConsole" Version="1.0.0" />
     <PackageReference Include="System.Net.Http.Json" Version="7.0.0" />
@@ -35,6 +37,7 @@
     <ProjectReference Include="..\Kartel.Core\Kartel.Core.csproj" />
     <ProjectReference Include="..\Kartel.Json\Kartel.Json.csproj" />
     <ProjectReference Include="..\Kartel.Logging\Kartel.Logging.csproj" />
+    <ProjectReference Include="..\Kartel.MessagePack\Kartel.MessagePack.csproj" />
   </ItemGroup>
 
   <ItemGroup><Compile Remove="Template\**" /></ItemGroup>

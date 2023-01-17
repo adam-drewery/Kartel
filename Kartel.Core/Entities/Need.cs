@@ -17,9 +17,7 @@ public class Need : Observable
         where TCommand : Command => 
         Create(name, 1, resolution);
 
-    public Need() { }
-    
-    private Need(string name, double increaseScale, Func<Command> resolution, Type resolutionCommandType)
+    public Need(string name, double increaseScale, Func<Command> resolution, Type resolutionCommandType)
     {
         Name = name;
         IncreaseScale = increaseScale;

@@ -11,7 +11,7 @@ public class GameCollection<T> : ICollection<T> where T : GameObject
 {
     private readonly Game _game;
     private readonly ObservableCollection<T> _items = new();
-        
+    
     internal GameCollection(Game game)
     {
         _game = game;

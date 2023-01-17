@@ -29,12 +29,10 @@ public class ReverseGeocoder : Endpoint<Location, Location>
 
 		var response = await routeRequest.Execute();
 
-		var bingLocation = response.ResourceSets.FirstOrDefault()
+		var bingLocation = (response.ResourceSets.FirstOrDefault()
 			?.Resources
 			?.OfType<BingMapsRESTToolkit.Location>()
-			.Where(l => l.ConfidenceLevelType != 0)
-			.OrderBy(l => l.ConfidenceLevelType)
-			.FirstOrDefault();
+			.Where(l => l.ConfidenceLevelType != 0)).MinBy(l => l.ConfidenceLevelType);
 
 		if (bingLocation == null)
 			throw new InvalidDataException("No details returned.");
