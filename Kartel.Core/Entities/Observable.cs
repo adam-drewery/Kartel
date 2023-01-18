@@ -35,6 +35,11 @@ public class Observable
         PropertyChanged?.Invoke(this, new PropertyChangedArgs(this, caller, value));
     }
     
+    protected void OnPropertyChanged(string caller, object value, QueueChangeType queueChangeType)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedArgs(this, caller, value){QueueChangeType = queueChangeType});
+    }
+    
     public readonly IDictionary<string, object> Properties = new ConcurrentDictionary<string, object>();
 		
     public event EventHandler<PropertyChangedArgs> PropertyChanged;

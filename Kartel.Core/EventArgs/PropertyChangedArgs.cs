@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -6,21 +8,25 @@ using Kartel.Entities;
 
 namespace Kartel.EventArgs;
 
+public enum QueueChangeType
+{
+	Add,
+	Remove,
+	Clear
+}
+
 public class PropertyChangedArgs
 {
 	public PropertyChangedArgs(Observable source, string propertyName, object newValue)
-		: this(source.Id, propertyName, newValue)
-	{
-		Source = source;
-	}
-		
+		: this(source.Id, propertyName, newValue) => Source = source;
+
 	public PropertyChangedArgs(Guid sourceId, string propertyName, object newValue)
 	{
 		SourceId = sourceId;
 		PropertyName = propertyName;
 		NewValue = newValue;
 	}
-		
+	
 	public Observable Source { get; }
 		
 	public Guid SourceId { get; }
@@ -28,6 +34,8 @@ public class PropertyChangedArgs
 	public string PropertyName { get; }
 
 	public object NewValue { get; }
+	
+	public QueueChangeType QueueChangeType { get; set; } 
 
 	public void ApplyTo(object target)
 	{
@@ -55,6 +63,31 @@ public class PropertyChangedArgs
 
 		if (property == null)
 			throw new MissingMemberException($"Failed to find property with name {PropertyName} on type {target}");
+		
+		if (property.PropertyType.IsAssignableTo(typeof(ObservableQueue)))
+		{
+			var queue = (ObservableQueue)property.GetValue(target);
+
+			if (queue == null)
+				throw new MissingMemberException($"Failed to find property of type {typeof(ObservableQueue)} with name {PropertyName}");
+
+			switch (QueueChangeType)
+			{
+				case QueueChangeType.Add:
+					queue.EnqueueObject(NewValue);
+					break;
+				case QueueChangeType.Remove:
+					queue.DequeueObject();
+					break;
+				case QueueChangeType.Clear:
+					queue.Clear();
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+			
+			return;
+		}
 		
 		property.SetValue(target, NewValue);
 	}

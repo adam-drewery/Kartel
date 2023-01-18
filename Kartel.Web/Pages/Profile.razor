@@ -72,7 +72,7 @@
                                     @_person
                                 </h2>
                                 <small>
-                                    Hanging out at @_person.Location
+                                    @(_person.CurrentCommand == null ? "Hanging out" : _person.CurrentCommand.Name.PresentTense) at @_person.Location
                                 </small>
                             </div>
                         </div>

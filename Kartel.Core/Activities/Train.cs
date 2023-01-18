@@ -1,8 +1,10 @@
 using System;
+using Kartel.Attributes;
 using Kartel.Entities;
 
 namespace Kartel.Activities;
 
+[Verb("Train", "Training", "Trained")]
 public class Train : Activity
 {
 	public Train(Person actor, Skill skill) : base(actor) => _skill = skill;

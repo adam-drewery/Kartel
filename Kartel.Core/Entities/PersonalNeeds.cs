@@ -7,6 +7,7 @@ namespace Kartel.Entities;
 
 public class PersonalNeeds : TypedList<Need>
 {
+    private readonly Random _random = new();
     private readonly Person _person;
 
     public PersonalNeeds(Person person)
@@ -18,6 +19,11 @@ public class PersonalNeeds : TypedList<Need>
         Social = Need.Create("Social", 0.2, () => new Socialize(person));
 
         _person = person;
+        
+        Food.Value = (byte)_random.Next(0, 256);
+        Drink.Value = (byte)_random.Next(0, 256);
+        Sleep.Value = (byte)_random.Next(0, 256);
+        
         ConfigureEvents();
     }
 

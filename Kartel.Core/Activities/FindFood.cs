@@ -1,9 +1,11 @@
 using System;
+using Kartel.Attributes;
 using Kartel.Entities;
 using Kartel.Environment.Topography;
 
 namespace Kartel.Activities;
 
+[Verb("Find something to eat", "Finding something to eat", "Found something to eat")]
 public class FindFood : Activity
 {
     public Location Location { get; private set; }

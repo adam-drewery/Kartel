@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Kartel.Activities;
+using Kartel.Attributes;
 using Kartel.Entities;
 
 namespace Kartel.Commands;
 
-public abstract class Command
+[Verb("Hang out", "Hanging out", "Hung out")]
+public class Command
 {
     protected Game Game { get; }
 
@@ -18,22 +20,24 @@ public abstract class Command
         
     //public virtual DateTime EndTime { get; set; } = DateTime.MaxValue;
 
-    public Activity CurrentTask => Activities.Any() ? Activities.Peek() : default;
+    public Activity CurrentActivity => Activities.Any() ? Activities.Peek() : default;
         
     public Queue<Activity> Activities { get; } = new();
         
     public DateTime UpdatedTime { get; private set; }
-        
-    protected Command() { }
-            
-    protected Command(Person actor)
+
+    public Command()
     {
-        Name = new CommandName(this);
+        Name = new VerbName(this);
+    }
+
+    public Command(Person actor) : this()
+    {
         Game = actor.Game;
         Actor = actor;
     }
         
-    public CommandName Name { get; }
+    public VerbName Name { get; set; }
         
     protected DateTime Now => Game.Clock.Time;
         
@@ -44,7 +48,6 @@ public abstract class Command
         // The last update time is the start time, so update calculations
         // calculate from the activity start time and not initialization time.
         StartTime = UpdatedTime = startTime;
-        Update();
     }
 
     public void Cancel()
@@ -63,24 +66,18 @@ public abstract class Command
     public void Update()
     {
         if (StartTime == default) Start(Now);
-        else if (!Activities.Any()) return;
-        else
+        
+        if (CurrentActivity != null)
         {
-            CurrentTask.Update();
+            CurrentActivity.Update();
                 
-            while(CurrentTask.IsComplete)
-            {
+            if (CurrentActivity.IsComplete) 
                 Activities.Dequeue();
-                if (!Activities.Any())
-                {
-                    EndTime = Now;
-                    break;
-                }
-
-                CurrentTask.Update();
-            }
         }
-
+        
         UpdatedTime = Now;
+        
+        if (!Activities.Any()) 
+            EndTime = Now;
     }
 }

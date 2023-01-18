@@ -1,5 +1,7 @@
 ﻿using System;
-using System.Timers;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Kartel;
 
@@ -7,29 +9,27 @@ public class Clock : IClock
 {
     private readonly Game _game;
     private DateTime _lastUpdate;
-    private readonly Timer _timer = new();
+    private Task _task;
+    private readonly CancellationTokenSource _cancellationToken = new();
     private TimeSpan _sinceLastUpdate;
+    private readonly Stopwatch _stopwatch = new();
 
     public bool Started { get; private set; }
 
     public Clock(Game game)
     {
         _game = game;
-        _timer.Elapsed += (_, _) => OnTick();
     }
 
-    public double Interval
-    {
-        get => _timer.Interval;
-        set => _timer.Interval = value;
-    }
-        
+    /// <summary>Number of milliseconds per tick</summary>
+    public short Interval { get; set; }
+
     /// <summary>The current game-time.</summary>
     public DateTime Time { get; private set; } = DateTime.UtcNow;
         
     /// <summary>Amount of game-time since the last tick.</summary>
     public TimeSpan Delta { get; private set; } = TimeSpan.Zero;
-
+    
     public DateTime LastUpdate { get; set; }
 
     public void UpdateTime()
@@ -45,15 +45,9 @@ public class Clock : IClock
 
     public event EventHandler Tick;
 
+    /// <summary>The actual number of milliseconds per tick</summary>
     public double TickSpeed => _sinceLastUpdate.TotalMilliseconds; 
         
-    /// <summary>Specifies the number of milliseconds per tick.</summary>
-    public double MinimumTickSpeed
-    {
-        get => _timer.Interval;
-        set => _timer.Interval = value;
-    }
-
     /// <summary>Modifies the speed of the game when set to a value other than 1.</summary>
     public float SpeedFactor { get; set; } = 1;
 
@@ -72,14 +66,26 @@ public class Clock : IClock
         // will think the game was never stopped. 
         _lastUpdate = DateTime.UtcNow;
         UpdateTime();
-        _timer.Start();
+        
+        _task = Task.Run(async () =>
+        {
+            while(!_cancellationToken.IsCancellationRequested)
+            {
+                _stopwatch.Restart();
+                OnTick();
+
+                var delayTime = Interval - (int)_stopwatch.ElapsedMilliseconds;
+                if (delayTime > 0)
+                    await Task.Delay(delayTime);
+            }
+
+            _cancellationToken.TryReset();
+        });
     }
 
     public void Stop()
     {
-        _timer.Stop();
         Started = false;
+        _cancellationToken.Cancel();
     }
-
-    public bool Enabled => _timer.Enabled;
 }

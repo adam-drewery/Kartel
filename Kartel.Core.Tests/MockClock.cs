@@ -6,7 +6,7 @@ public class MockClock : IClock
 
 	public bool Started { get; private set; }
 
-	public double Interval { get; set; }
+	public short Interval { get; set; }
 
 	public DateTime Time { get; private set; } = new(2000, 01, 01);
 

@@ -8,6 +8,7 @@ using Kartel.Entities.Items.Containers;
 using Kartel.Entities.Items.MeleeWeapons;
 using Kartel.Environment;
 using Kartel.Environment.Topography;
+using Kartel.EventArgs;
 using Kartel.Extensions;
 using Kartel.Units.Currencies;
 
@@ -54,6 +55,12 @@ public class Person : GameObject
         {
             OnPropertyChanged($"{nameof(Needs)}." + args.PropertyName, args.NewValue);
         };
+        
+        
+        //Commands.ItemDequeued += (_, _) => OnPropertyChanged(nameof(CurrentCommand), CurrentCommand);
+        Commands.ItemEnqueued += (_, args) => OnPropertyChanged(nameof(Commands), args.Item, QueueChangeType.Add);
+        Commands.ItemDequeued += (_, args) => OnPropertyChanged(nameof(Commands), args.Item, QueueChangeType.Remove);
+        Commands.Cleared += (_, _) => OnPropertyChanged(nameof(Commands), null, QueueChangeType.Clear);
     }
     
     public CurrencyQuantity Money
@@ -125,7 +132,7 @@ public class Person : GameObject
         
     public ICollection<Building> Estate { get; } = new HashSet<Building>();
 
-    public Queue<Command> Commands { get; } = new();
+    public ObservableQueue<Command> Commands { get; } = new();
 
     public void Meet(Person person)
     {
@@ -147,25 +154,22 @@ public class Person : GameObject
             CurrentCommand?.Cancel();
             Commands.Clear();
             Commands.Enqueue(mostCriticalNeed.Resolution());
+            Console.WriteLine("Fulfilling need " + mostCriticalNeed.Name);
         }
 
-        if (CurrentCommand == null) return;
-        
-        CurrentCommand.Update();
-        
-        while (CurrentCommand is { Complete: true })
+        if (CurrentCommand != null)
         {
-            var completedCommand = Commands.Dequeue();
-            
-            Console.WriteLine("{0} completing command {1}", this, completedCommand.GetType().Name);
-            var previousEndTime = completedCommand.EndTime;
-            if (Commands.Any()) break;
-                
             CurrentCommand.Update();
 
-            if (!CurrentCommand.Complete) return;
+            if (CurrentCommand.Complete)
+            {
+                var completedCommand = Commands.Dequeue();
 
-            CurrentCommand?.Start(previousEndTime);
+                Console.WriteLine("{0} completing command {1}", this, completedCommand.GetType().Name);
+                var previousEndTime = completedCommand.EndTime;
+                if (CurrentCommand == null) return;
+                CurrentCommand.Start(previousEndTime);
+            }
         }
     }
 

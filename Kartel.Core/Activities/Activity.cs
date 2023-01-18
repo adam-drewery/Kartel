@@ -6,12 +6,11 @@ namespace Kartel.Activities;
 
 public abstract class Activity
 {
-	protected Activity() { }
-		
 	protected Activity(Person actor)
 	{
 		Actor = actor;
 		Game = actor.Game;
+		Name = new VerbName(this);
 	}
 
 	public void Start(DateTime startTime)
@@ -21,9 +20,11 @@ public abstract class Activity
 		StartTime = UpdatedTime = startTime;
 		Update();
 	}
-        
+	
 	protected Game Game { get; }
 
+	public VerbName Name { get; }
+	
 	public DateTime StartTime { get; private set; }
         
 	public bool Started => StartTime != default && StartTime <= Now;
@@ -45,7 +46,7 @@ public abstract class Activity
 	public void Complete() => EndTime = Now;
 
 	protected abstract void Update(TimeSpan sinceLastUpdate);
-        
+	
 	public void Update()
 	{
 		if (StartTime == default) Start(Now);                

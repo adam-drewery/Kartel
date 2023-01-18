@@ -11,7 +11,7 @@ public class Socialize : Activity
     public Socialize(Person actor) : base(actor) { }
 
     private Task<Person> _personTask;
-        
+    
     protected override void Update(TimeSpan sinceLastUpdate)
     {
         if (_personTask != null)
@@ -21,7 +21,8 @@ public class Socialize : Activity
                 
             else if (_personTask.IsCompleted)
                 Actor.Meet(_personTask.Result);
-                
+
+            Actor.Needs.Social.Value = 0;
             Complete();
         }
         else

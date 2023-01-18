@@ -1,17 +1,31 @@
 using System;
+using System.Linq;
+using Kartel.Attributes;
 using Kartel.Entities;
 
 namespace Kartel.Activities;
 
+[Verb("Eat food", "Eating food", "Ate food")]
 public class EatFood : Activity
 {
-    public sealed override DateTime EndTime { get; set; }
 
-    public EatFood(Person actor) : base(actor)
+    public EatFood(Person actor) : base(actor) { }
+
+    protected override void Update(TimeSpan sinceLastUpdate)
     {
-        // takes 20 minutes to eat stuff
-        EndTime = StartTime.AddMinutes(20);
-    }
+        var intervals = Intervals
+            .FromMilliseconds(5)
+            .ForRange(Game.Clock.Time - sinceLastUpdate, Game.Clock.Time)
+            .Count();
 
-    protected override void Update(TimeSpan sinceLastUpdate) { }
+        var need = Actor.Needs.Food;
+        
+        if (need.Value - intervals > byte.MinValue)
+            need.Value -= (byte)intervals;
+        else
+            need.Value = byte.MinValue;
+
+        if (need.Value == byte.MinValue)
+            Complete();
+    }
 }

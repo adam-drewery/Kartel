@@ -1,16 +1,31 @@
 using System;
+using System.Linq;
+using Kartel.Attributes;
 using Kartel.Entities;
 
 namespace Kartel.Activities;
 
+[Verb("Take some drugs", "Taking drugs", "Took some drugs")]
 public class TakeDrugs : Activity
 {
-    public sealed override DateTime EndTime { get; set; }
 
-    public TakeDrugs(Person actor) : base(actor)
+    public TakeDrugs(Person actor) : base(actor) { }
+
+    protected override void Update(TimeSpan sinceLastUpdate)
     {
-        EndTime = StartTime.AddMinutes(10);
-    }
+        var intervals = Intervals
+            .FromSeconds(1)
+            .ForRange(Game.Clock.Time - sinceLastUpdate, Game.Clock.Time)
+            .Count();
+        
+        var need = Actor.Needs.Drugs;
+        
+        if (need.Value - intervals > byte.MinValue)
+            need.Value -= (byte)intervals;
+        else
+            need.Value = byte.MinValue;
 
-    protected override void Update(TimeSpan sinceLastUpdate) { }
+        if (need.Value == byte.MinValue)
+            Complete();
+    }
 }

@@ -1,3 +1,4 @@
+using Kartel.Commands;
 using Kartel.Entities;
 using Kartel.Environment.Topography;
 using Kartel.Units.Currencies;
@@ -25,7 +26,18 @@ public class PersonFormatter : IMessagePackFormatter<Person>
         writer.Write(person.Location.Latitude);
         writer.Write(person.Location.Longitude);
         writer.Write(person.Location.Address.Value);
-
+        
+        writer.WriteArrayHeader(person.Commands.Count);
+        
+        foreach (var command in person.Commands)
+        {
+            writer.Write(command.Name.PresentTense);
+            writer.Write(command.Name.PastTense);
+            writer.Write(command.Name.FutureTense);
+            writer.Write(command.EndTime);
+            writer.Write(command.StartTime);
+        }
+        
         writer.WriteArrayHeader(person.Needs.Count());
 
         foreach (var need in person.Needs)
@@ -52,46 +64,66 @@ public class PersonFormatter : IMessagePackFormatter<Person>
     
     public static T Populate<T>(ref MessagePackReader reader, T person, MessagePackSerializerOptions options) where T : Person
     {
-        if (reader.TryReadNil())
+        try
         {
-            return null;
+            if (reader.TryReadNil())
+            {
+                return null;
+            }
+
+            options.Security.DepthStep(ref reader);
+
+            person.Id = Guid.Parse(reader.ReadString());
+            person.Health = reader.ReadByte();
+            person.Surname = reader.ReadString();
+            person.FirstName = reader.ReadString();
+            person.Money = new CurrencyQuantity(
+                Currency.WithName(reader.ReadString()),
+                (decimal)reader.ReadDouble());
+
+            person.Location = new Location(reader.ReadDouble(), reader.ReadDouble())
+            {
+                Address = { Value = reader.ReadString() }
+            };
+
+            var count = reader.ReadArrayHeader();
+            for (var i = 0; i < count; i++)
+            {
+                var command = new Command
+                {
+                    Name = new VerbName(reader.ReadString(), reader.ReadString(), reader.ReadString())
+                };
+
+                Property.SetPrivate(command, reader.ReadDateTime(), c => c.EndTime);
+                Property.SetPrivate(command, reader.ReadDateTime(), c => c.StartTime);
+
+                person.Commands.Enqueue(command);
+            }
+
+            count = reader.ReadArrayHeader();
+            for (var i = 0; i < count; i++)
+            {
+                var name = reader.ReadString();
+                var target = person.Needs.Single(n => n.Name == name); // todo: slow
+                target.IncreaseScale = (float)reader.ReadDouble();
+                target.Value = reader.ReadByte();
+            }
+
+            count = reader.ReadArrayHeader();
+            for (var i = 0; i < count; i++)
+            {
+                var name = reader.ReadString();
+                var target = person.Skills.Single(n => n.Name == name); // todo: slow
+                target.Value = reader.ReadByte();
+            }
+
+            reader.Depth--;
+            return person;
         }
-
-        options.Security.DepthStep(ref reader);
-
-        person.Id = Guid.Parse(reader.ReadString());
-        person.Health = reader.ReadByte();
-        person.Surname = reader.ReadString();
-        person.FirstName = reader.ReadString();
-        person.Money = new CurrencyQuantity(
-            Currency.WithName(reader.ReadString()), 
-            (decimal)reader.ReadDouble());
-        
-        person.Location = new Location(reader.ReadDouble(), reader.ReadDouble())
+        catch (Exception e)
         {
-            Address = { Value = reader.ReadString() }
-        };
-
-        var count = reader.ReadArrayHeader();
-
-        for (var i = 0; i < count; i++)
-        {
-            var name = reader.ReadString();
-            var target = person.Needs.Single(n => n.Name == name); // todo: slow
-            target.IncreaseScale = (float)reader.ReadDouble();
-            target.Value = reader.ReadByte();
+            Console.WriteLine(e);
+            throw;
         }
-
-        count = reader.ReadArrayHeader();
-
-        for (var i = 0; i < count; i++)
-        {
-            var name = reader.ReadString();
-            var target = person.Skills.Single(n => n.Name == name); // todo: slow
-            target.Value = reader.ReadByte();
-        }
-
-        reader.Depth--;
-        return person;
     }
 }
