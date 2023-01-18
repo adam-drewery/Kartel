@@ -1,5 +1,5 @@
 # Kartel
-Crime simulation strategy game written using a microservices architecture using: 
+Crime simulation strategy game which uses real-world data, written using a microservices architecture using: 
 - ASP.NET Core
 - Blazor Webassembly
 - NetMQ
