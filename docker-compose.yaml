@@ -3,7 +3,7 @@ services:
   geocoding:
     build:
       context: .
-      dockerfile: Kartel.Geocoding.Bing/Dockerfile
+      dockerfile: services/Kartel.Geocoding.Bing/Dockerfile
     ports:
       - 5557:5557
       - 5558:5558
@@ -11,21 +11,21 @@ services:
   logistics:
     build:
       context: .
-      dockerfile: Kartel.Logistics.Bing/Dockerfile
+      dockerfile: services/Kartel.Logistics.Bing/Dockerfile
     ports:
       - 5556:5556
 
   property_market:
     build:
       context: .
-      dockerfile: Kartel.PropertyMarket.ZooplaWeb/Dockerfile
+      dockerfile: services/Kartel.PropertyMarket.ZooplaWeb/Dockerfile
     ports:
       - 5555:5555
 
   api:
     build:
       context: .
-      dockerfile: Kartel.Api/Dockerfile
+      dockerfile: web/Kartel.Api/Dockerfile
     ports:
       - 6840:6840
       - 6841:6841
@@ -33,7 +33,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: Kartel.Web/Dockerfile
+      dockerfile: web/Kartel.Web/Dockerfile
     ports:
       - 8080:80
 
