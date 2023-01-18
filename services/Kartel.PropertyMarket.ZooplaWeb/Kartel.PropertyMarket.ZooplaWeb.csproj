@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>Kartel.PropertyMarket</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\shared\Kartel.Configuration\Kartel.Configuration.csproj" />
+	  <ProjectReference Include="..\..\shared\Kartel.Core\Kartel.Core.csproj" />
+	  <ProjectReference Include="..\..\shared\Kartel.Logging\Kartel.Logging.csproj" />
+	  <ProjectReference Include="..\..\shared\Kartel.ServiceBase\Kartel.ServiceBase.csproj" />
+	  <ProjectReference Include="..\..\shared\Zoopla.Scraping\Zoopla.Scraping.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Audacia.Random" Version="3.1.21076.2" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.2" />
+	  <PackageReference Include="Serilog" Version="2.12.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="..\..\shared\Kartel.Configuration\appsettings.docker.json">
+	    <Link>appsettings.docker.json</Link>
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="..\..\shared\Kartel.Configuration\appsettings.json">
+	    <Link>appsettings.json</Link>
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+</Project>
