@@ -1,4 +1,7 @@
 # Kartel
+
+[![.NET](https://github.com/adam-drewery/Kartel/actions/workflows/dotnet.yml/badge.svg)](https://github.com/adam-drewery/Kartel/actions/workflows/dotnet.yml)
+
 Crime simulation strategy game which uses real-world data, written using a microservices architecture using: 
 - ASP.NET Core
 - Blazor Webassembly
