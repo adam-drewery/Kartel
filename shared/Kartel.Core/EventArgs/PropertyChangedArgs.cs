@@ -1,19 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Kartel.Entities;
 
 namespace Kartel.EventArgs;
-
-public enum QueueChangeType
-{
-	Add,
-	Remove,
-	Clear
-}
 
 public class PropertyChangedArgs
 {

@@ -16,7 +16,7 @@ public class PersonTests
 			var game = new Game { Clock = clock };
 			clock.Game = game;
 				
-			var person = new Person(new Building()) { Needs = { Sleep = { Value = 0 } } };
+			var person = new Person(new House()) { Needs = { Sleep = { Value = 0 } } };
 			game.Characters.Add(person);
 
 			var oldFatigue = person.Needs.Sleep.Value;
@@ -33,7 +33,7 @@ public class PersonTests
 			var game = new Game { Clock = clock };
 			clock.Game = game;
 				
-			var person = new Person(new Building()) { Needs = { Sleep = { Value = 0 } } };
+			var person = new Person(new House()) { Needs = { Sleep = { Value = 0 } } };
 			game.Characters.Add(person);
 
 			var oldFatigue = person.Needs.Sleep.Value;

@@ -1,5 +1,6 @@
 using Audacia.Random;
 using Kartel.Environment;
+using Kartel.Extensions;
 using Serilog;
 using Zoopla.Scraping;
 
@@ -109,16 +110,26 @@ public class ListingCollector : System.Timers.Timer
 
                 var buildings = listings
                     .Select(listing =>
-                        new Building(listing.Latitude, listing.Longitude)
+                    {
+                        var house =  new House(listing.Latitude, listing.Longitude)
                         {
                             Address = { Value = listing.Address.Value },
-                            Bathrooms = listing.Bathrooms,
-                            Bedrooms = listing.Bedrooms,
                             Longitude = listing.Longitude,
                             ListingPrice = listing.Price,
-                            LivingRooms = listing.LivingRooms,
                             ExternalId = listing.Id
-                        })
+                        };
+
+                        foreach (var _ in Enumerable.Range(0, listing.Bathrooms))
+                            house.Bathrooms.Add(new Room(500.CubicFeet()));
+
+                        foreach (var _ in Enumerable.Range(0, listing.Bedrooms))
+                            house.Bedrooms.Add(new Room(500.CubicFeet()));
+                        
+                        foreach (var _ in Enumerable.Range(0, listing.LivingRooms))
+                            house.LivingRooms.Add(new Room(500.CubicFeet()));
+
+                        return house;
+                    })
                     .ToList();
 
                 await using var db = new ZooplaDbContext();

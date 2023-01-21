@@ -7,7 +7,7 @@ using Kartel.Environment.Topography;
 namespace Kartel.Activities;
 
 [Verb("Move to location", "Moving to location", "Moved to location")]
-public class MoveToLocation : Activity
+public class Move : Activity
 {
     private readonly Person _actor;
     private Task<Route> _directionsTask;
@@ -16,7 +16,7 @@ public class MoveToLocation : Activity
 
     public Route Route { get; private set; }
 
-    public MoveToLocation(Person actor, Func<Location> destination) : base(actor)
+    public Move(Person actor, Func<Location> destination) : base(actor)
     {
         _actor = actor;
         Destination = destination;

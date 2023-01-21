@@ -13,7 +13,7 @@ public static class TypeExtensions
         }
         var genericArguments = type.GetGenericArguments();
         var typeDefinition = type.Name;
-        var unmangledName = typeDefinition.Substring(0, typeDefinition.IndexOf("`"));
+        var unmangledName = typeDefinition.Substring(0, typeDefinition.IndexOf("`", StringComparison.Ordinal));
         return $"{unmangledName}<{string.Join(",", genericArguments.Select(PrettyName))}>";
     }
 }

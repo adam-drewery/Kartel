@@ -18,6 +18,8 @@ public class ServiceContainer
     }
         
     public IPropertyMarketClient PropertyMarket { get; set; }
+    
+    public ILocaleClient Locale { get; set; }
         
     public ILogisticsClient Directions { get; set; }
         

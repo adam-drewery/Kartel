@@ -7,7 +7,6 @@ namespace Kartel.Entities;
 public class Need : Observable
 {
     private readonly Type _resolutionCommandType;
-    private static readonly Random Random = new();
 
     public static Need Create<TCommand>(string name, double increaseScale, Func<TCommand> resolution)
         where TCommand : Command => new(name, increaseScale, resolution, typeof(TCommand));

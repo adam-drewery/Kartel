@@ -13,7 +13,10 @@ public class PropertyMarketClient : IPropertyMarketClient, IDisposable
 		_socket = new RequestSocket(settings.PropertyMarket.Client);
 	}
 	
-	public Task<Building> NewHouse(int price = 250000) => _socket.Request<Building>();
+	public Task<House> NewHouse(int price = 250000)
+	{
+		return _socket.Request<House>();
+	}
 
 	private readonly NetMQSocket _socket;
 

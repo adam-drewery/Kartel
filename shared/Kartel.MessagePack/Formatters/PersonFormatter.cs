@@ -73,7 +73,8 @@ public class PersonFormatter : IMessagePackFormatter<Person>
 
             options.Security.DepthStep(ref reader);
 
-            person.Id = Guid.Parse(reader.ReadString());
+            Property.SetPrivate(person, Guid.Parse(reader.ReadString()), p => p.Id);
+            
             person.Health = reader.ReadByte();
             person.Surname = reader.ReadString();
             person.FirstName = reader.ReadString();
@@ -89,7 +90,7 @@ public class PersonFormatter : IMessagePackFormatter<Person>
             var count = reader.ReadArrayHeader();
             for (var i = 0; i < count; i++)
             {
-                var command = new Command
+                var command = new Command(new Person())
                 {
                     Name = new VerbName(reader.ReadString(), reader.ReadString(), reader.ReadString())
                 };

@@ -1,15 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Kartel.Units.Volumes;
 using Kartel.Units.Weights;
 
 namespace Kartel.Entities.Items.Containers;
 
-public class Container : Item, ICollection<IContainable>
+public abstract class Container : Item, ICollection<IContainable>
 {
+    protected Container(Volume capacity, double baseWeight)
+    {
+        Capacity = capacity;
+        BaseWeight = baseWeight;
+    }
+
     private readonly ICollection<IContainable> _items = new HashSet<IContainable>();
         
-    public virtual double Capacity { get; }
+    public virtual Volume Capacity { get; }
 
     public virtual double BaseWeight { get; }
 

@@ -1,7 +1,11 @@
 using System;
+using System.Linq;
 using Kartel.Attributes;
 using Kartel.Entities;
+using Kartel.Entities.Items.Containers;
+using Kartel.Entities.Items.Foods;
 using Kartel.Environment.Topography;
+using Kartel.Extensions;
 
 namespace Kartel.Activities;
 
@@ -10,15 +14,29 @@ public class FindFood : Activity
 {
     public Location Location { get; private set; }
 
-    public FindFood(Person actor) : base(actor)
-    {
-    }
+    public FindFood(Person actor) : base(actor) { }
 
     protected override void Update(TimeSpan sinceLastUpdate)
     {
-        // where are the places I might find some food?
-        // todo: expand on this
-        Location = Actor.Home;
-        Complete();
+        // how hungry am i?
+        var hunger = Actor.Needs.Food.Value;
+
+        var food = Actor.Home.Rooms
+            .SelectMany(room => room.Contents)
+            .OfType<Fridge>()
+            .SelectMany(fridge => fridge)
+            .OfType<Food>();
+
+        // i wanna eat 1kg of food
+        if (food.Sum(f => f.Weight) < 1.Kilograms())
+        {
+            
+        }
+
+        if (food != null)
+        {
+            Location = Actor.Home;
+            Complete();
+        }
     }
 }

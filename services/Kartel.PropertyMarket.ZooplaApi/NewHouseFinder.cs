@@ -6,13 +6,13 @@ using Serilog;
 
 namespace Kartel.PropertyMarket;
 
-public class NewHouseFinder : Endpoint<Building>
+public class NewHouseFinder : Endpoint<House>
 {
 	private static readonly Random Random = new();
 
 	protected override Func<ResponseSocket> SocketFactory { get; }
 
-	private Building _building;
+	private House _house;
 	public NewHouseFinder(string address)
 	{
 		SocketFactory = () => new ResponseSocket(address);
@@ -23,18 +23,18 @@ public class NewHouseFinder : Endpoint<Building>
 		await using var db = new ZooplaDbContext();
 		var count = db.Buildings.Count();
 
-		_building = await db.Buildings
+		_house = await db.Buildings
 			.OrderBy(b => b.Id)
 			.Skip(Random.Next(0, count))
 			.FirstOrDefaultAsync();
-
-		if (_building == null)
+		
+		if (_house == null)
 			throw new InvalidDataException("No properties in database.");
 	}
 
-	protected override Task<Building> OnRequest()
+	protected override Task<House> OnRequest()
 	{
-		Log.Information("Sending building: {Address}", _building.Address);
-		return Task.FromResult(_building);
+		Log.Information("Sending house: {Address}", _house.Address);
+		return Task.FromResult(_house);
 	}
 }

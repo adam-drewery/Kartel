@@ -3,6 +3,7 @@ using Kartel.Entities;
 using Kartel.Environment.Topography;
 using Kartel.EventArgs;
 using Kartel.Services;
+using Serilog;
 
 namespace Kartel;
 
@@ -29,10 +30,21 @@ public class Game
 
     public event EventHandler<ErrorEventArgs> Error;
 
-    public void OnHeartbeat()
+    public void OnTick()
     {
-        foreach (var character in Characters) 
-            character.OnTick();
+        foreach (var character in Characters)
+        {
+            try
+            {
+                character.OnTick();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error encountered processing tick for character {Name} ({ID})", 
+                    character.Name,
+                    character.Id);
+            }
+        }
     }
 
     internal virtual void OnError(string message, Exception e)

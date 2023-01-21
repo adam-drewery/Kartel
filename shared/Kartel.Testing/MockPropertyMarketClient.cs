@@ -8,9 +8,9 @@ public class MockPropertyMarketClient : IPropertyMarketClient
 {
     private static readonly Random Random = new();
     
-    public Task<Building> NewHouse(int price = 250000)
+    public Task<House> NewHouse(int price = 250000)
     {
-        return Task.FromResult(new Building
+        return Task.FromResult(new House
         {
             Address =
             {

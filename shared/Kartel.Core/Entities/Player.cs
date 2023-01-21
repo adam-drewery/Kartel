@@ -8,13 +8,10 @@ namespace Kartel.Entities;
 public class Player : Person
 {
     /// <summary>Create an empty new player with a home and location.</summary>
-    public Player(Building home, Location location) : base(home, location)
-    {
-        // todo: pop a bunch of people in the city?
-    }
+    public Player(House home, Location location) : base(home, location) { }
 
     /// <summary>Create an empty new player with a home.</summary>
-    public Player(Building home) : this(home, home) { }
+    public Player(House home) : this(home, home) { }
     
     /// <summary>Create a new player and give them a home and some contacts/associates etc.</summary>
     public new static async Task<Player> New(Game game)

@@ -12,8 +12,6 @@ public class Sleep : Activity
 
     protected override void Update(TimeSpan sinceLastUpdate)
     {
-        
-        
         var intervals = Intervals
             .FromSeconds(113)
             .ForRange(Game.Clock.Time - sinceLastUpdate, Game.Clock.Time)

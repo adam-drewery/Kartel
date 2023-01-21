@@ -9,6 +9,8 @@ public class NetworkSettings : Settings
     public SocketPair Geocoding { get; set; }
 
     public SocketPair ReverseGeocoding { get; set; }
+    
+    public SocketPair Locale { get; set; }
 
     public string SignalrHub { get; set; }
 }

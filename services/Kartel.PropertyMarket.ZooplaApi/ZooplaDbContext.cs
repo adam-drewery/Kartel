@@ -16,12 +16,12 @@ public class ZooplaDbContext : DbContext
 		foreach (var type in typeof(Person).Assembly.GetTypes())
 			modelBuilder.Ignore(type);
 
-		modelBuilder.Entity<Building>().OwnsOne(building => building.Address, builder => { builder.Ignore(x => x.Lines); }).HasKey(b => b.Id);
-		modelBuilder.Entity<Building>().Property(building => building.Latitude);
-		modelBuilder.Entity<Building>().Property(building => building.Longitude);
+		modelBuilder.Entity<House>().OwnsOne(building => building.Address, builder => { builder.Ignore(x => x.Lines); }).HasKey(b => b.Id);
+		modelBuilder.Entity<House>().Property(building => building.Latitude);
+		modelBuilder.Entity<House>().Property(building => building.Longitude);
 
 		base.OnModelCreating(modelBuilder);
 	}
 
-	public DbSet<Building> Buildings { get; set; }
+	public DbSet<House> Buildings { get; set; }
 }

@@ -25,9 +25,9 @@ public class Person : GameObject
         return new Person(home, home);
     }
 
-    public Person(Building home) : this(home, home) { }
+    public Person(House home) : this(home, home) { }
 
-    protected Person(Building home, Location location) : this()
+    protected Person(House home, Location location) : this()
     {
         Location = location;
         Money = Random.Next(10000, 20000).Gbp();
@@ -57,7 +57,6 @@ public class Person : GameObject
         };
         
         
-        //Commands.ItemDequeued += (_, _) => OnPropertyChanged(nameof(CurrentCommand), CurrentCommand);
         Commands.ItemEnqueued += (_, args) => OnPropertyChanged(nameof(Commands), args.Item, QueueChangeType.Add);
         Commands.ItemDequeued += (_, args) => OnPropertyChanged(nameof(Commands), args.Item, QueueChangeType.Remove);
         Commands.Cleared += (_, _) => OnPropertyChanged(nameof(Commands), null, QueueChangeType.Clear);
@@ -103,9 +102,9 @@ public class Person : GameObject
 
     public Inventory Inventory { get; }
     
-    public Building Home
+    public House Home
     {
-        get => Read<Building>();
+        get => Read<House>();
         set => Write(value);
     }
 
@@ -130,7 +129,7 @@ public class Person : GameObject
 
     public IEnumerable<Person> Contacts => Relationships.Select(r => r.Person);
         
-    public ICollection<Building> Estate { get; } = new HashSet<Building>();
+    public ICollection<House> Estate { get; } = new HashSet<House>();
 
     public ObservableQueue<Command> Commands { get; } = new();
 
@@ -154,18 +153,23 @@ public class Person : GameObject
             CurrentCommand?.Cancel();
             Commands.Clear();
             Commands.Enqueue(mostCriticalNeed.Resolution());
-            Console.WriteLine("Fulfilling need " + mostCriticalNeed.Name);
+            
+            Log.Information("{ActorName} ({ActorID}) is fulfilling need {Need}", Name, Id, mostCriticalNeed.Name);
         }
 
         if (CurrentCommand != null)
         {
             CurrentCommand.Update();
 
-            if (CurrentCommand.Complete)
+            if (CurrentCommand.IsComplete)
             {
                 var completedCommand = Commands.Dequeue();
 
-                Console.WriteLine("{0} completing command {1}", this, completedCommand.GetType().Name);
+                Log.Information("{ActorName} ({ActorID}) has completed command {Command}", 
+                    Name, 
+                    Id, 
+                    completedCommand.GetType().Name);
+                
                 var previousEndTime = completedCommand.EndTime;
                 if (CurrentCommand == null) return;
                 CurrentCommand.Start(previousEndTime);

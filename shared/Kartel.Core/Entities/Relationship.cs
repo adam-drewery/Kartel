@@ -6,8 +6,6 @@ namespace Kartel.Entities;
 [DataContract]
 public class Relationship : GameObject
 {
-    public Relationship() { }
-
     [DataMember]
     public Person Person { get; set; }
         

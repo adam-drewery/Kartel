@@ -8,7 +8,6 @@ namespace Kartel.Activities;
 [Verb("Eat food", "Eating food", "Ate food")]
 public class EatFood : Activity
 {
-
     public EatFood(Person actor) : base(actor) { }
 
     protected override void Update(TimeSpan sinceLastUpdate)

@@ -54,7 +54,7 @@ public class Clock : IClock
     private void OnTick()
     {
         UpdateTime();
-        _game.OnHeartbeat();
+        _game.OnTick();
         Tick?.Invoke(_game, System.EventArgs.Empty);
     }
 

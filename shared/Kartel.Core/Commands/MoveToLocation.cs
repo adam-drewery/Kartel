@@ -9,6 +9,6 @@ public class MoveToLocation : Command
 {
 	public MoveToLocation(Person actor, Location location) : base(actor)
 	{
-		Activities.Enqueue(new Activities.MoveToLocation(actor, () => location));
+		Activities.Enqueue(new Activities.Move(actor, () => location));
 	}
 }

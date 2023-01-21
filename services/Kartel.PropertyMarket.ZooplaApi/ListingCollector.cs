@@ -1,5 +1,6 @@
 using Audacia.Random;
 using Kartel.Environment;
+using Kartel.Extensions;
 using Serilog;
 using Zoopla.ApiClient;
 using Timer = System.Timers.Timer;
@@ -132,23 +133,36 @@ public class ListingCollector : Timer
 		}
 
 		var buildings = result
-			.Select(building => new Building(building.Latitude, building.Longitude)
+			.Select(building =>
 			{
-				ListingPrice = Convert.ToInt32(building.PriceChanges.OrderBy(p => p.Date).Last().Price),
-				Bedrooms = building.Bedrooms ?? (short)Random.Next(1, 3),
-				Bathrooms = building.Bathrooms ?? (short)Random.Next(1, 3),
-				Floors = building.Floors ?? (short)Random.Next(1, 3),
-				Address =
+				var house = new House(building.Latitude, building.Longitude)
 				{
-					Lines = new[]
-						{
-							building.StreetName,
-							building.PostTown,
-							building.County,
-							building.Country
-						}
-						.Where(s => !string.IsNullOrWhiteSpace(s))
-				}
+					ListingPrice = Convert.ToInt32(building.PriceChanges.OrderBy(p => p.Date).Last().Price),
+					Floors = building.Floors ?? (short)Random.Next(1, 3),
+					Address =
+					{
+						Lines = new[]
+							{
+								building.StreetName,
+								building.PostTown,
+								building.County,
+								building.Country
+							}
+							.Where(s => !string.IsNullOrWhiteSpace(s))
+					}
+				};
+				
+				foreach (var _ in Enumerable.Range(0, building.Bathrooms ?? Random.Next(0, 3)))
+					house.Bathrooms.Add(new Room(500.CubicFeet()));
+
+				foreach (var _ in Enumerable.Range(0, building.Bedrooms ?? Random.Next(0, 3)))
+					house.Bathrooms.Add(new Room(500.CubicFeet()));
+                        
+				foreach (var _ in Enumerable.Range(0, Random.Next(0, 3)))
+					house.Bathrooms.Add(new Room(500.CubicFeet()));
+				
+				return house;
+
 			}).ToArray();
 
 		await using var db = new ZooplaDbContext();

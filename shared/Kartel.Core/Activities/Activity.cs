@@ -1,11 +1,14 @@
 using System;
 using Kartel.Entities;
 using Kartel.Services;
+using Serilog;
 
 namespace Kartel.Activities;
 
 public abstract class Activity
 {
+	protected ILogger Log { get; } = Serilog.Log.ForContext<Activity>();
+
 	protected Activity(Person actor)
 	{
 		Actor = actor;
@@ -13,7 +16,7 @@ public abstract class Activity
 		Name = new VerbName(this);
 	}
 
-	public void Start(DateTime startTime)
+	private void Start(DateTime startTime)
 	{
 		// The last update time is the start time, so update calculations
 		// calculate from the activity start time and not initialization time.
@@ -37,7 +40,7 @@ public abstract class Activity
         
 	public virtual bool IsComplete => EndTime <= Now;
         
-	public virtual DateTime EndTime { get; set; } = DateTime.MaxValue;
+	public virtual DateTime EndTime { get; private set; } = DateTime.MaxValue;
         
 	protected Person Actor { get; }
         
@@ -49,8 +52,31 @@ public abstract class Activity
 	
 	public void Update()
 	{
-		if (StartTime == default) Start(Now);                
-		else Update(Now - UpdatedTime);
+		if (StartTime != default)
+		{
+			try
+			{
+				Update(Now - UpdatedTime);
+			}
+			catch (Exception e)
+			{
+				Log.Fatal(e, "Activity for {Actor} ({ID}) of type {Activity} threw an exception", 
+					Actor.Name, 
+					Actor.Id, 
+					GetType().Name);
+
+				throw;
+			}
+		}
+		else
+		{
+			Log.Information("{ActorName} ({ActorID}) is {ActivityName}", 
+				Actor.Name, 
+				Actor.Id, 
+				Name.PresentTense.ToLowerInvariant());
+			
+			Start(Now);
+		}
 
 		UpdatedTime = Now;
 	}

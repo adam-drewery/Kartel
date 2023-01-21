@@ -10,7 +10,7 @@ namespace Kartel.Entities;
 [DataContract]
 public class Observable
 {
-    [DataMember] public Guid Id { get; set; } = Guid.NewGuid();
+    [DataMember] public Guid Id { get; } = Guid.NewGuid();
 
     protected void Write<T>(T value, [CallerMemberName] string caller = "")
     {

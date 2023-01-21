@@ -26,7 +26,7 @@ public class MockClock : IClock
 
 	public void InvokeTick()
 	{
-		Game.OnHeartbeat();
+		Game.OnTick();
 		Tick?.Invoke(this, System.EventArgs.Empty);
 	}
 

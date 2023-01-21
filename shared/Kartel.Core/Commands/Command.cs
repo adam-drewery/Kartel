@@ -4,21 +4,22 @@ using System.Linq;
 using Kartel.Activities;
 using Kartel.Attributes;
 using Kartel.Entities;
+using Serilog;
 
 namespace Kartel.Commands;
 
 [Verb("Hang out", "Hanging out", "Hung out")]
 public class Command
 {
+    protected ILogger Log { get; } = Serilog.Log.ForContext<Command>();
+    
     protected Game Game { get; }
 
     protected Person Actor { get; }
 
     public DateTime StartTime { get; private set; }
-        
+    
     public bool Started => StartTime != default && StartTime <= Now;
-        
-    //public virtual DateTime EndTime { get; set; } = DateTime.MaxValue;
 
     public Activity CurrentActivity => Activities.Any() ? Activities.Peek() : default;
         
@@ -26,13 +27,9 @@ public class Command
         
     public DateTime UpdatedTime { get; private set; }
 
-    public Command()
+    public Command(Person actor)
     {
         Name = new VerbName(this);
-    }
-
-    public Command(Person actor) : this()
-    {
         Game = actor.Game;
         Actor = actor;
     }
@@ -41,7 +38,7 @@ public class Command
         
     protected DateTime Now => Game.Clock.Time;
         
-    public bool Complete => Activities.Count == 0;
+    public bool IsComplete => Activities.Count == 0;
 
     public void Start(DateTime startTime)
     {
@@ -69,7 +66,21 @@ public class Command
         
         if (CurrentActivity != null)
         {
-            CurrentActivity.Update();
+            try
+            {
+                CurrentActivity.Update();
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e, "Activity for {Actor} ({ID}) of type {Activity} threw an exception", 
+                    Actor.Name, 
+                    Actor.Id, 
+                    GetType().Name);
+
+                Activities.Clear();
+                EndTime = Now;
+                return;
+            }
                 
             if (CurrentActivity.IsComplete) 
                 Activities.Dequeue();

@@ -19,7 +19,7 @@ public class ReverseGeocoder : Endpoint<Location, Location>
 
 	protected override async Task<Location> Handle(Location location)
 	{
-		Log.Information("Received request to geocode {Location}", location);
+		Log.Information("Received request to geocode {Result}", location);
 
 		var routeRequest = new ReverseGeocodeRequest
 		{

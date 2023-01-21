@@ -1,5 +1,12 @@
 services:
 
+  store_finder:
+    build:
+      context: .
+      dockerfile: services/Kartel.Locale.Bing/Dockerfile
+    ports:
+      - 5559:5559
+  
   geocoding:
     build:
       context: .

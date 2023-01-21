@@ -15,8 +15,8 @@ public abstract class EntityNotifier<THub> : Notifier<THub>, IEntityNotifier whe
 
 	public void OnPropertyChanged(PropertyChangedArgs e)
 	{
-		if (e.SourceId == default) Log.Information("Notifying property {Property} changed for entity of type {EntityType}", e.PropertyName, e.Source.GetType());
-		else Log.Information("Notifying property {Property} changed for entity of type {EntityType} with ID {ID}", e.PropertyName, e.Source.GetType(), e.SourceId);
+		if (e.SourceId == default) Log.Debug("Notifying property {Property} changed for entity of type {EntityType}", e.PropertyName, e.Source.GetType().Name);
+		else Log.Debug("Notifying property {Property} changed for entity of type {EntityType} with ID {ID}", e.PropertyName, e.Source.GetType().Name, e.SourceId);
 		
 		Clients.Group(e.SourceId.ToString())
 			.SendAsync("PropertyChanged", e);

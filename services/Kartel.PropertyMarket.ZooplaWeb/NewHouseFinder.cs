@@ -6,7 +6,7 @@ using Serilog;
 
 namespace Kartel.PropertyMarket;
 
-public class NewHouseFinder : Endpoint<Building>
+public class NewHouseFinder : Endpoint<House>
 {
 	public NewHouseFinder(string address)
 	{
@@ -17,7 +17,7 @@ public class NewHouseFinder : Endpoint<Building>
 
 	protected override Func<ResponseSocket> SocketFactory { get; }
 
-	private Building _building;
+	private House _house;
 
 	protected override async Task OnWaiting()
 	{
@@ -27,22 +27,22 @@ public class NewHouseFinder : Endpoint<Building>
 			await using var db = new ZooplaDbContext();
 			var count = db.Buildings.Count();
 
-			_building = await db.Buildings
+			_house = await db.Buildings
 				.OrderBy(b => b.Id)
 				.Skip(Random.Next(0, count))
 				.FirstOrDefaultAsync();
 
-			if (_building != null) return;
+			if (_house != null) return;
 
 			await Task.Delay(waitInterval);
 			Log.Warning("No properties in database. Waiting {Interval} ms", waitInterval);
 		} 
-		while (_building == null);
+		while (_house == null);
 	}
 
-	protected override Task<Building> OnRequest()
+	protected override Task<House> OnRequest()
 	{
-		Log.Information("Sending building: {Address}", _building.Address);
-		return Task.FromResult(_building);
+		Log.Information("Sending house: {Address}", _house.Address);
+		return Task.FromResult(_house);
 	}
 }

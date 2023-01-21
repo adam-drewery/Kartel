@@ -12,11 +12,11 @@ public class PersonalNeeds : TypedList<Need>
 
     public PersonalNeeds(Person person)
     {
-        Food = Need.Create("Food", () => new GetFood(person));
         Drink = Need.Create("Drink", 2, () => new GetDrink(person));
         Sleep = Need.Create("Sleep", () => new GoToBed(person));
         Drugs = Need.Create("Drugs", 0, () => new TakeDrugs(person));
         Social = Need.Create("Social", 0.2, () => new Socialize(person));
+        Food = Need.Create("Food", () => new Eat(person));
 
         _person = person;
         
@@ -39,7 +39,7 @@ public class PersonalNeeds : TypedList<Need>
             var need = (Need)property.GetValue(this);
             need.PropertyChanged += (sender, args) =>
             {
-                OnPropertyChanged((Need)sender, $"{property.Name}.{args.PropertyName}", args.NewValue);
+                OnPropertyChanged($"{property.Name}.{args.PropertyName}", args.NewValue);
             };
         }
     }
@@ -60,7 +60,7 @@ public class PersonalNeeds : TypedList<Need>
             need.Tick(gameTime, lastUpdate);
     }
 
-    private void OnPropertyChanged(Observable sender, string propertyName, object value)
+    private void OnPropertyChanged(string propertyName, object value)
     {
         // Set the person as the sender as they're the object the subscription happens on
         PropertyChanged?.Invoke(this, new PropertyChangedArgs(_person, propertyName, value));

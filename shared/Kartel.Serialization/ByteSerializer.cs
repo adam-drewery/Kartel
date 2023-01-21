@@ -1,12 +1,15 @@
+using Kartel.MessagePack;
 using MessagePack;
 
 namespace Kartel.Serialization;
 
 public static class ByteSerializer
 {
-	private static readonly MessagePackSerializerOptions Options = MessagePack.Resolvers.ContractlessStandardResolver.Options;
+	public static byte[] Serialize(object source) => MessagePackSerializer.Serialize(
+		source, 
+		KartelMessagePackSerializerOptions.Standard);
 
-	public static byte[] Serialize(object source) => MessagePackSerializer.Serialize(source, Options);
-
-	public static T Deserialize<T>(byte[] bytes) => MessagePackSerializer.Deserialize<T>(bytes, Options);
+	public static T Deserialize<T>(byte[] bytes) => MessagePackSerializer.Deserialize<T>(
+		bytes, 
+		KartelMessagePackSerializerOptions.Standard);
 }

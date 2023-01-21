@@ -5,5 +5,5 @@ namespace Kartel.Services;
 
 public interface IPropertyMarketClient
 {
-    Task<Building> NewHouse(int price = 250000);
+    Task<House> NewHouse(int price = 250000);
 }

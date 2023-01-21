@@ -10,9 +10,7 @@ public class FindDrink : Activity
 {
     public Location Location { get; private set; }
 
-    public FindDrink(Person actor) : base(actor)
-    {
-    }
+    public FindDrink(Person actor) : base(actor) { }
 
     protected override void Update(TimeSpan sinceLastUpdate)
     {

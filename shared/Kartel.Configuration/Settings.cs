@@ -11,6 +11,6 @@ public abstract class Settings
             : "appsettings.json";
 
         var config = new ConfigurationBuilder().AddJsonFile(fileName).Build();
-        return config.GetRequiredSection("Network").Get<T>();
+        return config.GetRequiredSection(typeof(T).Name.Replace("Settings", string.Empty)).Get<T>();
     }
 }

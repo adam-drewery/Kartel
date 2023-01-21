@@ -27,7 +27,8 @@ public class Startup
         {
             new PropertyMarketClient(networkSettings),
             new LogisticsClient(networkSettings),
-            new GeocodingClient(networkSettings)
+            new GeocodingClient(networkSettings),
+            new LocaleClient(networkSettings)
         };
 
         var game = new Game(gameServices)

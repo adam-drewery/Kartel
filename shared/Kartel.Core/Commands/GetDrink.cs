@@ -11,7 +11,7 @@ public class GetDrink : Command
         var findFood = new Activities.FindDrink(actor); 
         Activities.Enqueue(findFood);
         
-        Activities.Enqueue(new Activities.MoveToLocation(actor, () => findFood.Location));
+        Activities.Enqueue(new Activities.Move(actor, () => findFood.Location));
         Activities.Enqueue(new Activities.Drink(actor));
     }
 }
