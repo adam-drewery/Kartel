@@ -37,7 +37,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\web\Kartel.Api.Interfaces\Kartel.Api.Interfaces.csproj" />
     <ProjectReference Include="..\..\shared\Kartel.Core\Kartel.Core.csproj" />
-    <ProjectReference Include="..\..\shared\Kartel.Json\Kartel.Json.csproj" />
     <ProjectReference Include="..\..\shared\Kartel.Logging\Kartel.Logging.csproj" />
     <ProjectReference Include="..\..\shared\Kartel.MessagePack\Kartel.MessagePack.csproj" />
     <ProjectReference Include="..\..\shared\Kartel.ServiceBase.Client\Kartel.ServiceBase.Client.csproj" />

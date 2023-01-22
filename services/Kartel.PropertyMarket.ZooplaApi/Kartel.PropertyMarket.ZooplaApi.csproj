@@ -20,7 +20,6 @@
 	  <ProjectReference Include="..\..\shared\Kartel.Core\Kartel.Core.csproj" />
 	  <ProjectReference Include="..\..\shared\Kartel.Logging\Kartel.Logging.csproj" />
 	  <ProjectReference Include="..\..\shared\Kartel.ServiceBase\Kartel.ServiceBase.csproj" />
-	  <ProjectReference Include="..\..\shared\Kartel.Serialization\Kartel.Serialization.csproj" />
 	  <ProjectReference Include="..\..\shared\Zoopla.ApiClient\Zoopla.ApiClient.csproj" />
 	</ItemGroup>
 

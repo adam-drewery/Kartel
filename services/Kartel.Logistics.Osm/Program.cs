@@ -5,7 +5,7 @@ using Itinero.Osm.Vehicles;
 using Kartel.Configuration;
 using Kartel.Environment.Topography;
 using Kartel.Logging;
-using Kartel.Serialization;
+using Kartel.MessagePack;
 using NetMQ;
 using NetMQ.Sockets;
 using Serilog;

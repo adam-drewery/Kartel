@@ -1,7 +1,6 @@
-using Kartel.MessagePack;
 using MessagePack;
 
-namespace Kartel.Serialization;
+namespace Kartel.MessagePack;
 
 public static class ByteSerializer
 {
