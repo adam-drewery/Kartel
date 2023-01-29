@@ -11,30 +11,39 @@ Crime simulation strategy game which uses real-world data, written using a micro
 
 ## Starting the project
 
-### Set your API keys
-
-Navigate to `shared/Kartel.Config`
-and run the following commands to set dotnet secrets:
-
-```
-dotnet user-secrets set "Google:ApiKey" "replaceme"
-dotnet user-secrets set "Bing:ApiKey" "replaceme"
-```
-
 ### Using docker-compose
+
+Navigate to `shared/Kartel.Config` and edit `appsettings.docker.json` to include the relevant API keys for google and bing:
+
+```json
+"BingMaps": {
+    "ApiKey": ""
+  },
+  "Google": {
+    "ApiKey": ""
+  }
+```
 
 In the root of the repo, run:
 
-```
+```shell
 docker compose build
 docker compose up
 ```
 
 ### Using .NET SDK
 
+Navigate to `shared/Kartel.Config`
+and run the following commands to set your API keys:
+
+```shell
+dotnet user-secrets set "Google:ApiKey" "replaceme"
+dotnet user-secrets set "Bing:ApiKey" "replaceme"
+```
+
 Run the following projects simultaneously:
 
-```
+```shell
 Kartel.Web
 Kartel.Api
 Kartel.PropertyMarket.ZooplaWeb
