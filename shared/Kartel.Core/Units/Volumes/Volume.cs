@@ -2,8 +2,6 @@
 
 public class Volume : IQuantity<VolumeUnit> 
 {
-    public Volume() { }
-        
     public Volume(VolumeUnit unit, double value)
     {
         Value = value;
@@ -16,7 +14,7 @@ public class Volume : IQuantity<VolumeUnit>
 
     public double Value { get; }
 
-    public double Liters => Unit?.ToLiters(Value) ?? 0;
+    public double Liters => Unit.ToLiters(Value);
         
     public static implicit operator double(Volume volume) => volume.Liters;
         

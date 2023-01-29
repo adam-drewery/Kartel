@@ -2,13 +2,16 @@ using MessagePack;
 
 namespace Kartel.MessagePack;
 
-public static class ByteSerializer
+public class ByteSerializer
 {
-	public static byte[] Serialize(object source) => MessagePackSerializer.Serialize(
-		source, 
-		KartelMessagePackSerializerOptions.Standard);
+	private readonly MessagePackSerializerOptions _options;
 
-	public static T Deserialize<T>(byte[] bytes) => MessagePackSerializer.Deserialize<T>(
-		bytes, 
-		KartelMessagePackSerializerOptions.Standard);
+	public ByteSerializer(IGame game)
+	{
+		_options = KartelMessagePackSerializerOptions.ForGame(game);
+	}
+	
+	public byte[] Serialize(object source) => MessagePackSerializer.Serialize(source, _options);
+
+	public T Deserialize<T>(byte[] bytes) => MessagePackSerializer.Deserialize<T>(bytes, _options);
 }

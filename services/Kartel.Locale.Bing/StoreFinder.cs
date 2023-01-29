@@ -11,7 +11,6 @@ namespace Kartel.Locale.Bing;
 public class StoreFinder : Endpoint<(Location Location, StockType BuildingType), Shop>
 {
     private readonly HttpClient _http = new();
-    
     private readonly string _apiKey;
 
     protected override Func<ResponseSocket> SocketFactory { get; }
@@ -57,7 +56,7 @@ public class StoreFinder : Endpoint<(Location Location, StockType BuildingType),
         }
 
         var geocodePoints = resource.GeocodePoints.First(g => g.Type == "Point");
-        var shop = new Shop
+        var shop = new Shop(Game.Stub)
         {
             StockType = @params.BuildingType,
             Address = { Value = resource.Address.FormattedAddress },

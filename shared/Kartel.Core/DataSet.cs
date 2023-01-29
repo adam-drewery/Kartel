@@ -12,8 +12,9 @@ public static class DataSet
 {
     private static readonly Dictionary<string, string[][]> Values = new();
 
+    // todo: do we really need this?
     public static City[] Cities { get; } = Set("cities.uk")
-        .Select(x => new City(Country.UnitedKingdom, x[0], double.Parse(x[1]), double.Parse(x[2])))
+        .Select(x => new City(Game.Stub, Country.UnitedKingdom, x[0], double.Parse(x[1]), double.Parse(x[2])))
         .ToArray();
 
     public static string[] Surnames { get; } = Set("dist.all.last").Select(x => x[0]).ToArray();

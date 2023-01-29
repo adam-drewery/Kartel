@@ -13,15 +13,17 @@ public class Command
 {
     protected ILogger Log { get; } = Serilog.Log.ForContext<Command>();
     
-    protected Game Game { get; }
+    protected IGame Game { get; }
 
     protected Person Actor { get; }
 
     public DateTime StartTime { get; private set; }
     
+    public bool IsResolvingNeed { get; set; }
+    
     public bool Started => StartTime != default && StartTime <= Now;
 
-    public Activity CurrentActivity => Activities.Any() ? Activities.Peek() : default;
+    public Activity? CurrentActivity => Activities.Any() ? Activities.Peek() : default;
         
     public Queue<Activity> Activities { get; } = new();
         

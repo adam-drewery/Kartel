@@ -41,7 +41,9 @@ public class ListingCollector : System.Timers.Timer
         var regions = await _regionScraper.Scrape();
 
         await using (var db = new ZooplaDbContext())
-            existingIds = db.Buildings.Select(b => b.ExternalId).ToList();
+            existingIds = db.Buildings.Select(b => b.ExternalId)
+                .Where(x => x != null)
+                .ToList()!;
 
         _listingScraper.IgnoreIds = existingIds.ToList();
 
@@ -105,7 +107,7 @@ public class ListingCollector : System.Timers.Timer
                 var buildings = listings
                     .Select(listing =>
                     {
-                        var house =  new House(listing.Latitude, listing.Longitude)
+                        var house =  new House(Game.Stub, listing.Latitude, listing.Longitude)
                         {
                             Address = { Value = listing.Address.Value },
                             Longitude = listing.Longitude,

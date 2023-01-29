@@ -23,5 +23,5 @@ public class ZooplaDbContext : DbContext
 		base.OnModelCreating(modelBuilder);
 	}
 
-	public DbSet<House> Buildings { get; set; }
+	public DbSet<House> Buildings { get; set; } = null!;
 }

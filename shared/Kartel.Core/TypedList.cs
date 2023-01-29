@@ -11,8 +11,9 @@ public abstract class TypedList<T> : IEnumerable<T>
             .GetProperties()
             .Where(p => p.PropertyType == typeof(T))
             .Where(p => !p.GetIndexParameters().Any())
-            .Select(p => (T)p.GetValue(this))
-            .GetEnumerator();
+            .Select(p => (T?)p.GetValue(this))
+            .Where(x => x != null)
+            .GetEnumerator()!;
 
     IEnumerator IEnumerable.GetEnumerator()
     {

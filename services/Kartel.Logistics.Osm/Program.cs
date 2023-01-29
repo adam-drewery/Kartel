@@ -20,6 +20,8 @@ namespace Kartel.Logistics.Osm;
 
 class Program
 {
+	private static ByteSerializer _byteSerializer = new(Game.Stub);
+	
 	public static string OsmDataPath = @"../../../great-britain-latest.osm.pbf";
 		
 	[SuppressMessage("ReSharper", "FunctionNeverReturns")]
@@ -63,7 +65,7 @@ class Program
 		while (true)
 		{
 			var requestBytes = responseSocket.ReceiveFrameBytes();
-			var requestedRoute = ByteSerializer.Deserialize<List<Location>>(requestBytes);
+			var requestedRoute = _byteSerializer.Deserialize<List<Location>>(requestBytes);
 				
 			if (requestedRoute.Count == 0)
 			{
@@ -92,11 +94,11 @@ class Program
 				// foreach (var attribute in node.Meta.Attributes) 
 				// 	Log.Warning(attribute.Key + ":" + attribute.Value);
 
-				var location = new Location(node.Shape.Latitude, node.Shape.Longitude);
+				var location = new Location(Game.Stub, node.Shape.Latitude, node.Shape.Longitude);
 				route.Parts.Add(new RoutePart(TimeSpan.FromSeconds(node.Meta.Time), location));
 			}
 
-			var bytes = ByteSerializer.Serialize(route);
+			var bytes = _byteSerializer.Serialize(route);
 
 
 			Log.Information("Sending directions from {Start} to {End} ({Steps} steps)", start, end, route.Parts.Count);

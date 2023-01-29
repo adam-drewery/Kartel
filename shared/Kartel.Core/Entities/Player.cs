@@ -14,7 +14,7 @@ public class Player : Person
     public Player(House home) : this(home, home) { }
     
     /// <summary>Create a new player and give them a home and some contacts/associates etc.</summary>
-    public new static async Task<Player> New(Game game)
+    public new static async Task<Player> New(IGame game)
     {
         var home = await game.Services.PropertyMarket.NewHouse();
         

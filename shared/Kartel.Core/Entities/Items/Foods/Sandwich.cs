@@ -8,5 +8,5 @@ public class Sandwich : Food
 {
     public override Weight Weight { get; } = 200.Grams();
 
-    public override CurrencyQuantity BasePrice { get; } = 3.Gbp();
+    public override CurrencyQuantity? BasePrice { get; } = 3.Gbp();
 }

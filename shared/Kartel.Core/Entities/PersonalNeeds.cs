@@ -36,7 +36,7 @@ public class PersonalNeeds : TypedList<Need>
 
         foreach (var property in properties)
         {
-            var need = (Need)property.GetValue(this);
+            var need = (Need?)property.GetValue(this);
             need!.PropertyChanged += (_, args) =>
             {
                 OnPropertyChanged($"{property.Name}.{args.PropertyName}", args.NewValue);
@@ -60,11 +60,11 @@ public class PersonalNeeds : TypedList<Need>
             need.Tick(gameTime, lastUpdate);
     }
 
-    private void OnPropertyChanged(string propertyName, object value)
+    private void OnPropertyChanged(string propertyName, object? value)
     {
         // Set the person as the sender as they're the object the subscription happens on
         PropertyChanged?.Invoke(this, new PropertyChangedArgs(_person, propertyName, value));
     }
     
-    public event EventHandler<PropertyChangedArgs> PropertyChanged;
+    public event EventHandler<PropertyChangedArgs>? PropertyChanged;
 }

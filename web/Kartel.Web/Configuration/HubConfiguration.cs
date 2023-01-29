@@ -42,8 +42,10 @@ internal static class HubConfiguration
             .ConfigureLogging(builder => builder.AddSerilog())
             .AddMessagePackProtocol(options =>
             {
+                // Don't pass in a game instance, we don't have one
+                var resolver = new KartelFormatterResolver(null);
                 options.SerializerOptions = MessagePackSerializerOptions.Standard
-                    .WithResolver(KartelFormatterResolver.DefaultResolvers);
+                    .WithResolver(resolver.CreateComposite());
             }));
 
         foreach (var hubClientType in HubClientTypes)

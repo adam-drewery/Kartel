@@ -8,7 +8,7 @@ public abstract class Item : IContainable
 {
     public abstract Weight Weight { get; }
     
-    public abstract CurrencyQuantity BasePrice { get; }
+    public abstract CurrencyQuantity? BasePrice { get; }
         
-    public Container Container { get; set; }
+    public Container? Container { get; set; }
 }

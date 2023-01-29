@@ -3,13 +3,19 @@ using Kartel.Environment.Topography;
 using Kartel.EventArgs;
 using MessagePack;
 using MessagePack.Formatters;
+using Serilog;
 
 namespace Kartel.MessagePack.Formatters;
 
 public class PropertyChangedArgsFormatter : IMessagePackFormatter<PropertyChangedArgs>
 {
     private readonly CommandFormatter _commandFormatter = new();
-    private readonly LocationFormatter _locationFormatter = new();
+    private readonly LocationFormatter _locationFormatter;
+
+    public PropertyChangedArgsFormatter(IGame? game)
+    {
+        _locationFormatter = new LocationFormatter(game ?? Game.Stub);
+    }
 
     public void Serialize(ref MessagePackWriter writer, PropertyChangedArgs value, MessagePackSerializerOptions options)
     {
@@ -52,7 +58,7 @@ public class PropertyChangedArgsFormatter : IMessagePackFormatter<PropertyChange
 
         writer.Write(value.PropertyName);
         writer.Write(value.SourceId.ToString());
-        writer.Write((int)value.QueueChangeType);
+        writer.Write((int?)value.QueueChangeType ?? -1);
     }
 
     public PropertyChangedArgs Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
@@ -73,10 +79,10 @@ public class PropertyChangedArgsFormatter : IMessagePackFormatter<PropertyChange
         var propertyName = reader.ReadString();
         var sourceId = Guid.Parse(reader.ReadString());
         var queueChangeType = reader.ReadInt32();
-
+        
         return new PropertyChangedArgs(sourceId, propertyName, newValue)
         {
-            QueueChangeType = (QueueChangeType)queueChangeType
+            QueueChangeType = queueChangeType >= 0 ? (QueueChangeType)queueChangeType : null
         };
     }
 }

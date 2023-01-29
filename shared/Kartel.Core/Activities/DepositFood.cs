@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Kartel.Attributes;
 using Kartel.Entities;
@@ -11,11 +12,15 @@ namespace Kartel.Activities;
 [Verb("Put away food shopping", "Putting away food shopping", "Put away food shopping")]
 public class DepositFood : Activity
 {
-    private IList<Fridge> _fridgesToRestock;
+    private IList<Fridge>? _fridgesToRestock;
+    
     public DepositFood(Person actor) : base(actor) { }
 
     protected override void Update(TimeSpan sinceLastUpdate)
     {
+        if (Actor.Home == null)
+            throw new InvalidDataException("Can't find food for homeless person.");
+        
         _fridgesToRestock ??= Actor.Home.Rooms
             .SelectMany(r => r.Contents)
             .OfType<Fridge>()
@@ -29,7 +34,11 @@ public class DepositFood : Activity
         {
             var food = Actor.Inventory.OfType<Food>().FirstOrDefault();
             
-            if (food == null) Complete();
+            if (food == null)
+            {
+                Complete();
+                return;
+            }
             
             var fridge = _fridgesToRestock.FirstOrDefault(f => f.CanAdd(food));
 

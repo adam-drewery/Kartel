@@ -9,14 +9,16 @@ namespace Kartel.Environment;
 
 public class House : Location
 {
-    private Person _owner;
+    private Person? _owner;
 
-    public House() : base(0, 0) { }
+    private House() : this(Kartel.Game.Stub) { }
     
-    public House(double latitude, double longitude) 
-        : base(latitude, longitude) { }
+    public House(IGame game) : base(game, 0, 0) { }
+    
+    public House(IGame game, double latitude, double longitude) 
+        : base(game, latitude, longitude) { }
         
-    public Person Owner
+    public Person? Owner
     {
         get => _owner;
         set
@@ -48,7 +50,7 @@ public class House : Location
     
     public short Floors { get; set; }
 
-    public string ExternalId { get; set; }
+    public string? ExternalId { get; set; }
 
     public override string ToString() => string.Join(", ", Address.Lines.Distinct().Take(3));
 }

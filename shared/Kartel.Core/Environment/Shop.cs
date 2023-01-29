@@ -6,10 +6,12 @@ namespace Kartel.Environment;
 
 public class Shop : Location
 {
-    public Shop() : base(0, 0) { }
+    private Shop() : this(Kartel.Game.Stub) { }
     
-    public Shop(double latitude, double longitude)
-        : base(latitude, longitude) { }
+    public Shop(IGame game) : base(game, 0, 0) { }
+    
+    public Shop(IGame game, double latitude, double longitude)
+        : base(game, latitude, longitude) { }
 
     public StockType StockType { get; set; }
     
@@ -18,11 +20,4 @@ public class Shop : Location
     public virtual IDictionary<DayOfWeek, OpeningHours> OpeningTimes { get; } = new Dictionary<DayOfWeek, OpeningHours>();
 
     public override string ToString() => Name + ",  " + Address;
-}
-
-public class OpeningHours
-{
-    public DateTime OpeningTime { get; set; }
-    
-    public DateTime ClosingTime { get; set; }
 }

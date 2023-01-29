@@ -1,27 +1,24 @@
 using FluentAssertions;
 using Kartel.Entities;
 using Kartel.Environment;
+using Kartel.Testing;
 using Xunit;
 
 namespace Kartel.Core.Tests;
 
-public class PersonTests
+public class PersonTests : GameTests
 {
-	public class OnHeartbeat
+	public class OnHeartbeat : PersonTests
 	{
 		[Fact]
 		public void Reduces_fatigue_when_an_interval_has_passed()
 		{
-			var clock = new MockClock();
-			var game = new Game { Clock = clock };
-			clock.Game = game;
-				
-			var person = new Person(new House()) { Needs = { Sleep = { Value = 0 } } };
-			game.Characters.Add(person);
+			var person = new Person(new House(Game)) { Needs = { Sleep = { Value = 0 } } };
+			Game.Characters.Add(person);
 
 			var oldFatigue = person.Needs.Sleep.Value;
-			clock.IncrementTime(TimeSpan.FromSeconds(300));
-			clock.InvokeTick();
+			Clock.IncrementTime(TimeSpan.FromSeconds(300));
+			Clock.InvokeTick();
 
 			person.Needs.Sleep.Value.Should().BeGreaterThan(oldFatigue);
 		}
@@ -29,17 +26,13 @@ public class PersonTests
 		[Fact]
 		public void Reduces_fatigue_when_an_interval_has_passed_and_the_previous_tick_was_the_previous_day()
 		{
-			var clock = new MockClock();
-			var game = new Game { Clock = clock };
-			clock.Game = game;
-				
-			var person = new Person(new House()) { Needs = { Sleep = { Value = 0 } } };
-			game.Characters.Add(person);
+			var person = new Person(new House(Game)) { Needs = { Sleep = { Value = 0 } } };
+			Game.Characters.Add(person);
 
 			var oldFatigue = person.Needs.Sleep.Value;
-			clock.IncrementTime(TimeSpan.FromHours(23));
-			clock.IncrementTime(TimeSpan.FromHours(2));
-			clock.InvokeTick();
+			Clock.IncrementTime(TimeSpan.FromHours(23));
+			Clock.IncrementTime(TimeSpan.FromHours(2));
+			Clock.InvokeTick();
 
 			person.Needs.Sleep.Value.Should().BeGreaterThan(oldFatigue);
 		}

@@ -22,15 +22,11 @@ public class Startup
     {
         var networkSettings = Settings.FromArgs<NetworkSettings>(Program.Args);
 
-        var gameServices = new object[]
-        {
-            new PropertyMarketClient(networkSettings),
-            new LogisticsClient(networkSettings),
-            new GeocodingClient(networkSettings),
-            new LocaleClient(networkSettings)
-        };
-
-        var game = new Game(gameServices)
+        var game = new Game(
+            g => new PropertyMarketClient(g, networkSettings),
+            g => new LocaleClient(g, networkSettings),
+            g => new LogisticsClient(g, networkSettings),
+            g => new GeocodingClient(g, networkSettings))
         {
             Clock =
             {
@@ -47,7 +43,7 @@ public class Startup
         services.AddSignalR()
             .AddMessagePackProtocol(options =>
         {
-            options.SerializerOptions = KartelMessagePackSerializerOptions.Standard;
+            options.SerializerOptions = KartelMessagePackSerializerOptions.ForGame(game);
         });
 
         services.AddCors(options =>

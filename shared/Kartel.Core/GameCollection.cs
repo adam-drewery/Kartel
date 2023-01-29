@@ -9,10 +9,10 @@ namespace Kartel;
 
 public class GameCollection<T> : ICollection<T> where T : GameObject
 {
-    private readonly Game _game;
+    private readonly IGame _game;
     private readonly ObservableCollection<T> _items = new();
     
-    internal GameCollection(Game game)
+    internal GameCollection(IGame game)
     {
         _game = game;
         _items.CollectionChanged += (sender, args) =>
@@ -23,8 +23,8 @@ public class GameCollection<T> : ICollection<T> where T : GameObject
         };
     }
 
-    // todo: make this efficient
-    public T this[Guid id] => _items.SingleOrDefault(x => x.Id == id);
+    // todo: make this efficient, use a dictionary
+    public T? this[Guid id] => _items.SingleOrDefault(x => x.Id == id);
         
     public IEnumerator<T> GetEnumerator() => _items.GetEnumerator();
 
@@ -56,5 +56,5 @@ public class GameCollection<T> : ICollection<T> where T : GameObject
             _items.Add(location);
     }
 
-    public event EventHandler<CollectionChangedArgs> CollectionChanged;
+    public event EventHandler<CollectionChangedArgs>? CollectionChanged;
 }

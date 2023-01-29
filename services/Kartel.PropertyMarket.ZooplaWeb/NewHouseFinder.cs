@@ -17,7 +17,7 @@ public class NewHouseFinder : Endpoint<House>
 
 	protected override Func<ResponseSocket> SocketFactory { get; }
 
-	private House _house;
+	private House? _house;
 
 	protected override async Task OnWaiting()
 	{
@@ -40,9 +40,15 @@ public class NewHouseFinder : Endpoint<House>
 		while (_house == null);
 	}
 
-	protected override Task<House> OnRequest()
+	protected override async Task<House> OnRequest()
 	{
+		while (_house == null)
+		{
+			Log.Warning("Waiting for new house to be retrieved");
+			await Task.Delay(100);
+		}
+
 		Log.Information("Sending house: {Address}", _house.Address);
-		return Task.FromResult(_house);
+		return _house;
 	}
 }

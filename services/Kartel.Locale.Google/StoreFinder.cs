@@ -75,7 +75,7 @@ public class StoreFinder : Endpoint<(Location Location, StockType StockType), Sh
             return new ShopLocation
             {
                 Key = latitude.Value<string>() + "+" + longitude.Value<string>(),
-                Shop = new Shop
+                Shop = new Shop(Game.Stub)
                 {
                     Latitude = latitude.Value<double>(),
                     Longitude = longitude.Value<double>(),

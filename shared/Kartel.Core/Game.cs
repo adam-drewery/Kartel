@@ -6,29 +6,48 @@ using Serilog;
 
 namespace Kartel;
 
-public class Game
+public class Game : IGame
 {
-    public Game()
+    private IClock _clock;
+
+    public IClock Clock
     {
-        Clock = new Clock(this);
-        Characters = new GameCollection<Person>(this);
-        Locations = new GameCollection<Location>(this);
-            
-        City.Seed(this);
+        get => _clock;
+        set
+        {
+            _clock.Tick -= ClockOnTick;
+            _clock = value;
+            _clock.Tick += ClockOnTick;
+        }
     }
-        
-    public IClock Clock { get; set; }
+
+    private void ClockOnTick(object? sender, System.EventArgs e) => OnTick();
 
     public ServiceContainer Services { get; }
         
-    public Game(params object[] services) : this() => Services = new ServiceContainer(services);
+    public Game(
+        Func<Game, IPropertyMarketClient> propertyMarket, 
+        Func<Game, ILocaleClient> locale, 
+        Func<Game, ILogisticsClient> directions, 
+        Func<Game, IGeocodingClient> geocoder)
+    {
+        Services = new ServiceContainer(propertyMarket(this), locale(this), directions(this), geocoder(this));
+        
+        _clock = new Clock();
+        _clock.Tick += ClockOnTick;
+        
+        Characters = new GameCollection<Person>(this);
+        Locations = new GameCollection<Location>(this);
+        City.Seed(this);
+    }
 
     public GameCollection<Person> Characters { get; }
 
     public GameCollection<Location> Locations { get; }
 
-    //public event EventHandler<ErrorEventArgs> Error;
-
+    /// <summary>Used for constructing game objects when there isn't a game context, such as services.</summary>
+    public static IGame Stub { get; } = new GameStub();
+    
     public void OnTick()
     {
         foreach (var character in Characters)
@@ -46,9 +65,14 @@ public class Game
         }
     }
 
-    // internal virtual void OnError(string message, Exception e)
-    // {
-    //     var args = new ErrorEventArgs(message, e);
-    //     Error?.Invoke(this,args);
-    // }
+    private class GameStub : IGame
+    {
+        public ServiceContainer Services => throw new NotImplementedException("Cannot access services in a game stub instance.");
+        
+        public IClock Clock => throw new NotImplementedException("Cannot access clock in a game stub instance.");
+        
+        public GameCollection<Person> Characters => throw new NotImplementedException("Cannot access characters in a game stub instance.");
+        
+        public GameCollection<Location> Locations => throw new NotImplementedException("Cannot access locations in a game stub instance.");
+    }
 }

@@ -9,7 +9,7 @@ public class AirPistol : Handgun
 {
     public override Weight Weight { get; } = 1.Kilograms();
 
-    public override CurrencyQuantity BasePrice { get; } = 100.Gbp();
+    public override CurrencyQuantity? BasePrice { get; } = 100.Gbp();
 
     public override byte Damage { get; } = 8;
 

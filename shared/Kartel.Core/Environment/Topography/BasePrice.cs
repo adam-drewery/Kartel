@@ -6,7 +6,7 @@ namespace Kartel.Environment.Topography;
 
 public class BasePrice
 {
-    public BasePrice(Type productType, CurrencyQuantity price, IQuantity quantity)
+    public BasePrice(Type productType, CurrencyQuantity? price, IQuantity quantity)
     {
         ProductType = productType;
         Price = price;
@@ -15,7 +15,7 @@ public class BasePrice
         
     public Type ProductType { get; }
         
-    public CurrencyQuantity Price { get; }
+    public CurrencyQuantity? Price { get; }
         
     public IQuantity Quantity { get; }
 }

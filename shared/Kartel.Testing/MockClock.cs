@@ -1,9 +1,7 @@
-namespace Kartel.Core.Tests;
+namespace Kartel.Testing;
 
 public class MockClock : IClock
 {
-	public Game Game { get; set; }
-
 	public bool Started { get; private set; }
 
 	public short Interval { get; set; }
@@ -12,7 +10,7 @@ public class MockClock : IClock
 
 	public TimeSpan Delta { get; private set; }
 
-	public event EventHandler Tick;
+	public event EventHandler? Tick;
 
 	public double MinimumTickSpeed { get; set; }
 
@@ -24,11 +22,7 @@ public class MockClock : IClock
 
 	public void Stop() => Started = false;
 
-	public void InvokeTick()
-	{
-		Game.OnTick();
-		Tick?.Invoke(this, System.EventArgs.Empty);
-	}
+	public void InvokeTick() => Tick?.Invoke(this, System.EventArgs.Empty);
 
 	public void IncrementTime(TimeSpan increment)
 	{

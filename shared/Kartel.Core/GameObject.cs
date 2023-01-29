@@ -7,11 +7,15 @@ namespace Kartel;
 [DataContract]
 public abstract class GameObject : Observable
 {
-	protected GameObject() => Log = Serilog.Log.ForContext(GetType());
+	protected GameObject(IGame game)
+	{
+		Game = game;
+		Log = Serilog.Log.ForContext(GetType());
+	}
 
 	protected ILogger Log { get; }
 	
-	internal Game Game { get; set; }
+	internal IGame Game { get; set; }
 
 	public override int GetHashCode() => Id.GetHashCode();
 }

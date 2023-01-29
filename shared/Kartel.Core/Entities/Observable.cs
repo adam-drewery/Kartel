@@ -12,35 +12,35 @@ public class Observable
 {
     [DataMember] public Guid Id { get; } = Guid.NewGuid();
 
-    protected void Write<T>(T value, [CallerMemberName] string caller = "")
+    protected void Write<T>(T? value, [CallerMemberName] string caller = "")
     {
         if (Properties.TryGetValue(caller, out var current))
-            if (current.Equals(value))
+            if (current?.Equals(value) ?? value == null)
                 return;
         
         Properties[caller] = value;
         PropertyChanged?.Invoke(this, new PropertyChangedArgs(this, caller, value));
     }
 
-    protected T Read<T>([CallerMemberName] string caller = "")
+    protected T? Read<T>([CallerMemberName] string caller = "")
     {
         if (Properties.TryGetValue(caller, out var result))
-            return (T)result;
+            return (T?)result;
 
         return default;
     }
 
-    protected void OnPropertyChanged(string caller, object value)
+    protected void OnPropertyChanged(string caller, object? value)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedArgs(this, caller, value));
     }
     
-    protected void OnPropertyChanged(string caller, object value, QueueChangeType queueChangeType)
+    protected void OnPropertyChanged(string caller, object? value, QueueChangeType queueChangeType)
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedArgs(this, caller, value){QueueChangeType = queueChangeType});
+        PropertyChanged?.Invoke(this, new PropertyChangedArgs(this, caller, value) { QueueChangeType = queueChangeType });
     }
     
-    public readonly IDictionary<string, object> Properties = new ConcurrentDictionary<string, object>();
+    public readonly IDictionary<string, object?> Properties = new ConcurrentDictionary<string, object?>();
 		
-    public event EventHandler<PropertyChangedArgs> PropertyChanged;
+    public event EventHandler<PropertyChangedArgs>? PropertyChanged;
 }

@@ -13,18 +13,21 @@ namespace Kartel.Activities;
 [Verb("Find something to eat", "Finding something to eat", "Found something to eat")]
 public class FindFood : Activity
 {
-    public Location Location { get; private set; }
+    public Location? Location { get; private set; }
     
-    public ICollection<Container> FoodContainers { get; private set; }
+    public ICollection<Container>? FoodContainers { get; private set; }
 
     public FindFood(Person actor) : base(actor) { }
 
     protected override void Update(TimeSpan sinceLastUpdate)
     {
+        if (Actor.Home == null)
+            throw new InvalidDataException("Can't find food for homeless person.");
+        
         var locations = Actor.Home.Rooms
             .SelectMany(room => room.Contents)
             .OfType<Fridge>()
-            .Where(f => f.Container.Any(i => i is Food))
+            .Where(f => f.Any(i => i is Food))
             .ToList<Container>();
 
         if (locations.Any())

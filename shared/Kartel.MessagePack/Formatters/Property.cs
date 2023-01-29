@@ -10,10 +10,14 @@ public static class Property
     public static void SetPrivate<T, TValue>(T target, TValue value, Expression<Func<T, TValue>> selector) where T : class
     {
         var setter = GetSetterForProperty(selector);
+
+        if (setter == null)
+            throw new InvalidDataException("Failed to find setter for property.");
+        
         setter.Invoke(target, value);
     }
     
-    private static Action<T, TValue> GetSetterForProperty<T, TValue>(Expression<Func<T, TValue>> selector) where T : class
+    private static Action<T, TValue>? GetSetterForProperty<T, TValue>(Expression<Func<T, TValue>> selector) where T : class
     {
         var expression = selector.Body;
         var propertyInfo = expression.NodeType == ExpressionType.MemberAccess ? (PropertyInfo)((MemberExpression)expression).Member : null;
@@ -32,7 +36,10 @@ public static class Property
             var setter = prop.GetSetMethod(nonPublic: true);
             if (setter is not null)
             {
-                return (obj, value) => setter.Invoke(obj, new object[] { value });
+                return (obj, value) => setter.Invoke(obj, new object[]
+ {
+     value ?? throw new ArgumentNullException(nameof(value))
+ });
             }
 
             var backingField = prop.DeclaringType?.GetField($"<{prop.Name}>k__BackingField", DeclaredOnlyLookup);

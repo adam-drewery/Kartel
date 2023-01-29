@@ -7,5 +7,5 @@ public interface IContainable
 {
     Weight Weight { get; }
         
-    Container Container { get; set; }
+    Container? Container { get; set; }
 }

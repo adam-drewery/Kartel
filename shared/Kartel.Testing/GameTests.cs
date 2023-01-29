@@ -2,13 +2,22 @@ namespace Kartel.Testing;
 
 public abstract class GameTests
 {
+    protected MockClock Clock { get; } = new();
+    
     protected Game Game { get; }
-    protected MockGeocodingClient Geocoding { get; } = new();
-    protected MockLogisticsClient Logistics { get; } = new();
-    protected MockPropertyMarketClient PropertyMarket { get; } = new();
+
+    protected MockGeocodingClient Geocoding => (MockGeocodingClient)Game.Services.Geocoder;
+
+    protected MockLogisticsClient Logistics => (MockLogisticsClient)Game.Services.Directions;
+
+    protected MockPropertyMarketClient PropertyMarket => (MockPropertyMarketClient)Game.Services.PropertyMarket;
 
     protected GameTests()
     {
-        Game = new Game(Geocoding, Logistics, PropertyMarket);
+        Game = new Game(
+            g => new MockPropertyMarketClient(g),
+            g => new MockLocaleClient(g),
+            _ => new MockLogisticsClient(),
+            g => new MockGeocodingClient(g)) {Clock = Clock};
     }
 }

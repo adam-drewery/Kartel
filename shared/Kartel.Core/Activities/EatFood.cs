@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Kartel.Attributes;
 using Kartel.Entities;
@@ -11,9 +12,9 @@ namespace Kartel.Activities;
 [Verb("Eat food", "Eating food", "Ate food")]
 public class EatFood : Activity
 {
-    private readonly ICollection<Container> _foodContainers;
+    private readonly Func<ICollection<Container>?> _foodContainers;
     
-    public EatFood(Person actor, ICollection<Container> foodContainers) : base(actor)
+    public EatFood(Person actor, Func<ICollection<Container>?> foodContainers) : base(actor)
     {
         _foodContainers = foodContainers;
     }
@@ -26,7 +27,8 @@ public class EatFood : Activity
 
         foreach (var _ in intervals)
         {
-            var container = _foodContainers.First(c => c.Any(x => x is Food));
+            var containers = _foodContainers() ?? throw new InvalidDataException("No food containers found.");
+            var container = containers.First(c => c.Any(x => x is Food));
             var food = container.OfType<Food>().First();
             container.Remove(food);
             Actor.Eat(food);

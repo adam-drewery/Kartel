@@ -21,6 +21,8 @@ public abstract class Endpoint<TRequest, TResponse> : IEndpoint
 	protected abstract Task<TResponse> Handle(TRequest request);
 
 	protected abstract Func<ResponseSocket> SocketFactory { get; }
+	
+	protected readonly ByteSerializer ByteSerializer = new(Game.Stub);
 
 	public async Task RunAsync()
 	{
@@ -67,6 +69,8 @@ public abstract class Endpoint<TResponse> : IEndpoint
 	protected ResponseSocket Socket => _socket.Value;
 
 	protected abstract Func<ResponseSocket> SocketFactory { get; }
+	
+	protected readonly ByteSerializer ByteSerializer = new(Game.Stub);
 
 	protected Endpoint()
 	{

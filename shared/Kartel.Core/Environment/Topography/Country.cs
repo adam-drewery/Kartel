@@ -33,6 +33,6 @@ public class Country
 
     public ICollection<BasePrice> BasePrices { get; } = new HashSet<BasePrice>();
 
-    private static BasePrice PriceFor<TItem>(CurrencyQuantity price, IQuantity quantity) =>
+    private static BasePrice PriceFor<TItem>(CurrencyQuantity? price, IQuantity quantity) =>
         new(typeof(TItem), price, quantity);
 }

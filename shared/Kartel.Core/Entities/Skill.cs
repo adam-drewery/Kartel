@@ -6,9 +6,7 @@ public class Skill
 {
     private byte _value;
     private static readonly Random Random = new();
-        
-    public Skill() { }
-            
+         
     public Skill(string name)
     {
         Name = name;

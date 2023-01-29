@@ -10,13 +10,13 @@ namespace Kartel.Activities;
 public class Move : Activity
 {
     private readonly Person _actor;
-    private Task<Route> _directionsTask;
+    private Task<Route>? _directionsTask;
 
-    public Func<Location> Destination { get; }
+    public Func<Location?> Destination { get; }
 
-    public Route Route { get; private set; }
+    public Route? Route { get; private set; }
 
-    public Move(Person actor, Func<Location> destination) : base(actor)
+    public Move(Person actor, Func<Location?> destination) : base(actor)
     {
         _actor = actor;
         Destination = destination;
@@ -24,9 +24,11 @@ public class Move : Activity
 
     protected override void Update(TimeSpan sinceLastUpdate)
     {
+        var destination = Destination() ?? throw new InvalidOperationException("Destination was null");
+        
         if (_directionsTask == null)
         {
-            var routeDistance = Actor.Location.DistanceTo(Destination());
+            var routeDistance = Actor.Location.DistanceTo(destination);
             var duration = TimeSpan.FromSeconds(routeDistance * 1.5); // about 3 m/s
 
             if (routeDistance < 100)
@@ -37,13 +39,13 @@ public class Move : Activity
                         Parts =
                         {
                             new RoutePart(TimeSpan.Zero, _actor.Location),
-                            new RoutePart(duration, Destination())
+                            new RoutePart(duration, destination)
                         }
                     });
             }
             else
             {
-                var route = new[] { Actor.Location, Destination() };
+                var route = new[] { Actor.Location, destination };
                 _directionsTask = Services.Directions.WalkingAsync(route);
             }
         }
@@ -62,10 +64,11 @@ public class Move : Activity
         {
             var newLocation = Route.LocationAfter(Game.Clock.Time - StartTime);
 
-            if (!newLocation.Equals(Actor.Location))
+            
+            if (newLocation.DistanceTo(Actor.Location) < 10)
                 Actor.Location = newLocation;
 
-            if (Actor.Location.DistanceTo(Destination()) < 10) Complete();
+            if (Actor.Location.DistanceTo(destination) < 10) Complete();
         }
     }
 }

@@ -7,9 +7,16 @@ using MessagePack.Formatters;
 
 namespace Kartel.MessagePack.Formatters;
 
-public class PersonFormatter : IMessagePackFormatter<Person>
+public class PersonFormatter : IMessagePackFormatter<Person?>
 {
-    public void Serialize(ref MessagePackWriter writer, Person person, MessagePackSerializerOptions options)
+    private readonly IGame _game;
+
+    public PersonFormatter(IGame? game)
+    {
+        _game = game ?? Game.Stub;
+    }
+
+    public void Serialize(ref MessagePackWriter writer, Person? person, MessagePackSerializerOptions options)
     {
         if (person == null)
         {
@@ -56,13 +63,13 @@ public class PersonFormatter : IMessagePackFormatter<Person>
         }
     }
 
-    public Person Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    public Person? Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
     {
-        var person = new Person();
-        return Populate(ref reader, person, options);
+        var person = new Person(_game);
+        return Populate(_game, ref reader, person, options);
     }
     
-    public static T Populate<T>(ref MessagePackReader reader, T person, MessagePackSerializerOptions options) where T : Person
+    public static T? Populate<T>(IGame game, ref MessagePackReader reader, T person, MessagePackSerializerOptions options) where T : Person
     {
         try
         {
@@ -82,7 +89,7 @@ public class PersonFormatter : IMessagePackFormatter<Person>
                 Currency.WithName(reader.ReadString()),
                 (decimal)reader.ReadDouble());
 
-            person.Location = new Location(reader.ReadDouble(), reader.ReadDouble())
+            person.Location = new Location(Game.Stub, reader.ReadDouble(), reader.ReadDouble())
             {
                 Address = { Value = reader.ReadString() }
             };
@@ -90,7 +97,7 @@ public class PersonFormatter : IMessagePackFormatter<Person>
             var count = reader.ReadArrayHeader();
             for (var i = 0; i < count; i++)
             {
-                var command = new Command(new Person())
+                var command = new Command(new Person(game))
                 {
                     Name = new VerbName(reader.ReadString(), reader.ReadString(), reader.ReadString())
                 };

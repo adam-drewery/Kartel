@@ -8,5 +8,5 @@ public class Banana : Food
 {
     public override Weight Weight { get; } = 120.Grams();
 
-    public override CurrencyQuantity BasePrice { get; } = 0.5m.Gbp();
+    public override CurrencyQuantity? BasePrice { get; } = 0.5m.Gbp();
 }

@@ -20,7 +20,9 @@ public class Person : GameObject
 {
     protected Random Random { get; } = new();
 
-    public static async Task<Person> New(Game game)
+    public static Person Stub { get; } = new(Kartel.Game.Stub);
+
+    public static async Task<Person> New(IGame game)
     {
         var home = await game.Services.PropertyMarket.NewHouse();
         return new Person(home, home);
@@ -28,13 +30,11 @@ public class Person : GameObject
 
     public Person(House home) : this(home, home) { }
 
-    protected Person(House home, Location location) : this()
+    protected Person(House home, Location location) : this(home.Game)
     {
         Location = location;
         Money = Random.Next(10000, 20000).Gbp();
-        Inventory = new Inventory();
-
-        Fists = new Fists();
+        
         Gender = new Random().Enum<Gender>();
         Surname = DataSet.Surnames.Random();
         
@@ -46,8 +46,11 @@ public class Person : GameObject
         Home.Owner = this;
     }
 
-    public Person()
+    public Person(IGame game) : base(game)
     {
+        Inventory = new Inventory();
+        Fists = new Fists();
+        
         Health = byte.MaxValue;
         Needs = new PersonalNeeds(this);
         Relationships = new GameCollection<Relationship>(Game);
@@ -65,21 +68,21 @@ public class Person : GameObject
     
     public CurrencyQuantity Money
     {
-        get => Read<CurrencyQuantity>();
+        get => Read<CurrencyQuantity>() ?? CurrencyQuantity.None;
         set => Write(value);
     }
 
     public string Name => $"{FirstName} {Surname}";
 
     [DataMember]
-    public string FirstName
+    public string? FirstName
     {
         get => Read<string>();
         set => Write(value);
     }
 
     [DataMember]
-    public string Surname
+    public string? Surname
     {
         get => Read<string>();
         set => Write(value);
@@ -95,15 +98,22 @@ public class Person : GameObject
     [DataMember]
     public Location Location
     {
-        get => Read<Location>();
-        set => Write(value);
+        get => Read<Location>()
+            ?? throw new ArgumentException("Actor location cannot be null");
+        set
+        {
+            if (value == null)
+                throw new ArgumentException("Actor location cannot be null");
+            
+            Write(value);
+        }
     }
 
     public Fists Fists { get; }
 
     public Inventory Inventory { get; }
     
-    public House Home
+    public House? Home
     {
         get => Read<House>();
         set => Write(value);
@@ -115,7 +125,7 @@ public class Person : GameObject
     [DataMember]
     public PersonalNeeds Needs { get; }
 
-    public Command CurrentCommand => Commands.Any() ? Commands.Peek() : null;
+    public Command? CurrentCommand => Commands.Any() ? Commands.Peek() : null;
 
     // Walking speed in km/h
     public const double WalkSpeed = 8;
@@ -137,25 +147,29 @@ public class Person : GameObject
     public void Meet(Person person)
     {
         if (Relationships.All(r => r.Person != person))
-            Relationships.Add(new Relationship { Person = person });
+            Relationships.Add(new Relationship(person));
 
         if (person.Relationships.All(r => r.Person != this))
-            person.Relationships.Add(new Relationship { Person = this });
+            person.Relationships.Add(new Relationship(this));
     }
 
     public void OnTick()
     {
         Needs.Tick(Game.Clock.Time, Game.Clock.LastUpdate);
 
-        var mostCriticalNeed = Needs.Where(need => need.IsCritical).MaxBy(need => need.Value);
-
-        if (mostCriticalNeed != null && !mostCriticalNeed.IsBeingSatisfied(this))
+        if (CurrentCommand == null || CurrentCommand.IsResolvingNeed)
         {
-            CurrentCommand?.Cancel();
-            Commands.Clear();
-            Commands.Enqueue(mostCriticalNeed.Resolution());
-            
-            Log.Information("{ActorName} ({ActorID}) is fulfilling need {Need}", Name, Id, mostCriticalNeed.Name);
+            var mostCriticalNeed = Needs.Where(need => need.IsCritical).MaxBy(need => need.Value);
+
+            if (mostCriticalNeed != null && !mostCriticalNeed.IsBeingSatisfied(this))
+            {
+                CurrentCommand?.Cancel();
+                Commands.Clear();
+                Commands.Enqueue(mostCriticalNeed.Resolution());
+                Commands.Single().IsResolvingNeed = true;
+                
+                Log.Information("{ActorName} ({ActorID}) is fulfilling need {Need}", Name, Id, mostCriticalNeed.Name);
+            }
         }
 
         if (CurrentCommand != null)

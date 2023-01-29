@@ -2,37 +2,38 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using Kartel.Entities;
 
 namespace Kartel.EventArgs;
 
 public class PropertyChangedArgs
 {
-	public PropertyChangedArgs(Observable source, string propertyName, object newValue)
+	public PropertyChangedArgs(Observable source, string propertyName, object? newValue)
 		: this(source.Id, propertyName, newValue) => Source = source;
 
-	public PropertyChangedArgs(Guid sourceId, string propertyName, object newValue)
+	public PropertyChangedArgs(Guid sourceId, string propertyName, object? newValue)
 	{
 		SourceId = sourceId;
 		PropertyName = propertyName;
 		NewValue = newValue;
 	}
 	
-	public Observable Source { get; }
+	[IgnoreDataMember]
+	public Observable? Source { get; }
 		
 	public Guid SourceId { get; }
 
 	public string PropertyName { get; }
 
-	public object NewValue { get; }
+	public object? NewValue { get; }
 	
-	public QueueChangeType QueueChangeType { get; set; } 
+	public QueueChangeType? QueueChangeType { get; set; } 
 
 	public void ApplyTo(object target)
 	{
-		if (target == null) throw new ArgumentNullException(nameof(target));
-		
-		PropertyInfo property = null;
+		var subTarget = target;
+		PropertyInfo? property = null;
 		var parts = PropertyName.Split('.');
 
 		if (!parts.Any())
@@ -40,39 +41,52 @@ public class PropertyChangedArgs
 
 		for (var index = 0; index < parts.Length; index++)
 		{
+			if (subTarget == null)
+				throw new InvalidDataException($"Couldn't find target to apply path {PropertyName} to.");
+			
 			var propertyName = parts[index];
-			property = GetProperty(target, propertyName);
+			property = GetProperty(subTarget, propertyName);
 
 			if (property == null)
 				throw new InvalidDataException(
-					$"Couldn't find part {propertyName} of path {PropertyName} on object {target.GetType()}.");
+					$"Couldn't find part {propertyName} of path {PropertyName} on object {subTarget.GetType()}.");
 
 			// Don't do this if its the last part. We need the target to be the parent object of the property
 			if (index != parts.Length - 1)
-				target = property.GetValue(target);
+				subTarget = property.GetValue(subTarget);
 		}
 
 		if (property == null)
-			throw new MissingMemberException($"Failed to find property with name {PropertyName} on type {target}");
+			throw new MissingMemberException($"Failed to find property with name {PropertyName} on type {subTarget}");
 		
 		if (property.PropertyType.IsAssignableTo(typeof(ObservableQueue)))
 		{
-			var queue = (ObservableQueue)property.GetValue(target);
+			var queue = (ObservableQueue?)property.GetValue(subTarget);
 
 			if (queue == null)
 				throw new MissingMemberException($"Failed to find property of type {typeof(ObservableQueue)} with name {PropertyName}");
 
-			switch (QueueChangeType)
+			if (!QueueChangeType.HasValue)
+				throw new InvalidDataException($"Queue change type was not set for property {PropertyName}.");
+			
+			switch (QueueChangeType.Value)
 			{
-				case QueueChangeType.Add:
+				case EventArgs.QueueChangeType.Add:
+
+					if (NewValue == null)
+						throw new InvalidDataException("Cannot enqueue a null object.");
+					
 					queue.EnqueueObject(NewValue);
 					break;
-				case QueueChangeType.Remove:
+				
+				case EventArgs.QueueChangeType.Remove:
 					queue.DequeueObject();
 					break;
-				case QueueChangeType.Clear:
+				
+				case EventArgs.QueueChangeType.Clear:
 					queue.Clear();
 					break;
+				
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
@@ -80,10 +94,10 @@ public class PropertyChangedArgs
 			return;
 		}
 		
-		property.SetValue(target, NewValue);
+		property.SetValue(subTarget, NewValue);
 	}
 
-	private static PropertyInfo GetProperty(object target, string propertyName)
+	private static PropertyInfo? GetProperty(object target, string propertyName)
 	{
 		return target.GetType().GetProperty(propertyName,
 			BindingFlags.Instance

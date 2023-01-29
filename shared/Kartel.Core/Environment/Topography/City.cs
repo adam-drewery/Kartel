@@ -4,8 +4,8 @@ namespace Kartel.Environment.Topography;
 
 public class City : Location
 {
-    public City(Country country, string name, double latitude, double longitude) 
-        : base(latitude, longitude)
+    public City(IGame game, Country country, string name, double latitude, double longitude) 
+        : base(game, latitude, longitude)
     {
         Country = country;
         Name = name;

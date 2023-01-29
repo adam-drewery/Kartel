@@ -8,7 +8,7 @@ namespace Kartel.Activities;
 [Verb("Find something to drink", "Finding something to drink", "Found something to drink")]
 public class FindDrink : Activity
 {
-    public Location Location { get; private set; }
+    public Location? Location { get; private set; }
 
     public FindDrink(Person actor) : base(actor) { }
 

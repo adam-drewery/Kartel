@@ -7,7 +7,7 @@ namespace Kartel.Commands;
 [Verb("Move House", "Moving House", "Moved House")]
 public class MoveHouse : Command
 {
-    private House House { get; }
+    private House? House { get; }
 
     public MoveHouse(Person actor, House house) : base(actor)
     {

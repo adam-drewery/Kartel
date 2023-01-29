@@ -7,7 +7,7 @@ namespace Kartel.Commands;
 [Verb("Move", "Moving", "Moved")]
 public class MoveToLocation : Command
 {
-	public MoveToLocation(Person actor, Location location) : base(actor)
+	public MoveToLocation(Person actor, Location? location) : base(actor)
 	{
 		Activities.Enqueue(new Activities.Move(actor, () => location));
 	}

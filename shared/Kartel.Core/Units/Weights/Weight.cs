@@ -2,11 +2,6 @@
 
 public class Weight : IQuantity<WeightUnit>
 {
-    public Weight()
-    {
-            
-    }
-        
     public Weight(WeightUnit unit, double value)
     {
         Unit = unit;
@@ -19,7 +14,7 @@ public class Weight : IQuantity<WeightUnit>
         
     public double Value { get; }
 
-    public double Kilograms => Unit?.ToKilograms(Value) ?? 0;
+    public double Kilograms => Unit.ToKilograms(Value);
 
     public static implicit operator double(Weight weight) => weight.Kilograms;
         

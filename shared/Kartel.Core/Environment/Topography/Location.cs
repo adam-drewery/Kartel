@@ -16,7 +16,7 @@ public class Location : GameObject
         return Equals(Game, other.Game) && Latitude.Equals(other.Latitude) && Longitude.Equals(other.Longitude);
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
@@ -32,9 +32,9 @@ public class Location : GameObject
         }
     }
 
-    public Location() { }
+    public Location(IGame game) : base(game) { }
         
-    public Location(double latitude, double longitude)
+    public Location(IGame game, double latitude, double longitude) : this(game)
     {
         Latitude = latitude;
         Longitude = longitude;

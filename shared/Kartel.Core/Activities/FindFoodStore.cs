@@ -9,9 +9,9 @@ namespace Kartel.Activities;
 [Verb("Find something to eat", "Finding something to eat", "Found something to eat")]
 public class FindFoodStore : Activity
 {
-    private Task<Shop> _findShopTask;
+    private Task<Shop>? _findShopTask;
 
-    public Shop Result { get; private set; }
+    public Shop? Result { get; private set; }
 
     public FindFoodStore(Person actor) : base(actor) { }
 

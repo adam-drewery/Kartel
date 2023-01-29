@@ -13,10 +13,11 @@ internal static class Program
 		var settings = Settings.FromArgs<NetworkSettings>(args);
 		
 		Console.Clear();
-		var propertyMarket = new PropertyMarketClient(settings);
-		var logistics = new LogisticsClient(settings);
-		var geocoding = new GeocodingClient(settings);
-		var locale = new LocaleClient(settings);
+		var propertyMarket = new PropertyMarketClient(Game.Stub, settings);
+		var logistics = new LogisticsClient(Game.Stub, settings);
+		var geocoding = new GeocodingClient(Game.Stub, settings);
+		var reverseGeocoding = new ReverseGeocodingClient(Game.Stub, settings);
+		var locale = new LocaleClient(Game.Stub, settings);
 
 		while(true)
 		{
@@ -58,7 +59,7 @@ internal static class Program
 				{
 					var city = DataSet.Cities.Random();
 
-					var location = new Location(0, 0) {Address = {Value = city.Name}};
+					var location = new Location(Game.Stub, 0, 0) {Address = {Value = city.Name}};
 					Console.WriteLine("Geocoding {0}", city.Name);
 					var house = geocoding.Geocode(location);
 					Console.WriteLine("Result: {0}", house);
@@ -67,16 +68,16 @@ internal static class Program
 				if (key.KeyChar == '4')
 				{
 					var city = DataSet.Cities.Random();
-					var location = new Location(city.Latitude, city.Longitude);
+					var location = new Location(Game.Stub, city.Latitude, city.Longitude);
 					Console.WriteLine("Reverse-geocoding {0}", city.Name);
-					var house = geocoding.ReverseGeocode(location);
+					var house = reverseGeocoding.ReverseGeocode(location);
 					Console.WriteLine("Result: {0}", house);
 				}
 				
 				if (key.KeyChar == '5')
 				{
 					var city = DataSet.Cities.Random();
-					var location = new Location(city.Latitude, city.Longitude);
+					var location = new Location(Game.Stub, city.Latitude, city.Longitude);
 					Console.WriteLine("Finding shop at {0} ({1},{2})", city.Name, city.Latitude, city.Longitude);
 					var house = await locale.FindStoreAsync((location, StockType.Food));
 					Console.WriteLine("Result: {0}", house);

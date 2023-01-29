@@ -15,16 +15,16 @@ public class SerializationTests : GameTests
     public void PersonFormatter()
     {
         var random = new Random();
-        var person = new Person
+        var person = new Person(Game)
         {
             FirstName = random.Forename(),
             Surname = random.Surname(),
             Health = (byte)random.Next(0, 255),
             Money = 50.Gbp(),
-            Location = new Location(random.NextDouble(), random.NextDouble())
+            Location = new Location(Game, random.NextDouble(), random.NextDouble())
         };
         
-        var options = KartelMessagePackSerializerOptions.Standard;
+        var options = KartelMessagePackSerializerOptions.ForGame(Game);
         var serialized = MessagePackSerializer.Serialize(person, options);
 
         var deserialized = MessagePackSerializer.Deserialize<Person>(serialized, options);
@@ -42,9 +42,9 @@ public class SerializationTests : GameTests
         person.Surname = random.Surname();
         person.Health = (byte)random.Next(0, 255);
         person.Money = 50.Gbp();
-        person.Location = new Location(random.NextDouble(), random.NextDouble());
+        person.Location = new Location(Game, random.NextDouble(), random.NextDouble());
 
-        var options = KartelMessagePackSerializerOptions.Standard;
+        var options = KartelMessagePackSerializerOptions.ForGame(Game);
         var serialized = MessagePackSerializer.Serialize(person, options);
         var deserialized = MessagePackSerializer.Deserialize<Player>(serialized, options);
 

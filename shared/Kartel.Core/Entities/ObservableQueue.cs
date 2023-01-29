@@ -8,26 +8,26 @@ public abstract class ObservableQueue
 {
     public abstract void EnqueueObject(object item);
 
-    public abstract object DequeueObject();
+    public abstract object? DequeueObject();
     
     public abstract void Clear();
 }
 
 public class ObservableQueue<T> : ObservableQueue, IReadOnlyCollection<T>, ICollection
 {
-    public event EventHandler<CollectionChangedArgs> ItemEnqueued;
+    public event EventHandler<CollectionChangedArgs>? ItemEnqueued;
     
-    public event EventHandler<CollectionChangedArgs> ItemDequeued;
+    public event EventHandler<CollectionChangedArgs>? ItemDequeued;
     
-    public event EventHandler<CollectionChangedArgs> Cleared;
+    public event EventHandler<CollectionChangedArgs>? Cleared;
 
     private readonly Queue<T> _queue = new();
 
-    //clear dequeue enqueue trydequeue
+    //clear dequeue enqueue try-dequeue
 
     public override void EnqueueObject(object item) => Enqueue((T)item);
 
-    public override object DequeueObject() => Dequeue();
+    public override object? DequeueObject() => Dequeue();
 
     public override void Clear()
     {
@@ -35,7 +35,7 @@ public class ObservableQueue<T> : ObservableQueue, IReadOnlyCollection<T>, IColl
         OnCleared(new CollectionChangedArgs(default));
     }
 
-    public void TryPeek(out T result) => _queue.TryPeek(out result);
+    public void TryPeek(out T? result) => _queue.TryPeek(out result);
 
     public void Enqueue(T item)
     {
@@ -50,7 +50,7 @@ public class ObservableQueue<T> : ObservableQueue, IReadOnlyCollection<T>, IColl
         return item;
     }
 
-    public bool TryDequeue(out T result)
+    public bool TryDequeue(out T? result)
     {
         var success = _queue.TryDequeue(out result);
         
@@ -82,9 +82,9 @@ public class ObservableQueue<T> : ObservableQueue, IReadOnlyCollection<T>, IColl
 
     // protected virtual void OnOnCollectionChanged(NotifyCollectionChangedAction action, IList<T> newItems, IList<T> oldItems) 
     //     => OnCollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(action, newItems, oldItems));
-    protected virtual void OnItemEnqueued(T item) => ItemEnqueued?.Invoke(this, new CollectionChangedArgs(item));
+    protected virtual void OnItemEnqueued(T? item) => ItemEnqueued?.Invoke(this, new CollectionChangedArgs(item));
 
-    protected virtual void OnItemDequeued(T item) => ItemDequeued?.Invoke(this, new CollectionChangedArgs(item));
+    protected virtual void OnItemDequeued(T? item) => ItemDequeued?.Invoke(this, new CollectionChangedArgs(item));
 
     protected virtual void OnCleared(CollectionChangedArgs e) => Cleared?.Invoke(this, e);
     

@@ -11,7 +11,6 @@ namespace Kartel.Logistics.Bing;
 public class RoutePlanner : Endpoint<List<Location>, Route>
 {
 	private readonly string _apiKey;
-	
 	protected override Func<ResponseSocket> SocketFactory { get; }
 	
 	public RoutePlanner(string address, string apiKey)
@@ -71,7 +70,7 @@ public class RoutePlanner : Endpoint<List<Location>, Route>
 			var lat = item.ManeuverPoint.Coordinates[0];
 			var lng = item.ManeuverPoint.Coordinates[1];
 
-			var location = new Location(lat, lng)
+			var location = new Location(Game.Stub, lat, lng)
 			{
 				Address = new Entities.Address {Lines = new[] {locationName}}
 			};

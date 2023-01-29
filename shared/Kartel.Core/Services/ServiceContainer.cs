@@ -1,29 +1,27 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 namespace Kartel.Services;
 
 [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
 public class ServiceContainer
 {
-    public ServiceContainer(params object[] services)
+    public ServiceContainer(
+        IPropertyMarketClient propertyMarket, 
+        ILocaleClient locale, 
+        ILogisticsClient directions, 
+        IGeocodingClient geocoder)
     {
-        foreach (var service in services)
-        {
-            var property = GetType().GetProperties()
-                .Single(p => p.PropertyType.IsInstanceOfType(service));
-                
-            property.SetValue(this, service);
-        }
+        PropertyMarket = propertyMarket;
+        Locale = locale;
+        Directions = directions;
+        Geocoder = geocoder;
     }
-        
-    public IPropertyMarketClient PropertyMarket { get; set; }
     
-    public ILocaleClient Locale { get; set; }
+    public IPropertyMarketClient PropertyMarket { get; }
+    
+    public ILocaleClient Locale { get; }
         
-    public ILogisticsClient Directions { get; set; }
+    public ILogisticsClient Directions { get; }
         
-    public IGeocodingClient Geocoder { get; set; }
-        
-    public ISocialEventsClient SocialEvents { get; set; }
+    public IGeocodingClient Geocoder { get; }
 }

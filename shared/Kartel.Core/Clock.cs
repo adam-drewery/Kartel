@@ -7,19 +7,13 @@ namespace Kartel;
 
 public class Clock : IClock, IDisposable
 {
-    private readonly Game _game;
     private DateTime _lastUpdate;
-    private Task _task;
+    private Task? _task;
     private readonly CancellationTokenSource _cancellationToken = new();
     private TimeSpan _sinceLastUpdate;
     private readonly Stopwatch _stopwatch = new();
 
     public bool Started { get; private set; }
-
-    public Clock(Game game)
-    {
-        _game = game;
-    }
 
     /// <summary>Number of milliseconds per tick</summary>
     public short Interval { get; set; }
@@ -43,7 +37,7 @@ public class Clock : IClock, IDisposable
         Delta = Time - LastUpdate;
     }
 
-    public event EventHandler Tick;
+    public event EventHandler? Tick;
 
     /// <summary>The actual number of milliseconds per tick</summary>
     public double TickSpeed => _sinceLastUpdate.TotalMilliseconds; 
@@ -54,8 +48,7 @@ public class Clock : IClock, IDisposable
     private void OnTick()
     {
         UpdateTime();
-        _game.OnTick();
-        Tick?.Invoke(_game, System.EventArgs.Empty);
+        Tick?.Invoke(this, System.EventArgs.Empty);
     }
 
     public void Start()
@@ -93,6 +86,6 @@ public class Clock : IClock, IDisposable
     public void Dispose()
     {
         _task?.Dispose();
-        _cancellationToken?.Dispose();
+        _cancellationToken.Dispose();
     }
 }

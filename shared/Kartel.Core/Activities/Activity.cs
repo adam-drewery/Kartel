@@ -24,7 +24,7 @@ public abstract class Activity
 		Update();
 	}
 	
-	protected Game Game { get; }
+	protected IGame Game { get; }
 
 	public VerbName Name { get; }
 	

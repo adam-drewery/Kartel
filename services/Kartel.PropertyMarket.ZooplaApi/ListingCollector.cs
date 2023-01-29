@@ -135,7 +135,7 @@ public class ListingCollector : Timer
 		var buildings = result
 			.Select(building =>
 			{
-				var house = new House(building.Latitude, building.Longitude)
+				var house = new House(Game.Stub, building.Latitude, building.Longitude)
 				{
 					ListingPrice = Convert.ToInt32(building.PriceChanges.OrderBy(p => p.Date).Last().Price),
 					Floors = building.Floors ?? (short)Random.Next(1, 3),

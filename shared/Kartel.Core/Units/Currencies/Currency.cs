@@ -22,7 +22,8 @@ public class Currency : Unit
             .GetProperties(BindingFlags.Public | BindingFlags.Static)
             .Where(p => p.PropertyType == typeof(Currency))
             .Where(p => !p.GetIndexParameters().Any())
-            .Select(p => (Currency)p.GetValue(null))
-            .ToHashSet();
+            .Select(p => (Currency?)p.GetValue(null))
+            .Where(x => x != null)
+            .ToHashSet()!;
 
 }

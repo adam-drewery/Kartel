@@ -10,7 +10,7 @@ public class Socialize : Activity
 {
     public Socialize(Person actor) : base(actor) { }
 
-    private Task<Person> _personTask;
+    private Task<Person>? _personTask;
     
     protected override void Update(TimeSpan sinceLastUpdate)
     {
