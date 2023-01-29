@@ -26,8 +26,11 @@ public class BuyFood : Activity
 
             if (Actor.Inventory.CanAdd(foodItem))
                 Actor.Inventory.Add(foodItem);
-            else 
+            else
+            {
+                Complete();
                 break;
+            }
         }
     }
 }

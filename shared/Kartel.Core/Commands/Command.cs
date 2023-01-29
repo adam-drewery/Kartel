@@ -84,8 +84,11 @@ public class Command
                 return;
             }
                 
-            if (CurrentActivity.IsComplete) 
+            if (CurrentActivity.IsComplete)
+            {
+                Log.Information("{Actor} ({ID}) finished {Activity}", Actor, Actor.Id, CurrentActivity.Name.PresentTense);
                 Activities.Dequeue();
+            }
         }
         
         UpdatedTime = Now;

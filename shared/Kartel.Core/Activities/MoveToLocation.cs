@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Kartel.Attributes;
 using Kartel.Entities;
@@ -7,7 +8,7 @@ using Kartel.Environment.Topography;
 namespace Kartel.Activities;
 
 [Verb("Move to location", "Moving to location", "Moved to location")]
-public class Move : Activity
+public class MoveToLocation : Activity
 {
     private readonly Person _actor;
     private Task<Route>? _directionsTask;
@@ -16,7 +17,7 @@ public class Move : Activity
 
     public Route? Route { get; private set; }
 
-    public Move(Person actor, Func<Location?> destination) : base(actor)
+    public MoveToLocation(Person actor, Func<Location?> destination) : base(actor)
     {
         _actor = actor;
         Destination = destination;
@@ -53,7 +54,9 @@ public class Move : Activity
         if (Route == null)
         {
             if (_directionsTask.IsCompleted)
+            {
                 Route = _directionsTask.Result;
+            }
             else if (_directionsTask.IsFaulted)
             {
                 Log.Error(_directionsTask.Exception, "Failed to get directions");
@@ -63,12 +66,23 @@ public class Move : Activity
         else
         {
             var newLocation = Route.LocationAfter(Game.Clock.Time - StartTime);
-
             
-            if (newLocation.DistanceTo(Actor.Location) < 10)
-                Actor.Location = newLocation;
-
-            if (Actor.Location.DistanceTo(destination) < 10) Complete();
+            Log.Information("{Actor} ({ID}) moved {Distance:F}m in the past {Duration}ms", 
+                Actor, 
+                Actor.Id, 
+                newLocation.DistanceTo(Actor.Location), 
+                sinceLastUpdate.TotalMilliseconds);
+            
+            Actor.Location = newLocation;
+            
+            
+            if (Actor.Location.DistanceTo(Route.Parts.Last().Location) < 10)
+            {
+                Complete();
+                
+                // Skip to the destination if the route didn't take us all the way there
+                Actor.Location = destination;
+            }
         }
     }
 }

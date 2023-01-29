@@ -10,11 +10,11 @@ public class FoodShopping : Command
     {
         var findShop = new Activities.FindFoodStore(actor);
         Activities.Enqueue(findShop);
-        Activities.Enqueue(new Activities.Move(actor, () => findShop.Result));
+        Activities.Enqueue(new Activities.MoveToLocation(actor, () => findShop.Result));
         
         // todo: wait until the shop is actually open
         Activities.Enqueue(new Activities.BuyFood(actor));
-        Activities.Enqueue(new Activities.Move(actor, () => Actor.Home));
+        Activities.Enqueue(new Activities.MoveToLocation(actor, () => Actor.Home));
         Activities.Enqueue(new Activities.DepositFood(actor));
     }
 }

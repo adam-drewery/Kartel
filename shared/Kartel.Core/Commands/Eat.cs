@@ -26,16 +26,16 @@ public class Eat : Command
             
             var findFoodStore = new FindFoodStore(actor);
             Activities.Enqueue(findFoodStore);
-            Activities.Enqueue(new Move(actor, () => findFoodStore.Result));
+            Activities.Enqueue(new Activities.MoveToLocation(actor, () => findFoodStore.Result));
             Activities.Enqueue(new BuyFood(actor));
-            Activities.Enqueue(new Move(actor, () => actor.Home));
+            Activities.Enqueue(new Activities.MoveToLocation(actor, () => actor.Home));
             Activities.Enqueue(new DepositFood(actor));
         }
         
         var findFood = new FindFood(actor); 
         Activities.Enqueue(findFood);
         
-        Activities.Enqueue(new Move(actor, () => findFood.Location));
+        Activities.Enqueue(new Activities.MoveToLocation(actor, () => findFood.Location));
         Activities.Enqueue(new EatFood(actor, () => findFood.FoodContainers));
     }
 }

@@ -9,7 +9,7 @@ public class Train : Command
 {
     public Train(Person actor, Skill skill, Location? location) : base(actor)
     {
-        Activities.Enqueue(new Activities.Move(actor, () => location));
+        Activities.Enqueue(new Activities.MoveToLocation(actor, () => location));
         Activities.Enqueue(new Activities.Train(actor, skill));
     }
 

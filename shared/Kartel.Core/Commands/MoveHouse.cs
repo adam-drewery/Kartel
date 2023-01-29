@@ -16,6 +16,6 @@ public class MoveHouse : Command
         // Don't move into other people's houses
         if (!Actor.Estate.Contains(House)) Cancel();
             
-        Activities.Enqueue(new Activities.Move(actor, () => house));
+        Activities.Enqueue(new Activities.MoveToLocation(actor, () => house));
     }
 }

@@ -47,23 +47,30 @@ public class StoreFinder : Endpoint<(Location Location, StockType StockType), Sh
         
         Log.Information("Received request for store selling {StockType}", stockType);
         
-        const int radius = 5000;
-        
         var type = stockType == StockType.Food ? "supermarket" : throw new ArgumentOutOfRangeException(nameof(@params));
 
-        var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
-                  $"?location={location.Latitude},{location.Longitude}" +
-                  $"&radius={radius}" +
-                  $"&type={type}" +
-                  $"&key={_apiKey}";
+        var radius = 4000;
+        var results = new List<JToken>();
         
-        var response = await _http.GetAsync(url);
-        var json = await response.Content.ReadAsStringAsync();
-        var results = JObject.Parse(json).SelectToken("results");
+        while(!results.Any())
+        {
+            // start with 1km and work up
+            radius += 1000;
+            
+            var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
+                      $"?location={location.Latitude},{location.Longitude}" +
+                      $"&radius={radius}" +
+                      $"&type={type}" +
+                      $"&key={_apiKey}";
+            
+            var response = await _http.GetAsync(url);
+            var json = await response.Content.ReadAsStringAsync();
+            results = JObject.Parse(json).SelectToken("results")!.ToList();
 
-        if (results == null)
-            throw new InvalidDataException("No results node in response.");
-
+            if (results == null)
+                throw new InvalidDataException("No results node in response.");
+        }
+        
         var shopLocations = results.Select(token =>
         {
             var latitude = token["geometry"]?["location"]?["lat"];
