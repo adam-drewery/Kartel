@@ -6,7 +6,7 @@ using Kartel.Environment;
 
 namespace Kartel.Activities;
 
-[Verb("Find something to eat", "Finding something to eat", "Found something to eat")]
+[Verb("Buy food", "Buying food", "Bought food")]
 public class BuyFood : Activity
 {
     private readonly Func<Shop> _shop;

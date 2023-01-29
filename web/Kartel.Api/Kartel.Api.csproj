@@ -4,6 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <LangVersion>10</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>41982d72-3d76-48b8-ba97-b52150f260bd</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

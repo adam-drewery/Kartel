@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Kartel.Attributes;
 using Kartel.Entities;
 using Kartel.Entities.Items.Containers;
 using Kartel.Entities.Items.Foods;
 using Kartel.Environment.Topography;
-using Kartel.Extensions;
 
 namespace Kartel.Activities;
 
@@ -13,30 +14,28 @@ namespace Kartel.Activities;
 public class FindFood : Activity
 {
     public Location Location { get; private set; }
+    
+    public ICollection<Container> FoodContainers { get; private set; }
 
     public FindFood(Person actor) : base(actor) { }
 
     protected override void Update(TimeSpan sinceLastUpdate)
     {
-        // how hungry am i?
-        var hunger = Actor.Needs.Food.Value;
-
-        var food = Actor.Home.Rooms
+        var locations = Actor.Home.Rooms
             .SelectMany(room => room.Contents)
             .OfType<Fridge>()
-            .SelectMany(fridge => fridge)
-            .OfType<Food>();
+            .Where(f => f.Container.Any(i => i is Food))
+            .ToList<Container>();
 
-        // i wanna eat 1kg of food
-        if (food.Sum(f => f.Weight) < 1.Kilograms())
-        {
-            
-        }
-
-        if (food != null)
+        if (locations.Any())
         {
             Location = Actor.Home;
+            FoodContainers = locations;
             Complete();
+        }
+        else
+        {
+            throw new InvalidDataException("Failed to find any food at home.");
         }
     }
 }

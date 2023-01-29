@@ -12,11 +12,11 @@ public class GameNotifier : EntityNotifier<GameHub>
 
 	public override void Watch(Game game)
 	{
-		game.Clock.Tick += (_, _) =>
+		game.Clock.Tick += async (_, _) =>
 		{
 			try
 			{
-				SendTime(game.Clock.Time);
+				await SendTime(game.Clock.Time);
 			}
 			catch (Exception ex)
 			{

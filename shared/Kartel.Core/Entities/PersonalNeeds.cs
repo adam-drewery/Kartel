@@ -37,7 +37,7 @@ public class PersonalNeeds : TypedList<Need>
         foreach (var property in properties)
         {
             var need = (Need)property.GetValue(this);
-            need.PropertyChanged += (sender, args) =>
+            need!.PropertyChanged += (_, args) =>
             {
                 OnPropertyChanged($"{property.Name}.{args.PropertyName}", args.NewValue);
             };

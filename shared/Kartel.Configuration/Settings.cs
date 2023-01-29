@@ -10,7 +10,11 @@ public abstract class Settings
             ? $"appsettings.{args[0].ToLower()}.json"
             : "appsettings.json";
 
-        var config = new ConfigurationBuilder().AddJsonFile(fileName).Build();
+        var config = new ConfigurationBuilder()
+            .AddJsonFile(fileName)
+            .AddUserSecrets<Settings>()
+            .Build();
+        
         return config.GetRequiredSection(typeof(T).Name.Replace("Settings", string.Empty)).Get<T>();
     }
 }

@@ -17,7 +17,7 @@ public class Socialize : Activity
         if (_personTask != null)
         {
             if (_personTask.IsFaulted)
-                Game.OnError("Socialization task failed", _personTask.Exception);
+                Log.Error(_personTask.Exception, "Socialization task failed");
                 
             else if (_personTask.IsCompleted)
                 Actor.Meet(_personTask.Result);

@@ -4,7 +4,6 @@ using Kartel.Attributes;
 using Kartel.Entities;
 using Kartel.Entities.Items.Containers;
 using Kartel.Entities.Items.Foods;
-using Serilog;
 
 namespace Kartel.Commands;
 
@@ -33,6 +32,6 @@ public class Eat : Command
         Activities.Enqueue(findFood);
         
         Activities.Enqueue(new Move(actor, () => findFood.Location));
-        Activities.Enqueue(new EatFood(actor));
+        Activities.Enqueue(new EatFood(actor, findFood.FoodContainers));
     }
 }

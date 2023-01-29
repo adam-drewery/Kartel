@@ -1,21 +1,15 @@
-using Audacia.Random;
 using Kartel.Environment;
 using Kartel.Extensions;
 using Serilog;
 using Zoopla.Scraping;
 
-namespace Kartel.PropertyMarket;
+namespace Kartel.PropertyMarket.ZooplaWeb;
 
 public class ListingCollector : System.Timers.Timer
 {
-    private static readonly Random Random = new();
     private readonly RegionScraper _regionScraper = new();
     private readonly ListingScraper _listingScraper = new();
 
-    private string City => Data.Cities[_cityIndex];
-
-
-    private readonly int _cityIndex = Random.Next(0, Data.Cities.Length - 1);
 
     public ListingCollector()
     {

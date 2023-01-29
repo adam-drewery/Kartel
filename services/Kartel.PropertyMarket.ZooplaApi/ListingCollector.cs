@@ -5,7 +5,7 @@ using Serilog;
 using Zoopla.ApiClient;
 using Timer = System.Timers.Timer;
 
-namespace Kartel.PropertyMarket;
+namespace Kartel.PropertyMarket.ZooplaApi;
 
 public class ListingCollector : Timer
 {

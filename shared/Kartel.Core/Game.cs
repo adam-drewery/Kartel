@@ -1,7 +1,6 @@
 ﻿using System;
 using Kartel.Entities;
 using Kartel.Environment.Topography;
-using Kartel.EventArgs;
 using Kartel.Services;
 using Serilog;
 
@@ -28,7 +27,7 @@ public class Game
 
     public GameCollection<Location> Locations { get; }
 
-    public event EventHandler<ErrorEventArgs> Error;
+    //public event EventHandler<ErrorEventArgs> Error;
 
     public void OnTick()
     {
@@ -47,9 +46,9 @@ public class Game
         }
     }
 
-    internal virtual void OnError(string message, Exception e)
-    {
-        var args = new ErrorEventArgs(message, e);
-        Error?.Invoke(this,args);
-    }
+    // internal virtual void OnError(string message, Exception e)
+    // {
+    //     var args = new ErrorEventArgs(message, e);
+    //     Error?.Invoke(this,args);
+    // }
 }

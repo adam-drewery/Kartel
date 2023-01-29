@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NetMQ.Sockets;
 using Serilog;
 
-namespace Kartel.PropertyMarket;
+namespace Kartel.PropertyMarket.ZooplaWeb;
 
 public class NewHouseFinder : Endpoint<House>
 {

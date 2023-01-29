@@ -42,7 +42,7 @@ public class Location : GameObject
 
     public override string ToString() => Address.Lines.Any() 
         ? Address.ToString() 
-        : "an unknown location";
+        : Latitude + "," + Longitude;
         
     [DataMember]
     public double Latitude

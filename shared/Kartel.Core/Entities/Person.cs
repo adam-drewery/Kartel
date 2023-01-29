@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Kartel.Commands;
 using Kartel.Entities.Items.Containers;
+using Kartel.Entities.Items.Foods;
 using Kartel.Entities.Items.MeleeWeapons;
 using Kartel.Environment;
 using Kartel.Environment.Topography;
@@ -31,7 +32,7 @@ public class Person : GameObject
     {
         Location = location;
         Money = Random.Next(10000, 20000).Gbp();
-        Inventory = new Inventory(this);
+        Inventory = new Inventory();
 
         Fists = new Fists();
         Gender = new Random().Enum<Gender>();
@@ -178,4 +179,15 @@ public class Person : GameObject
     }
 
     public override string ToString() => Name;
+
+    public void Eat(Food food)
+    {
+        // reduce 1pt per 10g of food
+        var amountToReduce = food.Weight.Kilograms * 100;
+
+        if (Needs.Food.Value - amountToReduce < byte.MinValue)
+            Needs.Food.Value = 0;
+        else
+            Needs.Food.Value -= (byte)amountToReduce;
+    }
 }

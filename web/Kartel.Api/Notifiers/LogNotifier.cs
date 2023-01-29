@@ -15,11 +15,11 @@ public class LogNotifier : CollectionNotifier<LogHub>
 
 	public override void Watch(Game game)
 	{
-		game.Clock.Tick += (_, _) =>
+		game.Clock.Tick += async (_, _) =>
 		{
 			try
 			{
-				SendLog("Tick");
+				await SendLog("Tick");
 			}
 			catch (Exception ex)
 			{

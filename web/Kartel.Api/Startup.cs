@@ -2,7 +2,6 @@
 using Kartel.Configuration;
 using Kartel.MessagePack;
 using Kartel.ServiceBase.Client;
-using Serilog;
 
 namespace Kartel.Api;
 
@@ -39,11 +38,8 @@ public class Startup
                 SpeedFactor = 1000
             }
         };
+        
         game.Clock.Start();
-
-        // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-        game.Error += (_, args) => Log.Error(args.Exception, args.Message);
-
         services.AddSingleton(game);
         services.AddNotifiers();
 

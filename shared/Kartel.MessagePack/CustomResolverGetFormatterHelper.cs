@@ -1,5 +1,7 @@
 using Kartel.Commands;
 using Kartel.Entities;
+using Kartel.Environment;
+using Kartel.Environment.Topography;
 using Kartel.EventArgs;
 using Kartel.MessagePack.Formatters;
 
@@ -12,6 +14,8 @@ internal static class CustomResolverGetFormatterHelper
     {
         { typeof(Person), typeof(PersonFormatter) },
         { typeof(Player), typeof(PlayerFormatter) },
+        { typeof(Location), typeof(LocationFormatter) },
+        { typeof(Shop), typeof(ShopFormatter) },
         { typeof(PropertyChangedArgs), typeof(PropertyChangedArgsFormatter) }
     };
 

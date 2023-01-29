@@ -4,7 +4,7 @@ using Kartel.ServiceBase;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-namespace Kartel.PropertyMarket;
+namespace Kartel.PropertyMarket.ZooplaApi;
 
 internal static class Program
 {

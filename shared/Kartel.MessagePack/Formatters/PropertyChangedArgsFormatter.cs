@@ -1,4 +1,5 @@
 using Kartel.Commands;
+using Kartel.Environment.Topography;
 using Kartel.EventArgs;
 using MessagePack;
 using MessagePack.Formatters;
@@ -8,6 +9,7 @@ namespace Kartel.MessagePack.Formatters;
 public class PropertyChangedArgsFormatter : IMessagePackFormatter<PropertyChangedArgs>
 {
     private readonly CommandFormatter _commandFormatter = new();
+    private readonly LocationFormatter _locationFormatter = new();
 
     public void Serialize(ref MessagePackWriter writer, PropertyChangedArgs value, MessagePackSerializerOptions options)
     {
@@ -38,9 +40,14 @@ public class PropertyChangedArgsFormatter : IMessagePackFormatter<PropertyChange
                     writer.Write(nameof(Command));
                     _commandFormatter.Serialize(ref writer, command, options);
                     break;
+             
+                case Location location:
+                    writer.Write(nameof(location));
+                    _locationFormatter.Serialize(ref writer, location, options);
+                    break;
                 
                 default:
-                    throw new ArgumentException($"Failed to serialize {value.NewValue}.");
+                    throw new ArgumentException($"Failed to serialize {value.NewValue} of type {value.NewValue.GetType()}.");
             }
 
         writer.Write(value.PropertyName);
@@ -59,6 +66,7 @@ public class PropertyChangedArgsFormatter : IMessagePackFormatter<PropertyChange
             nameof(Byte) => reader.ReadByte(),
             nameof(Int32) => reader.ReadInt32(),
             nameof(Command) => _commandFormatter.Deserialize(ref reader, options),
+            nameof(Location) => _locationFormatter.Deserialize(ref reader, options),
             _ => throw new ArgumentException("Failed to deserialize value.")
         };
 

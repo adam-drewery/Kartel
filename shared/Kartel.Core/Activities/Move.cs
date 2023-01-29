@@ -54,7 +54,7 @@ public class Move : Activity
                 Route = _directionsTask.Result;
             else if (_directionsTask.IsFaulted)
             {
-                Game.OnError("Failed to get directions", _directionsTask.Exception);
+                Log.Error(_directionsTask.Exception, "Failed to get directions");
                 Complete();
             }
         }
@@ -65,7 +65,7 @@ public class Move : Activity
             if (!newLocation.Equals(Actor.Location))
                 Actor.Location = newLocation;
 
-            if (Actor.Location.Equals(Destination())) Complete();
+            if (Actor.Location.DistanceTo(Destination()) < 10) Complete();
         }
     }
 }

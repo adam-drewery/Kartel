@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Kartel;
 
-public class Clock : IClock
+public class Clock : IClock, IDisposable
 {
     private readonly Game _game;
     private DateTime _lastUpdate;
@@ -87,5 +87,12 @@ public class Clock : IClock
     {
         Started = false;
         _cancellationToken.Cancel();
+        _task = null;
+    }
+
+    public void Dispose()
+    {
+        _task?.Dispose();
+        _cancellationToken?.Dispose();
     }
 }

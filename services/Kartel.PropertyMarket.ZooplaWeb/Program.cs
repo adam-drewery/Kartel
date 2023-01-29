@@ -4,7 +4,7 @@ using Kartel.ServiceBase;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-namespace Kartel.PropertyMarket;
+namespace Kartel.PropertyMarket.ZooplaWeb;
 
 internal static class Program
 {
@@ -22,7 +22,7 @@ internal static class Program
             ZooplaDbContext db = new();
             
             if (await db.Database.EnsureCreatedAsync())
-                Log.Information("Created database fo provider {ProviderName}", db.Database.ProviderName);
+                Log.Information("Created database for provider {ProviderName}", db.Database.ProviderName);
 
             Log.Debug("Applying pending migrations");
             await db.Database.MigrateAsync();

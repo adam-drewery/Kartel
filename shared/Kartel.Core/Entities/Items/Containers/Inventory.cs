@@ -5,10 +5,7 @@ namespace Kartel.Entities.Items.Containers;
 
 public class Inventory : Container
 {
-    private readonly Person _person;
-        
-    public Inventory(Person person) : base(20.Liters(), 0.Grams()) 
-        => _person = person;
+    public Inventory() : base(20.Liters(), 0.Grams()) { }
 
     public override CurrencyQuantity BasePrice { get; } = 0.Gbp();
 }

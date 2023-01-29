@@ -2,7 +2,7 @@ using Kartel.Entities;
 using Kartel.Environment;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kartel.PropertyMarket;
+namespace Kartel.PropertyMarket.ZooplaApi;
 
 public class ZooplaDbContext : DbContext
 {
