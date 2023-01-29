@@ -15,7 +15,7 @@ public class ListingScraper : ZooplaScraper
         var document = new HtmlDocument();
         document.Load(stream);
 
-        const string xPath = "/html/body/div[2]/div/div/main/div/div[4]/div[2]/section/div[2]/div[2]/div";
+        const string xPath = "/html/body/div[2]/div/div/main/div/div[4]/div[2]/section/div[2]/div";
         var listingNodes = document.DocumentNode.SelectNodes(xPath)?.ToList();
 
         if (listingNodes == null)
