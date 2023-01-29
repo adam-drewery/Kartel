@@ -3,7 +3,6 @@ using Kartel.Environment.Topography;
 using Kartel.EventArgs;
 using MessagePack;
 using MessagePack.Formatters;
-using Serilog;
 
 namespace Kartel.MessagePack.Formatters;
 

@@ -54,6 +54,8 @@ public class StoreFinder : Endpoint<(Location Location, StockType StockType), Sh
         
         while(!results.Any())
         {
+            Log.Information("Searching for a store within {Radius} meters of {Location}", radius, location);
+            
             // start with 1km and work up
             radius += 1000;
             
