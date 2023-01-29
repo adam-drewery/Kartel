@@ -2,7 +2,6 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>Kartel</RootNamespace>
-    <LangVersion>10</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="DataSets\cities.uk" />

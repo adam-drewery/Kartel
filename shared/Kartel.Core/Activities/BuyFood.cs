@@ -2,19 +2,13 @@ using System;
 using Kartel.Attributes;
 using Kartel.Entities;
 using Kartel.Entities.Items.Foods;
-using Kartel.Environment;
 
 namespace Kartel.Activities;
 
 [Verb("Buy food", "Buying food", "Bought food")]
 public class BuyFood : Activity
 {
-    private readonly Func<Shop> _shop;
-
-    public BuyFood(Person actor, Func<Shop> shop) : base(actor)
-    {
-        _shop = shop;
-    }
+    public BuyFood(Person actor) : base(actor) { }
 
     protected override void Update(TimeSpan sinceLastUpdate)
     {

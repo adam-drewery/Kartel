@@ -8,10 +8,7 @@ public class Relationship : GameObject
 {
     [DataMember]
     public Person Person { get; set; }
-        
-    [DataMember]
-    public EmploymentContract Contract { get; set; }
-        
+    
     [DataMember]
     public byte Trust { get; set; } = byte.MaxValue / 2;
     
