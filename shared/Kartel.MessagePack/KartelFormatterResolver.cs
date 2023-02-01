@@ -18,14 +18,15 @@ public class KartelFormatterResolver : IFormatterResolver
     {
         _game = game;
         
-        _formatterMap = new Dictionary<Type, IMessagePackFormatter>
+        _formatterMap = new Dictionary<Type, Func<IMessagePackFormatter>>
         {
-            { typeof(Person), new PersonFormatter(_game) },
-            { typeof(Player), new PlayerFormatter(_game) },
-            { typeof(Location), new LocationFormatter(_game) },
-            { typeof(House), new HouseFormatter(_game) },
-            { typeof(Shop), new ShopFormatter(_game) },
-            { typeof(PropertyChangedArgs), new PropertyChangedArgsFormatter(_game) }
+            { typeof(Person), () => new PersonFormatter(_game) },
+            { typeof(Player), () => new PlayerFormatter(_game) },
+            { typeof(Location), () => new LocationFormatter(_game) },
+            { typeof(House), () => new HouseFormatter(_game) },
+            { typeof(Shop), () => new ShopFormatter(_game) },
+            { typeof(Relationship), () => new RelationshipFormatter(_game) },
+            { typeof(PropertyChangedArgs), () => new PropertyChangedArgsFormatter(_game) }
         };
         
         // add various command formatters via reflection
@@ -36,15 +37,15 @@ public class KartelFormatterResolver : IFormatterResolver
             .Where(t => t.IsAssignableTo(typeof(Command)));
         
         foreach (var type in commandTypes) 
-            _formatterMap.Add(type, commandFormatter);
+            _formatterMap.Add(type, () => commandFormatter);
     }
     
-    private readonly Dictionary<Type, IMessagePackFormatter> _formatterMap;
+    private readonly Dictionary<Type, Func<IMessagePackFormatter>> _formatterMap;
 
     private IMessagePackFormatter? GetFormatter(Type t)
     {
         // If type can not get, must return null for fallback mechanism.
-        return _formatterMap.TryGetValue(t, out var formatter) ? formatter : null;
+        return _formatterMap.TryGetValue(t, out var formatter) ? formatter() : null;
     }
     
     public IMessagePackFormatter<T>? GetFormatter<T>() => (IMessagePackFormatter<T>?)GetFormatter(typeof(T));

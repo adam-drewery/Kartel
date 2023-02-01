@@ -7,8 +7,8 @@ public class RelationshipsHub : CollectionHub<Relationship>
 {
 	public RelationshipsHub(Game game) : base(game) { }
 
-	protected override Task<IEnumerable<Relationship>> LoadData(Guid id)
+	protected override Task<List<Relationship>> LoadData(Guid id)
 	{
-		return Task.FromResult(Game.Characters[id]?.Relationships.AsEnumerable());
+		return Task.FromResult(Game.Characters[id].Relationships.ToList());
 	}
 }

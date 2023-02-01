@@ -11,6 +11,7 @@ public class House : Location
 {
     private Person? _owner;
 
+    // todo: needed for EF, remove when possible
     private House() : this(Kartel.Game.Stub) { }
     
     public House(IGame game) : base(game, 0, 0) { }

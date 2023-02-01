@@ -30,7 +30,11 @@ public static class HubConfiguration
 			
 		foreach (var notifierType in NotifierTypes)
 		{
-			var notifier = (INotifier)serviceProvider.GetService(notifierType);
+			var notifier = (INotifier)serviceProvider.GetService(notifierType)!;
+
+			if (notifier == null) throw new TypeLoadException("Failed to get notifier");
+			if (game == null) throw new TypeLoadException("Failed to get game");
+			
 			notifier.Watch(game);
 		}
 	}

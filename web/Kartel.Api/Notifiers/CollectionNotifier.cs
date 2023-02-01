@@ -19,7 +19,7 @@ public abstract class CollectionNotifier<THub> : EntityNotifier<THub>, ICollecti
 			element.PropertyChanged += (_, args) => OnPropertyChanged(args);
 	}
 
-	public void OnCollectionChanged(object sender, CollectionChangedArgs e)
+	public void OnCollectionChanged(object? sender, CollectionChangedArgs e)
 	{
 		foreach (var gameObject in e.AddedItems) 
 			gameObject.PropertyChanged += OnPropertyChanged;

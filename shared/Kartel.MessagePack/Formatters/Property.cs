@@ -3,6 +3,7 @@ using System.Reflection;
 
 namespace Kartel.MessagePack.Formatters;
 
+/// <summary>Helper class for setting values of private properties.</summary>
 public static class Property
 {
     private const BindingFlags DeclaredOnlyLookup = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;

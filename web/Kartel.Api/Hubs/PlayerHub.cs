@@ -8,7 +8,7 @@ public class PlayerHub : EntityHub<Player>, IPlayerHub
 {
     public PlayerHub(Game game) : base(game) { }
 
-    protected override Task<Player> LoadData(Guid id) => Task.FromResult(Game.Characters[id] as Player);
+    protected override Task<Player> LoadData(Guid id) => Task.FromResult((Player)Game.Characters[id]);
 
     public async Task<Player> New()
     {

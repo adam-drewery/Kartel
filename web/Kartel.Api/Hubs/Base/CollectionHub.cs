@@ -4,9 +4,9 @@ public abstract class CollectionHub<T> : BaseHub
 {
 	protected CollectionHub(Game game) : base(game) { }
 
-	protected abstract Task<IEnumerable<T>> LoadData(Guid id);
+	protected abstract Task<List<T>> LoadData(Guid id);
 
-	public async Task<IEnumerable<T>> Subscribe(Guid id)
+	public async Task<List<T>> Subscribe(Guid id)
 	{
 		await Groups.AddToGroupAsync(Context.ConnectionId, id.ToString());
 		return await LoadData(id);

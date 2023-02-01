@@ -6,6 +6,7 @@ namespace Kartel.Environment;
 
 public class Shop : Location
 {
+    // todo: needed for EF, remove when possible
     private Shop() : this(Kartel.Game.Stub) { }
     
     public Shop(IGame game) : base(game, 0, 0) { }

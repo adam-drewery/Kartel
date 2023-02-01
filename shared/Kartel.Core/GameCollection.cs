@@ -24,7 +24,7 @@ public class GameCollection<T> : ICollection<T> where T : GameObject
     }
 
     // todo: make this efficient, use a dictionary
-    public T? this[Guid id] => _items.SingleOrDefault(x => x.Id == id);
+    public T this[Guid id] => _items.Single(x => x.Id == id);
         
     public IEnumerator<T> GetEnumerator() => _items.GetEnumerator();
 
@@ -34,7 +34,7 @@ public class GameCollection<T> : ICollection<T> where T : GameObject
 
     public int Count => _items.Count;
         
-    public bool IsReadOnly { get; } = false;
+    public bool IsReadOnly => false;
 
     public void Add(T item)
     {

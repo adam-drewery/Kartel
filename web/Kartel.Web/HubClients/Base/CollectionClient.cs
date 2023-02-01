@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Kartel.Web.HubClients.Base;
 
-public abstract class CollectionClient<T> : EntityClient<IEnumerable<T>>
+public abstract class CollectionClient<T> : EntityClient<List<T>>
 {
 	protected CollectionClient(HubConnectionBuilder builder, IConfiguration config) : base(builder, config)
 	{

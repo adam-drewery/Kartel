@@ -1,6 +1,6 @@
-using Kartel.Commands;
-using Kartel.Environment.Topography;
+using Kartel.Entities;
 using Kartel.EventArgs;
+using Kartel.MessagePack.Extensions;
 using MessagePack;
 using MessagePack.Formatters;
 
@@ -8,12 +8,12 @@ namespace Kartel.MessagePack.Formatters;
 
 public class PropertyChangedArgsFormatter : IMessagePackFormatter<PropertyChangedArgs>
 {
-    private readonly CommandFormatter _commandFormatter = new();
-    private readonly LocationFormatter _locationFormatter;
+    private readonly IFormatterResolver _resolver;
 
     public PropertyChangedArgsFormatter(IGame? game)
     {
-        _locationFormatter = new LocationFormatter(game ?? Game.Stub);
+        game ??= Game.Stub;
+        _resolver = new KartelFormatterResolver(game).CreateComposite();
     }
 
     public void Serialize(ref MessagePackWriter writer, PropertyChangedArgs value, MessagePackSerializerOptions options)
@@ -24,36 +24,16 @@ public class PropertyChangedArgsFormatter : IMessagePackFormatter<PropertyChange
             writer.WriteNil();
         }
         else
-            switch (value.NewValue)
-            {
-                case string @string:
-                    writer.Write(nameof(String));
-                    writer.Write(@string);
-                    break;
+        {
+            var valueType = value.Source?.GetType().GetProperty(value.PropertyName)?.PropertyType
+                       ?? value.NewValue.GetType();
 
-                case byte @byte:
-                    writer.Write(nameof(Byte));
-                    writer.Write(@byte);
-                    break;
-
-                case int @int:
-                    writer.Write(nameof(Int32));
-                    writer.Write(@int);
-                    break;
-
-                case Command command:
-                    writer.Write(nameof(Command));
-                    _commandFormatter.Serialize(ref writer, command, options);
-                    break;
-             
-                case Location location:
-                    writer.Write(nameof(location));
-                    _locationFormatter.Serialize(ref writer, location, options);
-                    break;
-                
-                default:
-                    throw new ArgumentException($"Failed to serialize {value.NewValue} of type {value.NewValue.GetType()}.");
-            }
+            // todo: bit messy, needs expanding
+            if (valueType.IsAssignableTo(typeof(ObservableQueue)))
+                valueType = valueType.GenericTypeArguments.First();
+            
+            _resolver.Serialize(ref writer, value.NewValue, options, valueType);
+        }
 
         writer.Write(value.PropertyName);
         writer.Write(value.SourceId.ToString());
@@ -64,16 +44,18 @@ public class PropertyChangedArgsFormatter : IMessagePackFormatter<PropertyChange
     {
         var valueType = reader.ReadString();
 
-        object newValue = valueType switch
+        object? newValue;
+        if (valueType == nameof(Object))
+            newValue = reader.ReadNil();
+        else
         {
-            nameof(Object) => reader.ReadNil(),
-            nameof(String) => reader.ReadString(),
-            nameof(Byte) => reader.ReadByte(),
-            nameof(Int32) => reader.ReadInt32(),
-            nameof(Command) => _commandFormatter.Deserialize(ref reader, options),
-            nameof(Location) => _locationFormatter.Deserialize(ref reader, options),
-            _ => throw new ArgumentException("Failed to deserialize value.")
-        };
+            var targetType = Type.GetType(valueType);
+
+            if (targetType == null)
+                throw new TypeLoadException("Failed to load type " + valueType);
+            
+            newValue = _resolver.Deserialize(ref reader, options, targetType);
+        }
 
         var propertyName = reader.ReadString();
         var sourceId = Guid.Parse(reader.ReadString());

@@ -26,7 +26,7 @@ public class Game : IGame
     public ServiceContainer Services { get; }
         
     public Game(
-        Func<Game, IPropertyMarketClient> propertyMarket, 
+        Func<Game, IPropertyMarketClient> propertyMarket,
         Func<Game, ILocaleClient> locale, 
         Func<Game, ILogisticsClient> directions, 
         Func<Game, IGeocodingClient> geocoder)
@@ -45,7 +45,7 @@ public class Game : IGame
 
     public GameCollection<Location> Locations { get; }
 
-    /// <summary>Used for constructing game objects when there isn't a game context, such as services.</summary>
+    /// <summary>Used for constructing game objects when there isn't a game context, such as within services.</summary>
     public static IGame Stub { get; } = new GameStub();
     
     public void OnTick()

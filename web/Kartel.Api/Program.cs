@@ -5,8 +5,8 @@ namespace Kartel.Api;
 
 public class Program
 {
-    public static string[] Args { get; private set; }
-    
+    public static string[] Args { get; private set; } = null!;
+
     public static void Main(string[] args)
     {
         Args = args;

@@ -4,6 +4,7 @@ using Kartel.Environment.Topography;
 using Kartel.Units.Currencies;
 using MessagePack;
 using MessagePack.Formatters;
+using Serilog;
 
 namespace Kartel.MessagePack.Formatters;
 
@@ -80,7 +81,11 @@ public class PersonFormatter : IMessagePackFormatter<Person?>
 
             options.Security.DepthStep(ref reader);
 
-            Property.SetPrivate(person, Guid.Parse(reader.ReadString()), p => p.Id);
+            var id = reader.ReadString();
+            
+            Log.Warning("HEY: {ID}", id);
+            
+            Property.SetPrivate(person, Guid.Parse(id), p => p.Id);
             
             person.Health = reader.ReadByte();
             person.Surname = reader.ReadString();

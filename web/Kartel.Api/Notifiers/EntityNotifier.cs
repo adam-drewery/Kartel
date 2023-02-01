@@ -11,12 +11,12 @@ public abstract class EntityNotifier<THub> : Notifier<THub>, IEntityNotifier whe
 {
 	public EntityNotifier(IHubContext<THub> hubContext) : base(hubContext) { }
 
-	protected void OnPropertyChanged(object sender, PropertyChangedArgs e) => OnPropertyChanged(e);
+	protected void OnPropertyChanged(object? sender, PropertyChangedArgs e) => OnPropertyChanged(e);
 
 	public void OnPropertyChanged(PropertyChangedArgs e)
 	{
-		if (e.SourceId == default) Log.Debug("Notifying property {Property} changed for entity of type {EntityType}", e.PropertyName, e.Source.GetType().Name);
-		else Log.Debug("Notifying property {Property} changed for entity of type {EntityType} with ID {ID}", e.PropertyName, e.Source.GetType().Name, e.SourceId);
+		if (e.SourceId == default) Log.Debug("Notifying property {Property} changed for entity of type {EntityType}", e.PropertyName, e.Source?.GetType().Name ?? "?");
+		else Log.Debug("Notifying property {Property} changed for entity of type {EntityType} with ID {ID}", e.PropertyName, e.Source?.GetType().Name ?? "?", e.SourceId);
 		
 		Clients.Group(e.SourceId.ToString())
 			.SendAsync("PropertyChanged", e);
