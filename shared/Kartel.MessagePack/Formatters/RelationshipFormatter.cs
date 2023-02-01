@@ -24,7 +24,10 @@ public class RelationshipFormatter : IMessagePackFormatter<Relationship>
 
     public Relationship Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
     {
-        var person = _resolver.Deserialize<Person>(ref reader, options);
+        var typeName = reader.ReadString();
+        var type = Type.GetType(typeName) ?? throw new TypeLoadException("Failed to load type " + typeName);
+        
+        var person = (Person?)_resolver.Deserialize(ref reader, options, type);
 
         if (person == null)
             throw new InvalidDataException("Person was null.");

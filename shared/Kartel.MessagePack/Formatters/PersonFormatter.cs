@@ -83,8 +83,6 @@ public class PersonFormatter : IMessagePackFormatter<Person?>
 
             var id = reader.ReadString();
             
-            Log.Warning("HEY: {ID}", id);
-            
             Property.SetPrivate(person, Guid.Parse(id), p => p.Id);
             
             person.Health = reader.ReadByte();
