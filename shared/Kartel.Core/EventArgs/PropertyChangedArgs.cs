@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Kartel.Entities;
+using Kartel.Observables;
 
 namespace Kartel.EventArgs;
 

@@ -11,6 +11,7 @@ using Kartel.Environment;
 using Kartel.Environment.Topography;
 using Kartel.EventArgs;
 using Kartel.Extensions;
+using Kartel.Observables;
 using Kartel.Units.Currencies;
 
 namespace Kartel.Entities;
@@ -48,6 +49,8 @@ public class Person : GameObject
 
     public Person(IGame game) : base(game)
     {
+        Game.Characters.Add(this);
+        
         Inventory = new Inventory();
         Fists = new Fists();
         
@@ -59,8 +62,7 @@ public class Person : GameObject
         {
             OnPropertyChanged($"{nameof(Needs)}." + args.PropertyName, args.NewValue);
         };
-        
-        
+
         Commands.ItemEnqueued += (_, args) => OnPropertyChanged(nameof(Commands), args.Item, QueueChangeType.Add);
         Commands.ItemDequeued += (_, args) => OnPropertyChanged(nameof(Commands), args.Item, QueueChangeType.Remove);
         Commands.Cleared += (_, _) => OnPropertyChanged(nameof(Commands), null, QueueChangeType.Clear);

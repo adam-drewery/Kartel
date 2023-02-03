@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Kartel.Commands;
+using Kartel.Observables;
 
 namespace Kartel.Entities;
 

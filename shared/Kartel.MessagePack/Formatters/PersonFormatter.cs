@@ -4,7 +4,6 @@ using Kartel.Environment.Topography;
 using Kartel.Units.Currencies;
 using MessagePack;
 using MessagePack.Formatters;
-using Serilog;
 
 namespace Kartel.MessagePack.Formatters;
 

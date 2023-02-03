@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Kartel.Entities;
+namespace Kartel.Observables;
 
 public abstract class ObservableQueue
 {

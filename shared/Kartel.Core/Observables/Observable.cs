@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Kartel.EventArgs;
 
-namespace Kartel.Entities;
+namespace Kartel.Observables;
 
 [DataContract]
 public class Observable

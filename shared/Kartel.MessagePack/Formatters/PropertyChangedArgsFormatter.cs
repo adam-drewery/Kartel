@@ -1,6 +1,7 @@
 using Kartel.Entities;
 using Kartel.EventArgs;
 using Kartel.MessagePack.Extensions;
+using Kartel.Observables;
 using MessagePack;
 using MessagePack.Formatters;
 

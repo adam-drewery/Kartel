@@ -1,5 +1,6 @@
 using System.Runtime.Serialization;
 using Kartel.Entities;
+using Kartel.Observables;
 using Serilog;
 
 namespace Kartel;

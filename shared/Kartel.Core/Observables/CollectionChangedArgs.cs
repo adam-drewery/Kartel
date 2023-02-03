@@ -1,4 +1,4 @@
-namespace Kartel.Entities;
+namespace Kartel.Observables;
 
 public class CollectionChangedArgs
 {

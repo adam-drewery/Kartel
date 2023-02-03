@@ -14,7 +14,7 @@ public class CollectionChangedArgs
 	}
 
 	public IReadOnlyCollection<Guid> RemovedItemIds { get; }
-		
+
 	public IReadOnlyCollection<GameObject> RemovedItems { get; }
 
 	public IReadOnlyCollection<GameObject> AddedItems { get; }

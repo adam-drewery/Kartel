@@ -31,7 +31,7 @@ public class Startup
             Clock =
             {
                 Interval = 100,
-                SpeedFactor = 1000
+                SpeedFactor = 100
             }
         };
         
