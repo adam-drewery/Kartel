@@ -4,16 +4,12 @@ using System.Linq;
 using Kartel.Activities;
 using Kartel.Attributes;
 using Kartel.Entities;
-using Serilog;
 
 namespace Kartel.Commands;
 
 [Verb("Hang out", "Hanging out", "Hung out")]
-public class Command
+public class Command : GameObject
 {
-    protected ILogger Log { get; } = Serilog.Log.ForContext<Command>();
-    
-    protected IGame Game { get; }
 
     protected Person Actor { get; }
 
@@ -29,10 +25,9 @@ public class Command
         
     public DateTime UpdatedTime { get; private set; }
 
-    public Command(Person actor)
+    public Command(Person actor) : base(actor.Game)
     {
         Name = new VerbName(this);
-        Game = actor.Game;
         Actor = actor;
     }
         

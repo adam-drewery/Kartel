@@ -8,6 +8,7 @@
 @inject ClientSession Session
 @inject PersonClient People
 @inject RelationshipClient Relationships
+
 @inject IJSRuntime JsRuntime;
 
 @code 
@@ -22,13 +23,10 @@
     {
         if (Id == null)
         {
-            _person = await People.Subscribe(Session.PlayerId);
+            // Get & bind person instance
+            _person = await People.Bind(Session.PlayerId, StateHasChanged);
             
-            People.PropertyChanged += (_, args) =>
-            {
-                args.ApplyTo(_person);
-                StateHasChanged();
-            };
+            // get and bind person's commands
         }
         else
         {

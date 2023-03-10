@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Kartel.Entities;
 using Kartel.Observables;
 
 namespace Kartel.EventArgs;
@@ -29,7 +28,7 @@ public class PropertyChangedArgs
 
 	public object? NewValue { get; }
 	
-	public QueueChangeType? QueueChangeType { get; set; } 
+	public CollectionChangeType? CollectionChangeType { get; set; } 
 
 	public void ApplyTo(object target)
 	{
@@ -67,12 +66,12 @@ public class PropertyChangedArgs
 			if (queue == null)
 				throw new MissingMemberException($"Failed to find property of type {typeof(ObservableQueue)} with name {PropertyName}");
 
-			if (!QueueChangeType.HasValue)
+			if (!CollectionChangeType.HasValue)
 				throw new InvalidDataException($"Queue change type was not set for property {PropertyName}.");
 			
-			switch (QueueChangeType.Value)
+			switch (CollectionChangeType.Value)
 			{
-				case EventArgs.QueueChangeType.Add:
+				case EventArgs.CollectionChangeType.Add:
 
 					if (NewValue == null)
 						throw new InvalidDataException("Cannot enqueue a null object.");
@@ -80,11 +79,11 @@ public class PropertyChangedArgs
 					queue.EnqueueObject(NewValue);
 					break;
 				
-				case EventArgs.QueueChangeType.Remove:
+				case EventArgs.CollectionChangeType.Remove:
 					queue.DequeueObject();
 					break;
 				
-				case EventArgs.QueueChangeType.Clear:
+				case EventArgs.CollectionChangeType.Clear:
 					queue.Clear();
 					break;
 				

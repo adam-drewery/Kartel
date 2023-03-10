@@ -1,6 +1,7 @@
 using Kartel.Api.Hubs.Base;
 using Kartel.Api.Hubs.Base.Interfaces;
 using Kartel.EventArgs;
+using Kartel.Observables;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Kartel.Api.Notifiers;
@@ -10,7 +11,7 @@ public abstract class CollectionNotifier<THub> : EntityNotifier<THub>, ICollecti
 {
 	protected CollectionNotifier(IHubContext<THub> hubContext) : base(hubContext) { }
 
-	protected void Watch<TElement>(GameCollection<TElement> collection)
+	protected void Watch<TElement>(ObservableCollection<TElement> collection)
 		where TElement : GameObject
 	{
 		collection.CollectionChanged += OnCollectionChanged;
@@ -21,10 +22,12 @@ public abstract class CollectionNotifier<THub> : EntityNotifier<THub>, ICollecti
 
 	public void OnCollectionChanged(object? sender, CollectionChangedArgs e)
 	{
-		foreach (var gameObject in e.AddedItems) 
-			gameObject.PropertyChanged += OnPropertyChanged;
+		if (e.Item == null) return;
+		
+		if (e.CollectionChangeType == CollectionChangeType.Add) 
+			e.Item.PropertyChanged += OnPropertyChanged;
 			
-		foreach (var gameObject in e.RemovedItems)
-			gameObject.PropertyChanged -= OnPropertyChanged;
+		else if (e.CollectionChangeType == CollectionChangeType.Remove)
+			e.Item.PropertyChanged -= OnPropertyChanged;
 	}
 }

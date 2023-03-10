@@ -1,4 +1,3 @@
-using Kartel.Commands;
 using Kartel.Entities;
 using Kartel.Environment.Topography;
 using Kartel.Units.Currencies;
@@ -33,17 +32,6 @@ public class PersonFormatter : IMessagePackFormatter<Person?>
         writer.Write(person.Location.Latitude);
         writer.Write(person.Location.Longitude);
         writer.Write(person.Location.Address.Value);
-        
-        writer.WriteArrayHeader(person.Commands.Count);
-        
-        foreach (var command in person.Commands)
-        {
-            writer.Write(command.Name.PresentTense);
-            writer.Write(command.Name.PastTense);
-            writer.Write(command.Name.FutureTense);
-            writer.Write(command.EndTime);
-            writer.Write(command.StartTime);
-        }
         
         writer.WriteArrayHeader(person.Needs.Count());
 
@@ -95,22 +83,8 @@ public class PersonFormatter : IMessagePackFormatter<Person?>
             {
                 Address = { Value = reader.ReadString() }
             };
-
+            
             var count = reader.ReadArrayHeader();
-            for (var i = 0; i < count; i++)
-            {
-                var command = new Command(new Person(game))
-                {
-                    Name = new VerbName(reader.ReadString(), reader.ReadString(), reader.ReadString())
-                };
-
-                Property.SetPrivate(command, reader.ReadDateTime(), c => c.EndTime);
-                Property.SetPrivate(command, reader.ReadDateTime(), c => c.StartTime);
-
-                person.Commands.Enqueue(command);
-            }
-
-            count = reader.ReadArrayHeader();
             for (var i = 0; i < count; i++)
             {
                 var name = reader.ReadString();

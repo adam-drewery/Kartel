@@ -27,7 +27,6 @@ public class Player : Person
         foreach (var associate in associates) // todo: slow
             player.Meet(await associate);
 
-        game.Characters.Add(player);
         return player;
     }
 }

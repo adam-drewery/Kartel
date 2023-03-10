@@ -1,4 +1,3 @@
-using Kartel.Entities;
 using Kartel.EventArgs;
 using Kartel.MessagePack.Extensions;
 using Kartel.Observables;
@@ -38,7 +37,7 @@ public class PropertyChangedArgsFormatter : IMessagePackFormatter<PropertyChange
 
         writer.Write(value.PropertyName);
         writer.Write(value.SourceId.ToString());
-        writer.Write((int?)value.QueueChangeType ?? -1);
+        writer.Write((int?)value.CollectionChangeType ?? -1);
     }
 
     public PropertyChangedArgs Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
@@ -64,7 +63,7 @@ public class PropertyChangedArgsFormatter : IMessagePackFormatter<PropertyChange
         
         return new PropertyChangedArgs(sourceId, propertyName, newValue)
         {
-            QueueChangeType = queueChangeType >= 0 ? (QueueChangeType)queueChangeType : null
+            CollectionChangeType = queueChangeType >= 0 ? (CollectionChangeType)queueChangeType : null
         };
     }
 }

@@ -1,8 +1,24 @@
+using Kartel.Extensions;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
 using Serilog;
 
 namespace Kartel.Web.HubClients.Base;
+
+public abstract class HubClient<T> : HubClient
+{
+	protected HubClient(HubConnectionBuilder builder, IConfiguration configuration) : base(builder, configuration) { }
+
+	public async Task<T> Subscribe(Guid id)
+	{
+		if (!IsStarted) await Connect();
+			
+		Log.Information("Subscribing to {EntityName} with ID {ID}", typeof(T).PrettyName(), id);
+		var result = await Connection.InvokeAsync<T>(nameof(Subscribe), id);
+		Log.Information("Subscription Successful: {@Result}", result);
+		return result;
+	}
+}
 
 public abstract class HubClient
 {

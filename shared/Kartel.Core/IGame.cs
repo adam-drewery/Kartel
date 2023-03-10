@@ -1,5 +1,6 @@
 using Kartel.Entities;
 using Kartel.Environment.Topography;
+using Kartel.Observables;
 using Kartel.Services;
 
 namespace Kartel;
@@ -10,7 +11,7 @@ public interface IGame
     
     IClock Clock { get; }
     
-    GameCollection<Person> Characters { get; }
+    ObservableCollection<Person> Characters { get; }
 
-    GameCollection<Location> Locations { get; }
+    ObservableCollection<Location> Locations { get; }
 }

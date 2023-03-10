@@ -1,11 +1,10 @@
 using Kartel.EventArgs;
-using Kartel.Extensions;
 using Microsoft.AspNetCore.SignalR.Client;
 using Serilog;
 
 namespace Kartel.Web.HubClients.Base;
 
-public abstract class EntityClient<T> : HubClient
+public abstract class EntityClient<T> : HubClient<T>
 {
 	protected EntityClient(HubConnectionBuilder builder, IConfiguration config) : base(builder, config)
 	{
@@ -16,16 +15,18 @@ public abstract class EntityClient<T> : HubClient
 			return Task.CompletedTask;
 		});
 	}
+	
+	public async Task<T> Bind(Guid id, Action callback = null)
+	{
+		var target = await Subscribe(id);
+		PropertyChanged += (_, args) =>
+		{
+			args.ApplyTo(target);
+			callback?.Invoke();
+		};
+		
+		return target;
+	}
 
 	public event EventHandler<PropertyChangedArgs> PropertyChanged;
-
-	public async Task<T> Subscribe(Guid id)
-	{
-		if (!IsStarted) await Connect();
-			
-		Log.Information("Subscribing to {EntityName} with ID {ID}", typeof(T).PrettyName(), id);
-		var result = await Connection.InvokeAsync<T>(nameof(Subscribe), id);
-		Log.Information("Subscription Successful: {@Result}", result);
-		return result;
-	}
 }

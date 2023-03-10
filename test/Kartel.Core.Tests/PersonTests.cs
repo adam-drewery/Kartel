@@ -14,7 +14,6 @@ public class PersonTests : GameTests
 		public void Reduces_fatigue_when_an_interval_has_passed()
 		{
 			var person = new Person(new House(Game)) { Needs = { Sleep = { Value = 0 } } };
-			Game.Characters.Add(person);
 
 			var oldFatigue = person.Needs.Sleep.Value;
 			Clock.IncrementTime(TimeSpan.FromSeconds(300));
@@ -27,7 +26,6 @@ public class PersonTests : GameTests
 		public void Reduces_fatigue_when_an_interval_has_passed_and_the_previous_tick_was_the_previous_day()
 		{
 			var person = new Person(new House(Game)) { Needs = { Sleep = { Value = 0 } } };
-			Game.Characters.Add(person);
 
 			var oldFatigue = person.Needs.Sleep.Value;
 			Clock.IncrementTime(TimeSpan.FromHours(23));

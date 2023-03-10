@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Kartel.EventArgs;
 
 namespace Kartel.Observables;
 
@@ -9,30 +10,25 @@ public abstract class ObservableQueue
     public abstract void EnqueueObject(object item);
 
     public abstract object? DequeueObject();
-    
+
     public abstract void Clear();
 }
 
-public class ObservableQueue<T> : ObservableQueue, IReadOnlyCollection<T>, ICollection
+public sealed class ObservableQueue<T> : ObservableQueue, IReadOnlyCollection<T>, ICollection
+    where T : GameObject
 {
-    public event EventHandler<CollectionChangedArgs>? ItemEnqueued;
+    public event EventHandler<CollectionChangedArgs>? CollectionChanged;
     
-    public event EventHandler<CollectionChangedArgs>? ItemDequeued;
-    
-    public event EventHandler<CollectionChangedArgs>? Cleared;
-
     private readonly Queue<T> _queue = new();
-
-    //clear dequeue enqueue try-dequeue
-
+    
     public override void EnqueueObject(object item) => Enqueue((T)item);
 
-    public override object? DequeueObject() => Dequeue();
+    public override object DequeueObject() => Dequeue();
 
     public override void Clear()
     {
         _queue.Clear();
-        OnCleared(new CollectionChangedArgs(default));
+        OnCollectionCleared();
     }
 
     public void TryPeek(out T? result) => _queue.TryPeek(out result);
@@ -41,6 +37,15 @@ public class ObservableQueue<T> : ObservableQueue, IReadOnlyCollection<T>, IColl
     {
         _queue.Enqueue(item);
         OnItemEnqueued(item);
+    }
+
+    public void Enqueue(IEnumerable<T> items)
+    {
+        foreach (var item in items)
+        {
+            _queue.Enqueue(item);
+            OnItemEnqueued(item);
+        }
     }
 
     public T Dequeue()
@@ -53,9 +58,11 @@ public class ObservableQueue<T> : ObservableQueue, IReadOnlyCollection<T>, IColl
     public bool TryDequeue(out T? result)
     {
         var success = _queue.TryDequeue(out result);
-        
-        if (success) OnItemDequeued(result);
-        
+
+        // todo: how could result be null?
+        if (success && result != null) 
+            OnItemDequeued(result);
+
         return success;
     }
 
@@ -75,18 +82,28 @@ public class ObservableQueue<T> : ObservableQueue, IReadOnlyCollection<T>, IColl
     }
 
     public int Count => _queue.Count;
-    
+
     public bool IsSynchronized => ((ICollection)_queue).IsSynchronized;
 
     public object SyncRoot => ((ICollection)_queue).SyncRoot;
 
-    // protected virtual void OnOnCollectionChanged(NotifyCollectionChangedAction action, IList<T> newItems, IList<T> oldItems) 
-    //     => OnCollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(action, newItems, oldItems));
-    protected virtual void OnItemEnqueued(T? item) => ItemEnqueued?.Invoke(this, new CollectionChangedArgs(item));
+    private void OnItemEnqueued(T item)
+    {
+        var args = new CollectionChangedArgs(item, CollectionChangeType.Add);
+        CollectionChanged?.Invoke(this, args);
+    }
 
-    protected virtual void OnItemDequeued(T? item) => ItemDequeued?.Invoke(this, new CollectionChangedArgs(item));
+    private void OnItemDequeued(T item)
+    {
+        var args = new CollectionChangedArgs(item, CollectionChangeType.Remove);
+        CollectionChanged?.Invoke(this, args);
+    }
 
-    protected virtual void OnCleared(CollectionChangedArgs e) => Cleared?.Invoke(this, e);
-    
+    private void OnCollectionCleared()
+    {
+        var args = new CollectionChangedArgs(null, CollectionChangeType.Clear);
+        CollectionChanged?.Invoke(this, args);
+    }
+
     public T Peek() => _queue.Peek();
 }

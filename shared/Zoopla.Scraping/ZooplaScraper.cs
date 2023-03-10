@@ -4,29 +4,34 @@ namespace Zoopla.Scraping;
 
 public abstract class ZooplaScraper
 {
-    private const string UserAgent = "Mozilla/5.0 (X11; Linux x86_64) " +
-                                     "AppleWebKit/537.36 (KHTML, like Gecko) " +
-                                     "Chrome/108.0.0.0 Safari/537.36";
-    
-    protected readonly HttpClient Http = new(new LoggingHttpMessageHandler()) { DefaultRequestHeaders = { { "user-agent", UserAgent } } };
+    protected readonly HttpClient Http = new(new LoggingHttpMessageHandler())
+    {
+        DefaultRequestHeaders =
+        {
+            { "Accept-Language", "en,en-US;q=0.5" },
+            { "Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8" },
+            { "user-agent", "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/110.0" }
+        }
+    };
 
     private class LoggingHttpMessageHandler : HttpClientHandler
     {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            Console.WriteLine($"{request.Method}: {request.RequestUri}");
 
-            try
-            {
                 var result = await base.SendAsync(request, cancellationToken);
-                return result;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"{request.Method}: {request.RequestUri} failed");
-                Console.WriteLine(e);
-                throw;
-            }
+                
+                if (result.IsSuccessStatusCode) return result;
+
+                var lines = new[]
+                {
+                    "Request failed to: " + request.RequestUri,
+                    "Status Code: " + result.StatusCode,
+                    "Response Body:" + Environment.NewLine 
+                        + await result.Content.ReadAsStringAsync(cancellationToken)
+                };
+
+                throw new HttpRequestException(string.Join(Environment.NewLine, lines));
         }
     }
     

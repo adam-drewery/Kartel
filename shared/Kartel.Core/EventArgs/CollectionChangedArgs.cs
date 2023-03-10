@@ -1,21 +1,36 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using Kartel.Observables;
 
 namespace Kartel.EventArgs;
 
 public class CollectionChangedArgs
 {
-	public CollectionChangedArgs(IEnumerable<GameObject> removedItems, IEnumerable<GameObject> addedItems)
+	public CollectionChangedArgs(GameObject? item, CollectionChangeType collectionChangeType)
 	{
-		RemovedItems = new List<GameObject>(removedItems);
-		RemovedItemIds = new List<Guid>(RemovedItems.Select(x => x.Id));
-		AddedItems = new List<GameObject>(addedItems);
+		ItemId = item?.Id;
+		Item = item;
+		CollectionChangeType = collectionChangeType;
 	}
 
-	public IReadOnlyCollection<Guid> RemovedItemIds { get; }
+	public Guid? ItemId { get; }
 
-	public IReadOnlyCollection<GameObject> RemovedItems { get; }
+	public GameObject? Item { get; }
+	
+	public CollectionChangeType CollectionChangeType { get; }
 
-	public IReadOnlyCollection<GameObject> AddedItems { get; }
+	public void ApplyTo(ObservableCollection target)
+	{
+		if (Item == null) throw new InvalidOperationException("Can't add or remove a null item.");
+		
+		if (CollectionChangeType == CollectionChangeType.Add) target.AddObject(Item);
+		else if (CollectionChangeType == CollectionChangeType.Remove) target.RemoveObject(Item);
+	}
+	
+	public void ApplyTo(ObservableQueue queue)
+	{
+		if (Item == null) throw new InvalidOperationException("Can't add or remove a null item.");
+		
+		if (CollectionChangeType == CollectionChangeType.Add) queue.EnqueueObject(Item);
+		else if (CollectionChangeType == CollectionChangeType.Remove) queue.EnqueueObject(Item);
+	}
 }

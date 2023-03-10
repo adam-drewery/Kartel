@@ -1,6 +1,6 @@
 namespace Kartel.EventArgs;
 
-public enum QueueChangeType
+public enum CollectionChangeType
 {
     Add,
     Remove,

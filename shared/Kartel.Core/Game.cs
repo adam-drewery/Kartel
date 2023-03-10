@@ -1,6 +1,7 @@
 ﻿using System;
 using Kartel.Entities;
 using Kartel.Environment.Topography;
+using Kartel.Observables;
 using Kartel.Services;
 using Serilog;
 
@@ -35,15 +36,12 @@ public class Game : IGame
         
         _clock = new Clock();
         _clock.Tick += ClockOnTick;
-        
-        Characters = new GameCollection<Person>(this);
-        Locations = new GameCollection<Location>(this);
         City.Seed(this);
     }
 
-    public GameCollection<Person> Characters { get; }
+    public ObservableCollection<Person> Characters { get; } = new();
 
-    public GameCollection<Location> Locations { get; }
+    public ObservableCollection<Location> Locations { get; } = new();
 
     /// <summary>Used for constructing game objects when there isn't a game context, such as within services.</summary>
     public static IGame Stub { get; } = new GameStub();
@@ -70,9 +68,9 @@ public class Game : IGame
         public ServiceContainer Services => throw new NotImplementedException("Cannot access services in a game stub instance.");
         
         public IClock Clock => throw new NotImplementedException("Cannot access clock in a game stub instance.");
+
+        public ObservableCollection<Person> Characters => new();
         
-        public GameCollection<Person> Characters => throw new NotImplementedException("Cannot access characters in a game stub instance.");
-        
-        public GameCollection<Location> Locations => throw new NotImplementedException("Cannot access locations in a game stub instance.");
+        public ObservableCollection<Location> Locations => new();
     }
 }

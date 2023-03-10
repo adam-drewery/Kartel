@@ -83,7 +83,7 @@ public class StoreFinder : Endpoint<(Location Location, StockType StockType), Sh
             
             return new ShopLocation
             {
-                Key = latitude.Value<string>() + "+" + longitude.Value<string>(),
+                Key = key,
                 Shop = new Shop(Game.Stub)
                 {
                     Latitude = latitude.Value<double>(),
@@ -95,11 +95,13 @@ public class StoreFinder : Endpoint<(Location Location, StockType StockType), Sh
 
         Log.Information("Found {Count} food stores in the area", shopLocations.Count);
         
-        db.AddRange(shopLocations);
-        _saveTask = db.SaveChangesAsync();
-        var shop = shopLocations.First().Shop;
+        var shopLocation = shopLocations.First();
 
-        Log.Information("Returning store {StoreName}", shop.Name);
-        return shop;
+        db.Add(shopLocation);
+        _saveTask = db.SaveChangesAsync();
+        
+
+        Log.Information("Returning store {StoreName}", shopLocation.Shop.Name);
+        return shopLocation.Shop;
     }
 }

@@ -9,7 +9,6 @@ using Kartel.Entities.Items.Foods;
 using Kartel.Entities.Items.MeleeWeapons;
 using Kartel.Environment;
 using Kartel.Environment.Topography;
-using Kartel.EventArgs;
 using Kartel.Extensions;
 using Kartel.Observables;
 using Kartel.Units.Currencies;
@@ -35,14 +34,14 @@ public class Person : GameObject
     {
         Location = location;
         Money = Random.Next(10000, 20000).Gbp();
-        
-        Gender = new Random().Enum<Gender>();
+
+        Gender = Random.Enum<Gender>();
         Surname = DataSet.Surnames.Random();
-        
+
         FirstName = Gender == Gender.Male
             ? DataSet.MaleForenames.Random()
             : DataSet.FemaleForenames.Random();
-        
+
         Home = home;
         Home.Owner = this;
     }
@@ -50,24 +49,21 @@ public class Person : GameObject
     public Person(IGame game) : base(game)
     {
         Game.Characters.Add(this);
-        
+
         Inventory = new Inventory();
         Fists = new Fists();
-        
+
         Health = byte.MaxValue;
         Needs = new PersonalNeeds(this);
-        Relationships = new GameCollection<Relationship>(Game);
 
         Needs.PropertyChanged += (_, args) =>
         {
             OnPropertyChanged($"{nameof(Needs)}." + args.PropertyName, args.NewValue);
         };
 
-        Commands.ItemEnqueued += (_, args) => OnPropertyChanged(nameof(Commands), args.Item, QueueChangeType.Add);
-        Commands.ItemDequeued += (_, args) => OnPropertyChanged(nameof(Commands), args.Item, QueueChangeType.Remove);
-        Commands.Cleared += (_, _) => OnPropertyChanged(nameof(Commands), null, QueueChangeType.Clear);
+        Commands.CollectionChanged += (_, args) => OnPropertyChanged(nameof(Commands), args.Item, args.CollectionChangeType);
     }
-    
+
     public CurrencyQuantity Money
     {
         get => Read<CurrencyQuantity>() ?? CurrencyQuantity.None;
@@ -101,12 +97,12 @@ public class Person : GameObject
     public Location Location
     {
         get => Read<Location>()
-            ?? throw new ArgumentException("Actor location cannot be null");
+               ?? throw new ArgumentException("Actor location cannot be null");
         set
         {
             if (value == null)
                 throw new ArgumentException("Actor location cannot be null");
-            
+
             Write(value);
         }
     }
@@ -114,18 +110,16 @@ public class Person : GameObject
     public Fists Fists { get; }
 
     public Inventory Inventory { get; }
-    
+
     public House? Home
     {
         get => Read<House>();
         set => Write(value);
     }
 
-    [DataMember]
-    public PersonalSkills Skills { get; } = new();
+    [DataMember] public PersonalSkills Skills { get; } = new();
 
-    [DataMember]
-    public PersonalNeeds Needs { get; }
+    [DataMember] public PersonalNeeds Needs { get; }
 
     public Command? CurrentCommand => Commands.Any() ? Commands.Peek() : null;
 
@@ -137,11 +131,11 @@ public class Person : GameObject
         get => Read<byte>();
         set => Write(value);
     }
-    
-    public GameCollection<Relationship> Relationships { get; }
+
+    public ObservableCollection<Relationship> Relationships { get; } = new();
 
     public IEnumerable<Person> Contacts => Relationships.Select(r => r.Person);
-        
+
     public ICollection<House> Estate { get; } = new HashSet<House>();
 
     public ObservableQueue<Command> Commands { get; } = new();
@@ -169,7 +163,7 @@ public class Person : GameObject
                 Commands.Clear();
                 Commands.Enqueue(mostCriticalNeed.Resolution());
                 Commands.Single().IsResolvingNeed = true;
-                
+
                 Log.Information("{ActorName} ({ActorID}) is fulfilling need {Need}", Name, Id, mostCriticalNeed.Name);
             }
         }
@@ -182,11 +176,11 @@ public class Person : GameObject
             {
                 var completedCommand = Commands.Dequeue();
 
-                Log.Information("{ActorName} ({ActorID}) has completed command {Command}", 
-                    Name, 
-                    Id, 
+                Log.Information("{ActorName} ({ActorID}) has completed command {Command}",
+                    Name,
+                    Id,
                     completedCommand.GetType().Name);
-                
+
                 var previousEndTime = completedCommand.EndTime;
                 if (CurrentCommand == null) return;
                 CurrentCommand.Start(previousEndTime);
