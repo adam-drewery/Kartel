@@ -18,12 +18,6 @@ public class Country
             PriceFor<Cannabis>(20.Gbp(), 2.2.Grams()),
             PriceFor<Cannabis>(70.Gbp(), (1 / 2).Ounces()),
             PriceFor<Cannabis>(160.Gbp(), 1.Ounces()),
-                
-            PriceFor<Ecstasy>(150.Gbp(), (1 / 4).Ounces()),
-            PriceFor<Ecstasy>(500.Gbp(), 1.Ounces()),
-                
-            PriceFor<Lsd>(5.Gbp(), 200.Micrograms()),
-            PriceFor<Lsd>(1000.Gbp(), 1.Liters()),
         }
     };
 
