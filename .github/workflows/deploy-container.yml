@@ -12,7 +12,7 @@ on:
         type: string
 jobs:
   deploy-containers:
-    name: Deploy ${{inputs.path}}
+    name: Deploy
     runs-on: ubuntu-latest
     environment:
       name: staging

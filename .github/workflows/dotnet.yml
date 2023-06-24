@@ -90,6 +90,7 @@ jobs:
       run: terraform apply -auto-approve
 
   deploy-api:
+    name: Kartel.Api
     needs: [ terraform-apply ]
     uses: ./.github/workflows/deploy-container.yml
     with:
@@ -98,6 +99,7 @@ jobs:
       ports: 6840 6841
 
   deploy-web:
+    name: Kartel.Web
     needs: [ terraform-apply ]
     uses: ./.github/workflows/deploy-container.yml
     with:
