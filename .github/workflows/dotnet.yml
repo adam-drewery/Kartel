@@ -93,18 +93,18 @@ jobs:
     name: Kartel.Api
     needs: [ terraform-apply ]
     uses: ./.github/workflows/deploy-container.yml
+    secrets: inherit
     with:
       name: api
       path: Kartel.Api
       ports: 6840 6841
-      secrets: inherit
 
   deploy-web:
     name: Kartel.Web
     needs: [ terraform-apply ]
     uses: ./.github/workflows/deploy-container.yml
+    secrets: inherit
     with:
       name: web
       path: Kartel.Web
       ports: 80 8080
-      secrets: inherit
