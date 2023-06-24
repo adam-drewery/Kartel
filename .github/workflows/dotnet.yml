@@ -21,7 +21,7 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
-        terraform_version: 1.0.5
+        terraform_version: 1.5.1
   
   build:
     name: 'Build & Test'
@@ -39,9 +39,6 @@ jobs:
       
     - name: Dotnet Test
       run: dotnet test --no-build --verbosity normal
-
-    - name: Dotnet Publish
-      run: dotnet publish --configuration Release --no-build --output ./output
       
   terraform-plan:
     name: 'Terraform Plan'
