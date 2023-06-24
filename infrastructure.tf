@@ -3,6 +3,7 @@ terraform {
     resource_group_name  = "terraform"
     storage_account_name = "kartelterraform"
     container_name       = "tfstate"
+    key                  = "terraform.tfstate"
   }
 }
 
