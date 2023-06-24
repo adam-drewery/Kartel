@@ -60,7 +60,7 @@ resource "azurerm_container_group" "kartel" {
     name   = "web"
     image  = "nginx:latest"
     cpu    = "0.2"
-    memory = "0.5"
+    memory = "0.2"
 
     ports {
       port     = 80
