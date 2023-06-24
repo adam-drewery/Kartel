@@ -8,6 +8,7 @@ Crime simulation strategy game which uses real-world data, written using a micro
 - NetMQ
 - Entity Framework
 - MessagePack
+- SignalR
 
 ## Starting the project
 
