@@ -108,3 +108,43 @@ jobs:
       name: web
       path: web/Kartel.Web
       ports: 80 8080
+      
+  deploy-store-finder:
+    name: Kartel.Locale.Bing
+    needs: [ terraform-apply ]
+    uses: ./.github/workflows/deploy-container.yml
+    secrets: inherit
+    with:
+      name: store-finder
+      path: services/Kartel.Locale.Bing
+      ports: 5559
+      
+  deploy-geocoding:
+    name: Kartel.Geocoding.Bing
+    needs: [ terraform-apply ]
+    uses: ./.github/workflows/deploy-container.yml
+    secrets: inherit
+    with:
+      name: store-finder
+      path: services/Kartel.Geocoding.Bing
+      ports: 5557 5558
+      
+  deploy-logistics:
+    name: Kartel.Logistics.Bing
+    needs: [ terraform-apply ]
+    uses: ./.github/workflows/deploy-container.yml
+    secrets: inherit
+    with:
+      name: store-finder
+      path: services/Kartel.Logistics.Bing
+      ports: 5556
+      
+  deploy-property-market:
+    name: Kartel.PropertyMarket.Zoopla
+    needs: [ terraform-apply ]
+    uses: ./.github/workflows/deploy-container.yml
+    secrets: inherit
+    with:
+      name: property-market
+      path: services/Kartel.PropertyMarket.Zoopla
+      ports: 5555
