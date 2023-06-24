@@ -50,7 +50,7 @@ jobs:
 
       - name: Docker Compose Build
         run: |
-          docker-compose up --build --abort-on-container-exit
+          docker compose build
 
   terraform-plan:
     name: 'Test Infrastructure'
