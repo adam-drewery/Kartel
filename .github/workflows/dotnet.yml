@@ -96,7 +96,7 @@ jobs:
     secrets: inherit
     with:
       name: api
-      path: Kartel.Api
+      path: web/Kartel.Api
       ports: 6840 6841
 
   deploy-web:
@@ -106,5 +106,5 @@ jobs:
     secrets: inherit
     with:
       name: web
-      path: Kartel.Web
+      path: web/Kartel.Web
       ports: 80 8080
