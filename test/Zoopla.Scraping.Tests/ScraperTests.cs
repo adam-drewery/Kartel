@@ -18,8 +18,13 @@ public class ScraperTests
         };
 
         await ZooplaScraper.Initialize();
-        var results = await new ListingScraper().Scrape(request);
+        var results = new ListingScraper()
+            .Scrape(request)
+            .ToBlockingEnumerable()
+            .ToList();
 
+        results.Should().NotBeEmpty();
+        
         foreach (var result in results)
         {
             result.Address.Lines.Should().NotBeEmpty();

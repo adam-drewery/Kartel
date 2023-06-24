@@ -15,11 +15,6 @@ public class ListingCollector : System.Timers.Timer
     {
         Elapsed += async (_, _) => await Collect();
         Interval = 3600000; // every hour
-
-        _listingScraper.ParsingFailed += (_, args) =>
-        {
-            Log.Warning(args.Exception, "Parsing of property listing failed");
-        };
     }
 
     public async Task Collect()
@@ -102,7 +97,9 @@ public class ListingCollector : System.Timers.Timer
 
             try
             {
-                var listings = await _listingScraper.Scrape(request);
+                var listings = _listingScraper.Scrape(request)
+                    .ToBlockingEnumerable()
+                    .ToList();
 
                 var buildings = listings
                     .Select(listing =>
