@@ -90,33 +90,15 @@ jobs:
       run: terraform apply -auto-approve
 
   deploy-api:
-    name: 'Deploy Kartel.Api'
-    runs-on: ubuntu-latest
-    needs: [terraform-apply]
-    environment:
-      name: staging
-    steps:
-
-      - uses: actions/checkout@v3
-        
-      - uses: ./.github/actions/deploy-container.yml
-        with:
-          name: api
-          path: Kartel.Api
-          ports: 6840 6841
+    uses: ./.github/actions/deploy-container.yml
+    with:
+      name: api
+      path: Kartel.Api
+      ports: 6840 6841
 
   deploy-web:
-    name: 'Deploy Kartel.Web'
-    runs-on: ubuntu-latest
-    needs: [terraform-apply]
-    environment:
-      name: staging
-    steps:
-
-      - uses: actions/checkout@v3
-      
-      - uses: ./.github/actions/deploy-container.yml
-        with:
-          name: web
-          path: Kartel.Web
-          ports: 80 8080
+    uses: ./.github/actions/deploy-container.yml
+    with:
+      name: web
+      path: Kartel.Web
+      ports: 80 8080
