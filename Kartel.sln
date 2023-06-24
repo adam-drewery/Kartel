@@ -55,8 +55,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		docker-compose.yaml = docker-compose.yaml
 		README.md = README.md
-		kartel.tf = kartel.tf
+		infrastructure.tf = infrastructure.tf
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+		variables.tf = variables.tf
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartel.Configuration", "shared\Kartel.Configuration\Kartel.Configuration.csproj", "{A5792896-39A3-4670-ACE2-4A6E96304D87}"
