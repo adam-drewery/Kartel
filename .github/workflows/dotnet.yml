@@ -90,6 +90,7 @@ jobs:
       run: terraform apply -auto-approve
 
   deploy-api:
+    needs: [ terraform-apply ]
     uses: ./.github/workflows/deploy-container.yml
     with:
       name: api
@@ -97,6 +98,7 @@ jobs:
       ports: 6840 6841
 
   deploy-web:
+    needs: [ terraform-apply ]
     uses: ./.github/workflows/deploy-container.yml
     with:
       name: web
