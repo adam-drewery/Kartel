@@ -67,6 +67,7 @@ jobs:
 
   terraform-apply:
     name: 'Terraform Apply'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     needs: [ setup, terraform-plan ]
     steps:
@@ -82,7 +83,6 @@ jobs:
       run: terraform init
 
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: terraform apply -auto-approve -no-color
 
     - name: Set ACR Username and Password
