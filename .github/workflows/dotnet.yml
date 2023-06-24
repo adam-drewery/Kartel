@@ -71,6 +71,8 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     needs: [ setup, build, terraform-plan ]
+    environment:
+      name: staging
     env:
       ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
@@ -96,13 +98,18 @@ jobs:
         echo "::add-mask::$ACR_PASSWORD"
         echo "::set-output name=acr_username::$ACR_USERNAME"
         echo "::set-output name=acr_password::$ACR_PASSWORD"
+        
+    outputs:
+      acr_username: ${{ steps.set_output.outputs.acr_username }}
+      acr_password: ${{ steps.set_output.outputs.acr_password }}
+
 
   deploy-containers:
     name: 'Deploy Containers'
     runs-on: ubuntu-latest
-    needs: [setup, build, terraform-apply]
+    needs: [terraform-apply]
     environment:
-      name: deployment
+      name: staging
     steps:  
     
     - uses: azure/docker-login@v1
