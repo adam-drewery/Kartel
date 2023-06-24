@@ -10,6 +10,15 @@ on:
       ports:
         required: true
         type: string
+    secrets:
+      CLIENT_ID:
+        required: true
+      CLIENT_SECRET:
+        required: true
+      TENANT_ID:
+        required: true
+      SUBSCRIPTION_ID:
+        required: true
 jobs:
   deploy-containers:
     name: Deploy
