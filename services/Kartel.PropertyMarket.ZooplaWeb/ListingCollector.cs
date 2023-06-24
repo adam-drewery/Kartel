@@ -1,7 +1,6 @@
 using Audacia.Random.Extensions;
 using Kartel.Environment;
 using Kartel.Extensions;
-using PuppeteerSharp;
 using Serilog;
 using Zoopla.Scraping;
 
