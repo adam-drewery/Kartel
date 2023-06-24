@@ -147,5 +147,5 @@ jobs:
 
     - name: Deploy to Azure Container Instances
       run: |
-        az container create --resource-group kartel --name api --image kartel.azurecr.io/api:latest --ports 6840,6841
-        az container create --resource-group kartel --name web --image kartel.azurecr.io/web:latest --ports 80
+        az container create --resource-group kartel --name api --image kartel.azurecr.io/api:latest --ports 6840 6841
+        az container create --resource-group kartel --name web --image kartel.azurecr.io/web:latest --ports 80 8080
