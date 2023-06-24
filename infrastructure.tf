@@ -1,4 +1,10 @@
 terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "=3.0.0"
+    }
+  }
   backend "azurerm" {
     resource_group_name  = "terraform"
     storage_account_name = "kartelterraform"
@@ -68,5 +74,11 @@ resource "azurerm_container_group" "kartel" {
   }
 }
 
-output "acr_username" { value = azurerm_container_registry.kartel.admin_username }
-output "acr_password" { value = azurerm_container_registry.kartel.admin_password }
+output "acr_username" { 
+  value = azurerm_container_registry.kartel.admin_username 
+}
+
+output "acr_password" { 
+  value = azurerm_container_registry.kartel.admin_password
+  sensitive = true
+}

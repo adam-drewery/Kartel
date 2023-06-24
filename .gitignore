@@ -253,3 +253,4 @@ ModelManifest.xml
 MapsData/
 /Kartel.Api/*.blob
 *.http
+.terraform/
