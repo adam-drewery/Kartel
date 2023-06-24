@@ -11,10 +11,9 @@ public class ScraperTests
         var request = new ListingRequest(ListingType.Buy)
         {
             County = "west-yorkshire",
-            Radius = 3,
+            Radius = 40,
             PropertyTypes = { PropertyType.Flats },
-            PriceMax = 80000,
-            PriceMin = 40000
+            PageNumber = 1
         };
 
         await ZooplaScraper.Initialize();

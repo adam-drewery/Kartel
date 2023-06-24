@@ -1,5 +1,7 @@
+using Audacia.Random.Extensions;
 using Kartel.Environment;
 using Kartel.Extensions;
+using PuppeteerSharp;
 using Serilog;
 using Zoopla.Scraping;
 
@@ -7,6 +9,7 @@ namespace Kartel.PropertyMarket.ZooplaWeb;
 
 public class ListingCollector : System.Timers.Timer
 {
+    private readonly Random _random = new();
     private readonly RegionScraper _regionScraper = new();
     private readonly ListingScraper _listingScraper = new();
 
@@ -34,6 +37,8 @@ public class ListingCollector : System.Timers.Timer
         IList<string> existingIds;
         var tasks = new List<Task>();
         var regions = await _regionScraper.Scrape();
+        regions = _random.ShuffleElements(regions);
+        await Task.Delay(Random.Next(1000, 3000));
 
         await using (var db = new ZooplaDbContext())
             existingIds = db.Buildings.Select(b => b.ExternalId)
@@ -70,6 +75,8 @@ public class ListingCollector : System.Timers.Timer
             PropertyType.Terraced
         };
 
+        propertyTypes = _random.ShuffleElements(propertyTypes).ToArray();
+
         foreach (var propertyType in propertyTypes)
         {
             // Just do 1 region at a time
@@ -77,11 +84,15 @@ public class ListingCollector : System.Timers.Timer
         }
     }
 
+    private static readonly Random Random = new();
+    
     private async Task CollectPropertyTypeForRegion(string region, PropertyType propertyType)
     {
         short page = 1;
         while (page <= 40)
         {
+            await Task.Delay(Random.Next(1000, 3000));
+            
             Log.Information("Retrieving page {Page} of properties of type {PropertyType} from {Region}", 
                 page, 
                 propertyType.Key, 

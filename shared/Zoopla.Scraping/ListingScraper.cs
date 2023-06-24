@@ -1,9 +1,11 @@
+using Audacia.Random.Extensions;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PuppeteerSharp;
+using static System.Environment;
 
-namespace Zoopla.Scraping;
+namespace Zoopla.Scraping;  
 
 public class ListingScraper : ZooplaScraper
 {
@@ -21,13 +23,16 @@ public class ListingScraper : ZooplaScraper
                 const scriptElement = document.querySelector('#__NEXT_DATA__');
                 return scriptElement ? scriptElement.innerText : null;
             }");
+
+        if (json == null)
+            throw new InvalidDataException($"No data found in response to {@params}." + NewLine + text);
         
         var data = JsonConvert.DeserializeObject<JObject>(json);
         var listings = data.SelectToken("props")
             !.SelectToken("pageProps")
             !.SelectToken("regularListingsFormatted");
 
-        foreach (var listing in listings.Children())
+        foreach (var listing in listings!.Children())
         {
             var result = new PropertyListing
             {
@@ -47,7 +52,7 @@ public class ListingScraper : ZooplaScraper
                     !.Value<double>()
             };
 
-            foreach (var room in listing.SelectToken("features"))
+            foreach (var room in listing!.SelectToken("features")!)
             {
                 switch (room.Value<string>("iconId"))
                 {
@@ -63,6 +68,8 @@ public class ListingScraper : ZooplaScraper
                 }
             }
 
+            await Page.SetUserAgentAsync(UserAgents.Random());
+            
             yield return result;
         }
     }

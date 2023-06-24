@@ -1,19 +1,39 @@
+using Audacia.Random.Extensions;
 using PuppeteerSharp;
 
 namespace Zoopla.Scraping;
 
 public abstract class ZooplaScraper
 {
-    
-    protected static IBrowser Browser;
+    private static IBrowser _browser;
     protected IPage Page;
 
+    public static string[] UserAgents = 
+    {
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.37",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.48",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/603.2.4 (KHTML, like Gecko) Version/10.1.1 Safari/603.2.4",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0",
+    };
+    
     public ZooplaScraper()
     {
         Task.Run(async () =>
         {
-            Page = await Browser.NewPageAsync();
-            await Page.SetUserAgentAsync("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36");
+            Page = await _browser.NewPageAsync();
+            await Page.SetUserAgentAsync(UserAgents.Random());
         }).Wait();
 }
     
@@ -21,48 +41,6 @@ public abstract class ZooplaScraper
     {
         var browserFetcher = new BrowserFetcher();
         await browserFetcher.DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
-        Browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
-    }
-    
-    public static async Task Main(string[] args)
-    {
-        // Setup Puppeteer to use the installed version of Chrome
-        await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
-        await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
-        await using var page = await browser.NewPageAsync();
-
-        // Navigate to the Zoopla website
-        await page.GoToAsync("https://www.zoopla.co.uk/for-sale/property/west-yorkshire/leeds/?q=leeds&search_source=home");
-
-        // Use a CSS selector to find the elements containing the property prices
-        var propertyPrices = await page.QuerySelectorAllAsync(".css-1e28vvi-PriceContainer");
-
-        // Loop through each property price and print it out
-        foreach (var price in propertyPrices)
-        {
-            var priceText = await page.EvaluateFunctionAsync<string>("element => element.textContent", price);
-            Console.WriteLine(priceText);
-        }
+        _browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = false, SlowMo = 15 });
     }
 }
-
-    // private class LoggingHttpMessageHandler : HttpClientHandler
-    // {
-    //     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-    //     {
-    //
-    //             var result = await base.SendAsync(request, cancellationToken);
-    //             
-    //             if (result.IsSuccessStatusCode) return result;
-    //
-    //             var lines = new[]
-    //             {
-    //                 "Request failed to: " + request.RequestUri,
-    //                 "Status Code: " + result.StatusCode,
-    //                 "Response Body:" + Environment.NewLine 
-    //                     + await result.Content.ReadAsStringAsync(cancellationToken)
-    //             };
-    //
-    //             throw new HttpRequestException(string.Join(Environment.NewLine, lines));
-    //     }
-    // }
