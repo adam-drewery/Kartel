@@ -1,45 +1,68 @@
-using HtmlAgilityPack;
+using PuppeteerSharp;
 
 namespace Zoopla.Scraping;
 
 public abstract class ZooplaScraper
 {
-    protected readonly HttpClient Http = new(new LoggingHttpMessageHandler())
+    
+    protected static IBrowser Browser;
+    protected IPage Page;
+
+    public ZooplaScraper()
     {
-        DefaultRequestHeaders =
+        Task.Run(async () =>
         {
-            { "Accept-Language", "en,en-US;q=0.5" },
-            { "Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8" },
-            { "user-agent", "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/110.0" }
-        }
-    };
-
-    private class LoggingHttpMessageHandler : HttpClientHandler
+            Page = await Browser.NewPageAsync();
+            await Page.SetUserAgentAsync("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36");
+        }).Wait();
+}
+    
+    public static async Task Initialize()
     {
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-
-                var result = await base.SendAsync(request, cancellationToken);
-                
-                if (result.IsSuccessStatusCode) return result;
-
-                var lines = new[]
-                {
-                    "Request failed to: " + request.RequestUri,
-                    "Status Code: " + result.StatusCode,
-                    "Response Body:" + Environment.NewLine 
-                        + await result.Content.ReadAsStringAsync(cancellationToken)
-                };
-
-                throw new HttpRequestException(string.Join(Environment.NewLine, lines));
-        }
+        var browserFetcher = new BrowserFetcher();
+        await browserFetcher.DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
+        Browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
     }
     
-    protected async Task<HtmlDocument> GetDocument(string url)
+    public static async Task Main(string[] args)
     {
-        await using var stream = await Http.GetStreamAsync(url);
-        var document = new HtmlDocument();
-        document.Load(stream);
-        return document;
+        // Setup Puppeteer to use the installed version of Chrome
+        await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
+        await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
+        await using var page = await browser.NewPageAsync();
+
+        // Navigate to the Zoopla website
+        await page.GoToAsync("https://www.zoopla.co.uk/for-sale/property/west-yorkshire/leeds/?q=leeds&search_source=home");
+
+        // Use a CSS selector to find the elements containing the property prices
+        var propertyPrices = await page.QuerySelectorAllAsync(".css-1e28vvi-PriceContainer");
+
+        // Loop through each property price and print it out
+        foreach (var price in propertyPrices)
+        {
+            var priceText = await page.EvaluateFunctionAsync<string>("element => element.textContent", price);
+            Console.WriteLine(priceText);
+        }
     }
 }
+
+    // private class LoggingHttpMessageHandler : HttpClientHandler
+    // {
+    //     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    //     {
+    //
+    //             var result = await base.SendAsync(request, cancellationToken);
+    //             
+    //             if (result.IsSuccessStatusCode) return result;
+    //
+    //             var lines = new[]
+    //             {
+    //                 "Request failed to: " + request.RequestUri,
+    //                 "Status Code: " + result.StatusCode,
+    //                 "Response Body:" + Environment.NewLine 
+    //                     + await result.Content.ReadAsStringAsync(cancellationToken)
+    //             };
+    //
+    //             throw new HttpRequestException(string.Join(Environment.NewLine, lines));
+    //     }
+    // }

@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
+using PuppeteerSharp;
 
 namespace Zoopla.Scraping;
 
@@ -11,9 +12,10 @@ public class ListingScraper : ZooplaScraper
 
     public async Task<IEnumerable<PropertyListing>> Scrape(ListingRequest @params)
     {
-        await using var stream = await Http.GetStreamAsync(@params.ToString());
+        var response = await Page.GoToAsync(@params.ToString(), WaitUntilNavigation.Networkidle0);
+        var text = await response.TextAsync();
         var document = new HtmlDocument();
-        document.Load(stream);
+        document.LoadHtml(text);
 
         const string xPath = "/html/body/div[2]/div/div/main/div/div[4]/div[2]/section/div[2]/div";
         var listingNodes = document.DocumentNode.SelectNodes(xPath)?.ToList();
@@ -99,9 +101,10 @@ public class ListingScraper : ZooplaScraper
         }
         
         Console.WriteLine($"Getting details page for listing {listing.Id}");
-        var detailsPage = await Http.GetStringAsync($"https://www.zoopla.co.uk/{listingType.Key}/details/{listing.Id}");
+        var detailsResponse = await Page.GoToAsync($"https://www.zoopla.co.uk/{listingType.Key}/details/{listing.Id}");
+        var detailsText = await detailsResponse.TextAsync();
         const string regex = @"{""__typename"":""LocationCoordinates"",""latitude"":(.*),""longitude"":(.*),""isApproximate"":(.*)}";
-        var match = Regex.Match(detailsPage, regex);
+        var match = Regex.Match(detailsText, regex);
 
         if (match.Groups.Count > 1)
         {

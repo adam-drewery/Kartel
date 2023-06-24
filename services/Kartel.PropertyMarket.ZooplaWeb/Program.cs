@@ -3,6 +3,7 @@ using Kartel.Logging;
 using Kartel.ServiceBase;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Zoopla.Scraping;
 
 namespace Kartel.PropertyMarket.ZooplaWeb;
 
@@ -12,6 +13,7 @@ internal static class Program
 
     private static async Task Main(string[] args)
     {
+        await ZooplaScraper.Initialize();
         var networkSettings = Settings.FromArgs<NetworkSettings>(args);
         
         try

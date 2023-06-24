@@ -17,9 +17,10 @@ public class ScraperTests
             PriceMin = 40000
         };
 
-        var results = new ListingScraper().Scrape(request);
+        await ZooplaScraper.Initialize();
+        var results = await new ListingScraper().Scrape(request);
 
-        foreach (var result in await results)
+        foreach (var result in results)
         {
             result.Address.Lines.Should().NotBeEmpty();
             result.Price.Should().BeGreaterThan(0);
