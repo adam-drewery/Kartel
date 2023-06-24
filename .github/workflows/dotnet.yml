@@ -105,13 +105,10 @@ jobs:
 
     - uses: actions/checkout@v3
 
-    - name: Terraform Init
-      id: init
-      run: terraform init
-
     - name: Set ACR Credentials
       id: set_output
       run: |
+        terraform init
         ACR_USERNAME=$(terraform output -raw acr_username)
         ACR_PASSWORD=$(terraform output -raw acr_password)
         echo "::add-mask::$ACR_USERNAME"
@@ -122,8 +119,8 @@ jobs:
     - uses: azure/docker-login@v1
       with:
         login-server: kartel.azurecr.io
-        username: ${{ needs.terraform-apply.outputs.acr_username }}
-        password: ${{ needs.terraform-apply.outputs.acr_password }}
+        username: ${{ steps.set_output.outputs.acr_username }}
+        password: ${{ steps.set_output.outputs.acr_password }}
 
     - run: |
         docker build -t kartel.azurecr.io/api:latest ./Kartel.Api
