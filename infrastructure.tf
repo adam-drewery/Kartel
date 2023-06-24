@@ -41,7 +41,7 @@ resource "azurerm_container_group" "kartel" {
 
   container {
     name   = "api"
-    image  = "kartel.azurecr.io/api:v1"  // Replace with your ACR and image details
+    image  = "nginx:latest"
     cpu    = "0.5"
     memory = "0.5"
 
@@ -58,7 +58,7 @@ resource "azurerm_container_group" "kartel" {
   
   container {
     name   = "web"
-    image  = "kartel.azurecr.io/web:v1"  // Replace with your ACR and image details
+    image  = "nginx:latest"
     cpu    = "0.5"
     memory = "0.5"
 
