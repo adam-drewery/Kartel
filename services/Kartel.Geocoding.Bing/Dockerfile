@@ -7,7 +7,7 @@ WORKDIR /src
 COPY ["services/Kartel.Geocoding.Bing/Kartel.Geocoding.Bing.csproj", "services/Kartel.Geocoding.Bing/"]
 RUN dotnet restore "services/Kartel.Geocoding.Bing/Kartel.Geocoding.Bing.csproj"
 COPY . .
-WORKDIR "services//Kartel.Geocoding.Bing"
+WORKDIR "services/Kartel.Geocoding.Bing"
 RUN dotnet build "Kartel.Geocoding.Bing.csproj" -c Release -o /app/build
 
 FROM build AS publish
