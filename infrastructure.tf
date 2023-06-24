@@ -11,7 +11,7 @@ resource "azurerm_container_group" "kartel" {
   name                = "kartel-${var.environment}"
   location            = azurerm_resource_group.kartel.location
   resource_group_name = azurerm_resource_group.kartel.name
-  ip_address_type     = "public"
+  ip_address_type     = "Public"
   dns_name_label      = "acitestcontainers"
   os_type             = "Linux"
 
