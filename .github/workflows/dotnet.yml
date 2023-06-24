@@ -40,8 +40,8 @@ jobs:
     - name: Dotnet Test
       run: dotnet test --no-build --verbosity normal
       
-  terraform:
-    name: 'Terraform'
+  terraform-plan:
+    name: 'Terraform Plan'
     runs-on: ubuntu-latest
     needs: [setup]
     steps:
@@ -65,24 +65,40 @@ jobs:
         run: terraform plan -no-color
         continue-on-error: false
 
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -no-color
-        
-      - name: Set ACR Username and Password
-        id: set_output
-        run: |
-          ACR_USERNAME=$(terraform output -raw acr_username)
-          ACR_PASSWORD=$(terraform output -raw acr_password)
-          echo "::add-mask::$ACR_USERNAME"
-          echo "::add-mask::$ACR_PASSWORD"
-          echo "::set-output name=acr_username::$ACR_USERNAME"
-          echo "::set-output name=acr_password::$ACR_PASSWORD"
+  terraform-apply:
+    name: 'Terraform Apply'
+    runs-on: ubuntu-latest
+    needs: [ setup, terraform-plan ]
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - uses: azure/login@v1
+      with:
+        creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+
+    - name: Terraform Init
+      id: init
+      run: terraform init
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform apply -auto-approve -no-color
+
+    - name: Set ACR Username and Password
+      id: set_output
+      run: |
+        ACR_USERNAME=$(terraform output -raw acr_username)
+        ACR_PASSWORD=$(terraform output -raw acr_password)
+        echo "::add-mask::$ACR_USERNAME"
+        echo "::add-mask::$ACR_PASSWORD"
+        echo "::set-output name=acr_username::$ACR_USERNAME"
+        echo "::set-output name=acr_password::$ACR_PASSWORD"
 
   deploy-containers:
     name: 'Deploy Containers'
     runs-on: ubuntu-latest
-    needs: [setup, build, terraform]
+    needs: [setup, build, terraform-apply]
     environment:
       name: deployment
     steps:  
@@ -90,11 +106,11 @@ jobs:
     - uses: azure/docker-login@v1
       with:
         login-server: kartel.azurecr.io
-        username: ${{ needs.terraform.outputs.acr_username }}
-        password: ${{ needs.terraform.outputs.acr_password }}
+        username: ${{ needs.terraform-apply.outputs.acr_username }}
+        password: ${{ needs.terraform-apply.outputs.acr_password }}
 
     - run: |
-        docker build -t kartel.azurecr.io/api:latest ./api
+        docker build -t kartel.azurecr.io/api:latest ./Kartel.Api
         docker push kartel.azurecr.io/api:latest
 
     - uses: azure/login@v1

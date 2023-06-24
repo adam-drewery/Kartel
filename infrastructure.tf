@@ -16,7 +16,6 @@ resource "azurerm_container_registry" "kartel" {
   
 }
 
-
 resource "azurerm_container_group" "kartel" {
   name                = "kartel-${var.environment}"
   location            = azurerm_resource_group.kartel.location
@@ -29,7 +28,7 @@ resource "azurerm_container_group" "kartel" {
     name   = "api"
     image  = "myacr.azurecr.io/myimage:v1"  // Replace with your ACR and image details
     cpu    = "0.5"
-    memory = "1.5"
+    memory = "0.5"
 
     ports {
       port     = 6840
@@ -46,7 +45,7 @@ resource "azurerm_container_group" "kartel" {
     name   = "web"
     image  = "myacr.azurecr.io/myimage:v1"  // Replace with your ACR and image details
     cpu    = "0.5"
-    memory = "1.5"
+    memory = "0.5"
 
     ports {
       port     = 80
@@ -60,10 +59,5 @@ resource "azurerm_container_group" "kartel" {
   }
 }
 
-
-output "acr_username" {
-  value = azurerm_container_registry.kartel.admin_username
-}
-output "acr_password" {
-  value = azurerm_container_registry.kartel.admin_password
-}
+output "acr_username" { value = azurerm_container_registry.kartel.admin_username }
+output "acr_password" { value = azurerm_container_registry.kartel.admin_password }
