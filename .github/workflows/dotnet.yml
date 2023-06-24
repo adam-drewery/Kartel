@@ -59,11 +59,11 @@ jobs:
 
       - name: Terraform Validate
         id: validate
-        run: terraform validate -no-color
+        run: terraform validate
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color
+        run: terraform plan
         continue-on-error: false
 
   terraform-apply:
@@ -85,7 +85,7 @@ jobs:
       run: terraform init
 
     - name: Terraform Apply
-      run: terraform apply -auto-approve -no-color
+      run: terraform apply -auto-approve
 
     - name: Set ACR Credentials
       id: set_output
