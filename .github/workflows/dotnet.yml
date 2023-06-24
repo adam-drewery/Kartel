@@ -97,7 +97,7 @@ jobs:
       name: staging
     steps:
 
-      - uses: adam-drewery/Kartel/.github/actions/deploy-container.yml
+      - uses: adam-drewery/Kartel/.github/actions/deploy-container.yml@main
         with:
           name: api
           path: Kartel.Api
@@ -111,7 +111,7 @@ jobs:
       name: staging
     steps:
 
-      - uses: adam-drewery/Kartel/.github/actions/deploy-container.yml
+      - uses: adam-drewery/Kartel/.github/actions/deploy-container.yml@main
         with:
           name: web
           path: Kartel.Web
