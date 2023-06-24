@@ -54,16 +54,17 @@ public class ListingScraper : ZooplaScraper
 
             foreach (var room in listing!.SelectToken("features")!)
             {
+                var content = room.Value<short>("content");;
                 switch (room.Value<string>("iconId"))
                 {
-                    case "bath": 
-                        result.Bathrooms = room.Value<short>("content");
+                    case "bath":
+                        result.Bathrooms = content;
                         break;
                     case "bed": 
-                        result.Bedrooms = room.Value<short>("content");
+                        result.Bedrooms = content;
                         break;
                     case "chair": 
-                        result.LivingRooms = room.Value<short>("content");
+                        result.LivingRooms = content;
                         break;
                 }
             }
