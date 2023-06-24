@@ -14,8 +14,6 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v3
-
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
@@ -32,6 +30,8 @@ jobs:
     needs: [setup]
 
     steps:
+
+    - uses: actions/checkout@v3
         
     - name: Restore dependencies
       run: dotnet restore
@@ -56,6 +56,8 @@ jobs:
 
     steps:
 
+      - uses: actions/checkout@v3
+
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
@@ -71,7 +73,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color
-        continue-on-error: true
+        continue-on-error: false
 
 #      - name: Terraform Apply
 #        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
