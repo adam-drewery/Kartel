@@ -123,10 +123,10 @@ jobs:
         password: ${{ steps.set_output.outputs.acr_password }}
 
     - run: |
-        docker build -t kartel.azurecr.io/api:latest ./web/Kartel.Api
+        docker build -t kartel.azurecr.io/api:latest -f ./web/Kartel.Api/Dockerfile .
         docker push kartel.azurecr.io/api:latest
         
-        docker build -t kartel.azurecr.io/web:latest ./web/Kartel.Web
+        docker build -t kartel.azurecr.io/web:latest -f ./web/Kartel.Web/Dockerfile .
         docker push kartel.azurecr.io/web:latest
 
     - uses: azure/login@v1

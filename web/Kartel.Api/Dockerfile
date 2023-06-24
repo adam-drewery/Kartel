@@ -3,10 +3,10 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Kartel.Api/Kartel.Api.csproj", "Kartel.Api/"]
-RUN dotnet restore "Kartel.Api/Kartel.Api.csproj"
+COPY ["web/Kartel.Api/Kartel.Api.csproj", "web/Kartel.Api/"]
+RUN dotnet restore "web/Kartel.Api/Kartel.Api.csproj"
 COPY . .
-WORKDIR "/src/Kartel.Api"
+WORKDIR "web/Kartel.Api"
 RUN dotnet build "Kartel.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
