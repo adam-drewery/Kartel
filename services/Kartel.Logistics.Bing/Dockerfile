@@ -4,10 +4,10 @@ EXPOSE 5556
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Kartel.Logistics.Bing/Kartel.Logistics.Bing.csproj", "Kartel.Logistics.Bing/"]
-RUN dotnet restore "Kartel.Logistics.Bing/Kartel.Logistics.Bing.csproj"
+COPY ["services/Kartel.Logistics.Bing/Kartel.Logistics.Bing.csproj", "services/Kartel.Logistics.Bing/"]
+RUN dotnet restore "services/Kartel.Logistics.Bing/Kartel.Logistics.Bing.csproj"
 COPY . .
-WORKDIR "/src/Kartel.Logistics.Bing"
+WORKDIR "services/Kartel.Logistics.Bing"
 RUN dotnet build "Kartel.Logistics.Bing.csproj" -c Release -o /app/build
 
 FROM build AS publish

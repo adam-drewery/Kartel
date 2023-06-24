@@ -4,10 +4,10 @@ EXPOSE 5555
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Kartel.PropertyMarket.ZooplaWeb/Kartel.PropertyMarket.ZooplaWeb.csproj", "Kartel.PropertyMarket.ZooplaWeb/"]
-RUN dotnet restore "Kartel.PropertyMarket.ZooplaWeb/Kartel.PropertyMarket.ZooplaWeb.csproj"
+COPY ["services/Kartel.PropertyMarket.ZooplaWeb/Kartel.PropertyMarket.ZooplaWeb.csproj", "services/Kartel.PropertyMarket.ZooplaWeb/"]
+RUN dotnet restore "services/Kartel.PropertyMarket.ZooplaWeb/Kartel.PropertyMarket.ZooplaWeb.csproj"
 COPY . .
-WORKDIR "/src/Kartel.PropertyMarket.ZooplaWeb"
+WORKDIR "services/Kartel.PropertyMarket.ZooplaWeb"
 RUN dotnet build "Kartel.PropertyMarket.ZooplaWeb.csproj" -c Release -o /app/build
 
 FROM build AS publish

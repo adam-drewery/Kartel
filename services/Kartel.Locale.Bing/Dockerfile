@@ -4,10 +4,10 @@ EXPOSE 5559
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Kartel.Locale.Bing/Kartel.Locale.Bing.csproj", "Kartel.Locale.Bing/"]
-RUN dotnet restore "Kartel.Locale.Bing/Kartel.Locale.Bing.csproj"
+COPY ["services/Kartel.Locale.Bing/Kartel.Locale.Bing.csproj", "services/Kartel.Locale.Bing/"]
+RUN dotnet restore "services/Kartel.Locale.Bing/Kartel.Locale.Bing.csproj"
 COPY . .
-WORKDIR "/src/Kartel.Locale.Bing"
+WORKDIR "services//Kartel.Locale.Bing"
 RUN dotnet build "Kartel.Locale.Bing.csproj" -c Release -o /app/build
 
 FROM build AS publish

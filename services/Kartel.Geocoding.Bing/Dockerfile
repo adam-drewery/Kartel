@@ -4,10 +4,10 @@ EXPOSE 5557
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Kartel.Geocoding.Bing/Kartel.Geocoding.Bing.csproj", "Kartel.Geocoding.Bing/"]
+COPY ["services/Kartel.Geocoding.Bing/Kartel.Geocoding.Bing.csproj", "services/Kartel.Geocoding.Bing/"]
 RUN dotnet restore "Kartel.Geocoding.Bing/Kartel.Geocoding.Bing.csproj"
 COPY . .
-WORKDIR "/src/Kartel.Geocoding.Bing"
+WORKDIR "services//Kartel.Geocoding.Bing"
 RUN dotnet build "Kartel.Geocoding.Bing.csproj" -c Release -o /app/build
 
 FROM build AS publish
