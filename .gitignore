@@ -254,3 +254,4 @@ MapsData/
 /Kartel.Api/*.blob
 *.http
 .terraform/
+.terraform.lock.hcl

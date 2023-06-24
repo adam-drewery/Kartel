@@ -41,7 +41,7 @@ resource "azurerm_container_group" "kartel" {
 
   container {
     name   = "api"
-    image  = "myacr.azurecr.io/myimage:v1"  // Replace with your ACR and image details
+    image  = "kartel.azurecr.io/api:v1"  // Replace with your ACR and image details
     cpu    = "0.5"
     memory = "0.5"
 
@@ -58,7 +58,7 @@ resource "azurerm_container_group" "kartel" {
   
   container {
     name   = "web"
-    image  = "myacr.azurecr.io/myimage:v1"  // Replace with your ACR and image details
+    image  = "kartel.azurecr.io/web:v1"  // Replace with your ACR and image details
     cpu    = "0.5"
     memory = "0.5"
 
