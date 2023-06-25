@@ -61,5 +61,4 @@ jobs:
 
       - name: Deploy to Azure Container Instances
         run: |
-          az container delete --resource-group kartel-staging --name ${{inputs.name}} --yes
-          az container create --resource-group kartel-staging --name ${{inputs.name}} --registry-username ${{ steps.set_output.outputs.acr_username }} --registry-password ${{ steps.set_output.outputs.acr_password }} --image kartel.azurecr.io/${{inputs.name}}:latest --ports ${{inputs.ports}} --cpu 0.2 --memory 0.2
+          az containerapp update -n ${{inputs.name}} -g kartel-staging --image kartel.azurecr.io/${{inputs.name}}:latest
