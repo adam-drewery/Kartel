@@ -41,6 +41,6 @@ public abstract class ZooplaScraper
     {
         var browserFetcher = new BrowserFetcher();
         await browserFetcher.DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
-        _browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true, SlowMo = 15 });
+        _browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = false, SlowMo = 15 });
     }
 }
