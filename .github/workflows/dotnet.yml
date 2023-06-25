@@ -109,13 +109,13 @@ jobs:
       path: web/Kartel.Web
       ports: 80 8080
       
-  deploy-store-finder:
+  deploy-locale:
     name: Kartel.Locale
     needs: [ terraform-apply ]
     uses: ./.github/workflows/deploy-container.yml
     secrets: inherit
     with:
-      name: store-finder
+      name: locale
       path: services/Kartel.Locale.Bing
       ports: 5559
       
@@ -125,7 +125,7 @@ jobs:
     uses: ./.github/workflows/deploy-container.yml
     secrets: inherit
     with:
-      name: store-finder
+      name: geocoding
       path: services/Kartel.Geocoding.Bing
       ports: 5557 5558
       
@@ -135,7 +135,7 @@ jobs:
     uses: ./.github/workflows/deploy-container.yml
     secrets: inherit
     with:
-      name: store-finder
+      name: logistics
       path: services/Kartel.Logistics.Bing
       ports: 5556
       
