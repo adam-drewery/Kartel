@@ -42,7 +42,7 @@ resource "azurerm_log_analytics_workspace" "example" {
 
 variable "default_image" { default = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest" }
 variable "default_cpu" { default = 0.25 }
-variable "default_memory" { default = "0.2Gi" }
+variable "default_memory" { default = "0.5Gi" }
 
 resource "azurerm_container_app_environment" "kartel" {
   name                       = "kartel"
