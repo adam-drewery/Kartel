@@ -51,9 +51,11 @@ jobs:
           username: ${{ steps.set_output.outputs.acr_username }}
           password: ${{ steps.set_output.outputs.acr_password }}
 
-      - run: |
-          docker build -t kartel.azurecr.io/${{inputs.name}}:latest -f ./${{inputs.path}}/Dockerfile .
-          docker push kartel.azurecr.io/${{inputs.name}}:latest
+      - run: docker build -t kartel.azurecr.io/${{inputs.name}}:latest -f ./${{inputs.path}}/Dockerfile .
+        name: Docker Build
+        
+      - run: docker push kartel.azurecr.io/${{inputs.name}}:latest
+        name: Docker Push
 
       - uses: azure/login@v1
         with:
