@@ -36,7 +36,7 @@ resource "azurerm_container_group" "kartel" {
   location            = azurerm_resource_group.kartel.location
   resource_group_name = azurerm_resource_group.kartel.name
   ip_address_type     = "Public"
-  dns_name_label      = "acitestcontainers"
+  dns_name_label      = "kartel"
   os_type             = "Linux"
 
   container {
